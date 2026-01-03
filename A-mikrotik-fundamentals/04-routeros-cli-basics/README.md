@@ -95,3 +95,86 @@ A.02 Log in ──► A.04 Move around and change things safely ──► A.05 R
 | RouterOS version | `TODO` |
 | WinBox version | `TODO` |
 | Starting state | Default configuration, internet access from [A.03](../03-lab-internet-access/README.md) |
+
+## Method A — CLI
+
+### Step 1 — Explore the menu tree
+
+```routeros
+/ip
+address
+print
+..
+/
+```
+
+Then type `/ip/` and press Tab twice to list the submenus, and press F1 inside `/ip/address`. [1]
+
+`TODO` ![Step 1](images/cli/01-menu-tree.png)
+
+### Step 2 — Read the interface list
+
+```routeros
+/interface/print
+```
+
+Read the flag legend at the top of the output and find `R` (running) on ether2, the port your laptop uses. [1]
+
+> [!CAUTION]
+> **Privacy:** use plain `print`. `print detail` shows MAC addresses; if you capture it, cover them. See the [privacy checklist](../../TOPIC-TEMPLATE.md#screenshot--privacy-checklist).
+
+`TODO` ![Step 2](images/cli/02-interface-print.png)
+
+### Step 3 — Add a comment by name
+
+```routeros
+/interface/set ether3 comment="spare LAN port"
+/interface/print
+```
+
+The comment appears above the item. We used the name `ether3`, not a number. [1]
+
+`TODO` ![Step 3](images/cli/03-comment.png)
+
+### Step 4 — Select an item with `find`
+
+```routeros
+/interface/print where comment="spare LAN port"
+/interface/disable [find comment="spare LAN port"]
+/interface/print
+/interface/enable [find comment="spare LAN port"]
+```
+
+`find` picks the item by a property, so this works even if the item numbers change. [1] After `disable`, the interface shows the `X` flag. [1]
+
+`TODO` ![Step 4](images/cli/04-find-disable-enable.png)
+
+### Step 5 — Undo a change
+
+```routeros
+/system/history/print
+/undo
+/interface/print
+```
+
+`/undo` reverts the most recent change. [2] Run it until the comment from Step 3 is gone.
+
+`TODO` ![Step 5](images/cli/05-undo.png)
+
+### Step 6 — Practise safe mode
+
+1. Press Ctrl+X. The prompt shows `<SAFE>`. [1]
+2. Run `/interface/set ether3 comment="safe mode test"`.
+3. Press Ctrl+D to leave and undo, then log in again. [1]
+4. Run `/interface/print`: the comment is gone.
+
+`TODO` ![Step 6](images/cli/06-safe-mode.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| Tab twice after `/ip/` | List of `/ip` submenus [1] | `TODO` |
+| ether3 after `disable` | `X` flag [1] | `TODO` |
+| After `/undo` | Comment removed [2] | `TODO` |
+| After Ctrl+D in safe mode | Change undone [1] | `TODO` |
