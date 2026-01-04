@@ -178,3 +178,89 @@ The comment appears above the item. We used the name `ether3`, not a number. [1]
 | ether3 after `disable` | `X` flag [1] | `TODO` |
 | After `/undo` | Comment removed [2] | `TODO` |
 | After Ctrl+D in safe mode | Change undone [1] | `TODO` |
+
+## Reset Before Method B
+
+Method A undid its own changes, so the router is back where it started. Check with `/interface/print` that ether3 has no comment and is enabled. No reset is needed.
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name and button against WinBox v4 while taking the screenshots.
+
+### Step 1 — Find the same menus
+
+Open **Interfaces** and **IP → Addresses**. These windows show the same lists as `/interface/print` and `/ip/address/print`.
+
+`TODO` ![Step 1](images/gui/01-interfaces-window.png)
+
+### Step 2 — Add a comment
+
+Select **ether3** and use the comment button (or open the item and fill in **Comment**). Enter `spare LAN port`.
+
+`TODO` ![Step 2](images/gui/02-comment.png)
+
+### Step 3 — Disable and enable
+
+Select ether3 and use the disable and enable buttons. Watch the item change state in the list.
+
+`TODO` ![Step 3](images/gui/03-disable-enable.png)
+
+### Step 4 — Undo
+
+Use WinBox's undo button, then check that the comment is gone. The change history is the same one `/system/history/print` shows. [2]
+
+`TODO` ![Step 4](images/gui/04-undo.png)
+
+### Step 5 — Safe mode
+
+Click **Safe Mode**, change the comment again, and then disconnect without leaving safe mode. Log in again and check that the change was undone.
+
+`TODO` ![Step 5](images/gui/05-safe-mode.png)
+
+### Verify (WinBox)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| Comment shown in Interfaces | `spare LAN port` above ether3 | `TODO` |
+| Disabled interface | Shown as disabled | `TODO` |
+| Undo | Comment removed | `TODO` |
+| Safe mode disconnect | Change undone | `TODO` |
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| `bad command name` | Wrong menu level or typo | Press Tab to complete, or `/` to return to the top level. [1] |
+| A command changed the wrong item | Item numbers changed since the last `print` | Use names or `find` instead of numbers. [1] |
+| `/undo` does nothing after a reboot | History is cleared on reboot [2] | Use a backup or export (A.07). |
+| Safe mode did not undo a reset | Safe mode ignores commands that need a reboot [1] | Use the reset button procedure (A.05). |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| `/`, `..`, `/ip/route` | Top level, up one level, enter a menu [1] |
+| Tab, Tab Tab, F1 | Complete, list completions, help [1] |
+| `print`, `set`, `add`, `remove`, `enable`, `disable`, `comment` | General commands in every menu [1] |
+| `[find comment="x"]` | Select items by property; safer than numbers [1] |
+| Flags `X`, `R`, `I` | Disabled, running, invalid [1] |
+| Ctrl+X / F4 | Safe mode [1] |
+| `/undo`, `/redo`, `/system/history/print` | Last 100 changes until reboot [2] |
+
+## Key Takeaways
+
+- The same general commands work in every menu, and both space and `/` separate menu levels.
+- Item numbers belong to one `print` output; use names or `find` for anything that matters.
+- Turn on safe mode before a change that could cut your connection.
+
+## References
+
+1. [RouterOS Manual — Console](https://manual.mikrotik.com/docs/management-tools/console/)
+2. [RouterOS Manual — Configuration Management](https://manual.mikrotik.com/docs/getting-started/configuration-management/)
+
+---
+
+**Previous:** [A.03 — Lab Internet Access](../03-lab-internet-access/README.md) · **Next:** A.05 — Default Configuration and Reset
+
+[Back to the main learning journal](../../README.md)
