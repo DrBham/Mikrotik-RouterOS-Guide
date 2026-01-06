@@ -94,3 +94,69 @@ A.05 Reset to empty    ──► Chapter C builds the gateway by hand
 
 > [!WARNING]
 > Both resets erase the A.03 internet setup. Save this page on your phone first. After the topic, reset to defaults and repeat A.03.
+
+## Method A — CLI
+
+### Step 1 — Read the default configuration script
+
+```routeros
+/system/default-configuration/print
+```
+
+Look for the parts described in the theory: the bridge, the address `192.168.88.1/24`, the DHCP server, the DHCP client on ether1, and the NAT rule. [1]
+
+`TODO` ![Step 1](images/cli/01-default-configuration-print.png)
+
+### Step 2 — Reset to the default configuration
+
+```routeros
+/system/reset-configuration
+```
+
+Answer `y`. [3] The router reboots. Log in again by SSH at `192.168.88.1` after about a minute.
+
+`TODO` ![Step 2](images/cli/02-reset-defaults.png)
+
+### Step 3 — Find the automatic backup
+
+```routeros
+/file/print
+```
+
+The reset saved `auto-before-reset.backup`. [3]
+
+`TODO` ![Step 3](images/cli/03-auto-backup-file.png)
+
+### Step 4 — Reset to an empty configuration
+
+```routeros
+/system/reset-configuration no-defaults=yes skip-backup=yes
+```
+
+[3] After the reboot, SSH to `192.168.88.1` no longer works because the router has no IP address.
+
+`TODO` ![Step 4](images/cli/04-reset-no-defaults.png)
+
+### Step 5 — Reconnect by MAC and check
+
+Open WinBox, connect to the router's MAC address from **Neighbors**, and open **New Terminal**. [5]
+
+```routeros
+/ip/address/print
+/interface/bridge/print
+```
+
+Both lists are empty.
+
+> [!CAUTION]
+> **Privacy:** cover the MAC address in the Neighbors list. See the [privacy checklist](../../TOPIC-TEMPLATE.md#screenshot--privacy-checklist).
+
+`TODO` ![Step 5](images/cli/05-empty-configuration.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| After default reset | `192.168.88.1/24` on the bridge [1] | `TODO` |
+| `/file/print` | `auto-before-reset.backup` [3] | `TODO` |
+| After empty reset | No addresses, no bridge | `TODO` |
