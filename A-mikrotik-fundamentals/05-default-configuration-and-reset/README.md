@@ -160,3 +160,89 @@ Both lists are empty.
 | After default reset | `192.168.88.1/24` on the bridge [1] | `TODO` |
 | `/file/print` | `auto-before-reset.backup` [3] | `TODO` |
 | After empty reset | No addresses, no bridge | `TODO` |
+
+## Reset Before Method B
+
+Use the reset button to return to the default configuration [2], then log in again by IP.
+
+`TODO` ![Reset](images/gui/00-reset-button.png)
+
+## Method B — WinBox (GUI)
+
+### Step 1 — Open Reset Configuration
+
+Open **System → Reset Configuration**. [2]
+
+`TODO` ![Step 1](images/gui/01-reset-configuration-window.png)
+
+### Step 2 — Reset to the defaults
+
+Leave every option unticked and click **Reset Configuration**. Confirm. The router reboots with the default configuration. [2]
+
+`TODO` ![Step 2](images/gui/02-reset-defaults.png)
+
+### Step 3 — Reset to an empty configuration
+
+Open the window again, tick **No Default Configuration** and **Do Not Backup**, and reset. [2][3]
+
+`TODO` ![Step 3](images/gui/03-reset-no-defaults.png)
+
+### Step 4 — Reconnect by MAC
+
+Connect from **Neighbors** using the MAC address, then check **IP → Addresses** is empty. [5]
+
+`TODO` ![Step 4](images/gui/04-empty-configuration.png)
+
+### Step 5 — Return to the defaults
+
+Reset again with every option unticked, or use the reset button, so the lab is ready for A.06. Then repeat A.03 for internet access.
+
+`TODO` ![Step 5](images/gui/05-back-to-defaults.png)
+
+### Verify (WinBox)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| After default reset | Address `192.168.88.1/24` in IP → Addresses [1] | `TODO` |
+| After empty reset | IP → Addresses is empty | `TODO` |
+| After Step 5 | Default configuration back | `TODO` |
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| Router not found after empty reset | Looking for an IP that no longer exists | Use the MAC address in Neighbors. [5] |
+| Neighbors list empty | Cable on ether1, or MAC session unreliable [5] | Use ether2; retry the MAC connection. |
+| Router came up in CAPs or Netinstall mode | Reset button held too long [2] | Repeat, releasing as soon as the USR LED flashes. |
+| Internet stopped working | The reset removed the A.03 setup | Repeat A.03. |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| `/system/default-configuration/print` | Show the default script [1] |
+| `/system/reset-configuration` | Reset to defaults, after a backup [2][3] |
+| `no-defaults=yes` | Empty configuration [3] |
+| `skip-backup=yes` | No `auto-before-reset.backup` [3] |
+| Reset button | Hold, power on, release when USR flashes [2] |
+| After empty reset | Log in by MAC [5] |
+
+## Key Takeaways
+
+- The default configuration already makes a SOHO router a working gateway with ether1 as WAN.
+- A reset cannot be undone with safe mode or `/undo`.
+- After an empty reset, the MAC connection is the way back in.
+
+## References
+
+1. [RouterOS Manual — Default configurations](https://manual.mikrotik.com/docs/getting-started/configuration-management/default-configurations/)
+2. [RouterOS Manual — RouterOS configuration reset](https://manual.mikrotik.com/docs/getting-started/configuration-management/routeros-configuration-reset/)
+3. [RouterOS Manual — Configuration Management](https://manual.mikrotik.com/docs/getting-started/configuration-management/)
+4. [RouterOS Manual — Console](https://manual.mikrotik.com/docs/management-tools/console/)
+5. [RouterOS Manual — MAC server](https://manual.mikrotik.com/docs/management-tools/mac-server/)
+
+---
+
+**Previous:** [A.04 — RouterOS CLI Basics](../04-routeros-cli-basics/README.md) · **Next:** A.06 — Users and Basic Router Security
+
+[Back to the main learning journal](../../README.md)
