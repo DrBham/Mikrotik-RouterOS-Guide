@@ -90,3 +90,81 @@ A.06 own user + fewer services ──► Chapter H firewall builds the next laye
 
 > [!WARNING]
 > Do the steps in order. Never disable `admin` before you have logged in successfully with the new account. If you lock yourself out, use the reset button (A.05).
+
+## Method A — CLI
+
+### Step 1 — Look at users, groups, and services
+
+```routeros
+/user/print
+/user/group/print
+/ip/service/print
+```
+
+`TODO` ![Step 1](images/cli/01-users-groups-services.png)
+
+### Step 2 — Create your own administrator
+
+```routeros
+/user/add name=netadmin group=full password="YOUR_STRONG_PASSWORD"
+```
+
+The password is mandatory. [1] Use your own name instead of `netadmin` and a password that follows the rules above. [2]
+
+> [!CAUTION]
+> **Privacy:** cover the password in the screenshot. See the [privacy checklist](../../TOPIC-TEMPLATE.md#screenshot--privacy-checklist).
+
+`TODO` ![Step 2](images/cli/02-user-add.png)
+
+### Step 3 — Log in as the new user
+
+Open a second PowerShell window and run `ssh netadmin@192.168.88.1`. Keep the first session open until this works.
+
+`TODO` ![Step 3](images/cli/03-new-user-login.png)
+
+### Step 4 — Disable `admin` and restrict your user
+
+```routeros
+/user/disable admin
+/user/set netadmin address=192.168.88.0/24
+/user/print
+```
+
+[2][1] `admin` now shows the `X` flag.
+
+`TODO` ![Step 4](images/cli/04-disable-admin.png)
+
+### Step 5 — Turn off unused services
+
+```routeros
+/ip/service/disable telnet,ftp,www,api
+/ip/service/set winbox,ssh available-from=192.168.88.0/24
+/ip/ssh/set strong-crypto=yes
+/ip/service/print
+```
+
+[2][4]
+
+`TODO` ![Step 5](images/cli/05-services.png)
+
+### Step 6 — Disable other unused features
+
+```routeros
+/tool/bandwidth-server/set enabled=no
+/ip/proxy/set enabled=no
+/ip/socks/set enabled=no
+/ip/upnp/set enabled=no
+```
+
+[2] MAC access stays allowed on `LAN` so the recovery path from A.02 keeps working. [3]
+
+`TODO` ![Step 6](images/cli/06-features-off.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| `ssh admin@192.168.88.1` | Login refused | `TODO` |
+| `ssh netadmin@192.168.88.1` | Login works | `TODO` |
+| `/ip/service/print` | telnet, ftp, www, api disabled | `TODO` |
+| Internet from laptop | Still works | `TODO` |
