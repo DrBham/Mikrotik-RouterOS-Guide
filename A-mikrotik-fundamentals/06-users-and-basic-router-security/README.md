@@ -168,3 +168,87 @@ Open a second PowerShell window and run `ssh netadmin@192.168.88.1`. Keep the fi
 | `ssh netadmin@192.168.88.1` | Login works | `TODO` |
 | `/ip/service/print` | telnet, ftp, www, api disabled | `TODO` |
 | Internet from laptop | Still works | `TODO` |
+
+## Reset Before Method B
+
+Reset to the default configuration with the reset button (A.05), log in as `admin`, and repeat A.03 if you need internet access while following Method B.
+
+`TODO` ![Reset](images/gui/00-after-reset.png)
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Create your own administrator
+
+**System → Users → +**: Name `netadmin`, Group `full`, password twice. [1]
+
+`TODO` ![Step 1](images/gui/01-user-add.png)
+
+### Step 2 — Log in as the new user
+
+Open a second WinBox window and log in as `netadmin`.
+
+`TODO` ![Step 2](images/gui/02-new-user-login.png)
+
+### Step 3 — Disable `admin` and restrict your user
+
+In **System → Users**, disable `admin`. Open `netadmin` and set **Allowed Address** to `192.168.88.0/24`. [1]
+
+`TODO` ![Step 3](images/gui/03-disable-admin.png)
+
+### Step 4 — Turn off unused services
+
+**IP → Services**: disable telnet, ftp, www, and api. Open winbox and ssh and set **Available From** to `192.168.88.0/24`. [4][2]
+
+`TODO` ![Step 4](images/gui/04-services.png)
+
+### Step 5 — Disable other unused features
+
+**Tools → BTest Server**: disable. **IP → Proxy**, **IP → SOCKS**, **IP → UPnP**: make sure each is disabled. [2]
+
+`TODO` ![Step 5](images/gui/05-features-off.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli), using WinBox logins and **IP → Services**.
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| Locked out after disabling `admin` | New user's password or address wrong | Reset button (A.05). |
+| Login refused from the laptop | Laptop not in the user's `address` network [1] | Check the laptop IP with `ipconfig`. |
+| WinBox cannot connect by IP | `available-from` excludes the laptop [2] | Use MAC WinBox from the LAN [3] and fix the setting. |
+| Password with `$` rejected or changed | Special characters not escaped [2] | Escape `"`, `\`, `$` with `\`. |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| `/user/add name=… group=full password=…` | New administrator [1] |
+| `/user/disable admin` | Retire the default name [2] |
+| `/user/set … address=192.168.88.0/24` | Log in only from the LAN [1] |
+| `/ip/service/disable telnet,ftp,www,api` | Fewer open services [2] |
+| `available-from=` | Limit a service to a network [2] |
+| MAC-WinBox on `LAN` only | Default; keeps recovery possible [3] |
+
+## Key Takeaways
+
+- Log in with the new account before disabling `admin`.
+- Disable what you do not use and limit the rest to the LAN.
+- Management from the internet belongs behind a VPN, not on an open port.
+
+## References
+
+1. [RouterOS Manual — User](https://manual.mikrotik.com/docs/authentication-authorization-accounting/user/)
+2. [RouterOS Manual — Securing your router](https://manual.mikrotik.com/docs/getting-started/securing-your-router/)
+3. [RouterOS Manual — MAC server](https://manual.mikrotik.com/docs/management-tools/mac-server/)
+4. [RouterOS Manual — Services](https://manual.mikrotik.com/docs/system-information-and-utilities/services/)
+
+---
+
+**Previous:** [A.05 — Default Configuration and Reset](../05-default-configuration-and-reset/README.md) · **Next:** A.07 — Backup, Export, and Restore
+
+[Back to the main learning journal](../../README.md)
