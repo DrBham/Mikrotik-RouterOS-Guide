@@ -75,3 +75,84 @@ A.07 backup ──► taken before A.08 upgrade and before any risky lab
 | Device | MikroTik hAP lite (RB941-2nD) |
 | RouterOS version | `TODO` |
 | Starting state | A.06 configuration (own user, services limited) |
+
+## Method A — CLI
+
+### Step 1 — Print an export
+
+```routeros
+/export
+/ip/address/export
+```
+
+The first command prints the whole non-default configuration; the second only one menu. [2]
+
+> [!CAUTION]
+> **Privacy:** exports can contain SSIDs, MAC addresses in comments, and the router's serial number in the header. Cover them before publishing. See the [privacy checklist](../../TOPIC-TEMPLATE.md#screenshot--privacy-checklist).
+
+`TODO` ![Step 1](images/cli/01-export.png)
+
+### Step 2 — Save an export to a file
+
+```routeros
+/export file=lab-a07
+/file/print
+```
+
+`lab-a07.rsc` appears in the file list. [2]
+
+`TODO` ![Step 2](images/cli/02-export-file.png)
+
+### Step 3 — Save an encrypted backup
+
+```routeros
+/system/backup/save name=lab-a07 password="YOUR_BACKUP_PASSWORD"
+/file/print
+```
+
+[1]
+
+`TODO` ![Step 3](images/cli/03-backup-save.png)
+
+### Step 4 — Copy the files to the laptop
+
+From PowerShell on the laptop:
+
+```powershell
+scp netadmin@192.168.88.1:lab-a07.rsc .
+scp netadmin@192.168.88.1:lab-a07.backup .
+```
+
+> [!WARNING]
+> **Source needed:** confirm that the RouterOS SSH server accepts SCP file transfers, on the [SSH page](https://manual.mikrotik.com/docs/management-tools/ssh/). If not, use Method B Step 3 to download the files.
+
+`TODO` ![Step 4](images/cli/04-copy-to-laptop.png)
+
+### Step 5 — Change something, then restore the backup
+
+```routeros
+/interface/set ether3 comment="before restore"
+/system/backup/load name=lab-a07 password="YOUR_BACKUP_PASSWORD"
+```
+
+Answer `y` to reboot. [1] After the reboot, `/interface/print` no longer shows the comment.
+
+`TODO` ![Step 5](images/cli/05-backup-load.png)
+
+### Step 6 — Test an import without applying it
+
+```routeros
+/import lab-a07.rsc dry-run
+```
+
+[2] On a router that already has this configuration, expect errors for entries that exist. That is the behaviour described above.
+
+`TODO` ![Step 6](images/cli/06-import-dry-run.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| `/file/print` | `lab-a07.rsc` and `lab-a07.backup` | `TODO` |
+| After backup load | Comment from Step 5 gone | `TODO` |
+| Export file opened on laptop | Readable commands, no user passwords [2] | `TODO` |
