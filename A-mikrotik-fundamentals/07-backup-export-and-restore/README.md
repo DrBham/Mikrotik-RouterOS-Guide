@@ -156,3 +156,82 @@ Answer `y` to reboot. [1] After the reboot, `/interface/print` no longer shows t
 | `/file/print` | `lab-a07.rsc` and `lab-a07.backup` | `TODO` |
 | After backup load | Comment from Step 5 gone | `TODO` |
 | Export file opened on laptop | Readable commands, no user passwords [2] | `TODO` |
+
+## Reset Before Method B
+
+Delete the two files so Method B starts clean:
+
+```routeros
+/file/remove [find name~"lab-a07"]
+```
+
+`TODO` ![Reset](images/gui/00-files-removed.png)
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Make a backup
+
+Open **Files** and click **Backup**. Enter the name `lab-a07` and a password. [1]
+
+`TODO` ![Step 1](images/gui/01-backup.png)
+
+### Step 2 — Make an export
+
+Open **New Terminal** and run `/export file=lab-a07`. [2]
+
+`TODO` ![Step 2](images/gui/02-export.png)
+
+### Step 3 — Download both files
+
+In **Files**, drag `lab-a07.backup` and `lab-a07.rsc` to a folder on the laptop.
+
+`TODO` ![Step 3](images/gui/03-download.png)
+
+### Step 4 — Restore the backup
+
+Change the ether3 comment, then in **Files** select `lab-a07.backup`, click **Restore**, enter the password, and confirm the reboot. [1]
+
+`TODO` ![Step 4](images/gui/04-restore.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| Backup will not load on another router | Backups are meant for the same device [1] | Use an export instead. |
+| Import stops with an error | An entry already exists; import only adds [2] | Run on a clean router, or edit the `.rsc`. |
+| Exported Wi-Fi password missing | Sensitive values are hidden by default [2] | Expected. Use `show-sensitive` only for private files. |
+| Users missing after import | Exports do not contain user accounts [2] | Recreate users, or restore a backup. |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| `/export`, `/export file=x` | Text configuration, non-default only [2] |
+| `show-sensitive` | Include secrets; never publish [2] |
+| `/system/backup/save name=x password=…` | Encrypted binary backup [1] |
+| `/system/backup/load name=x` | Restore and reboot [1] |
+| `/import x.rsc dry-run` | Check a script without applying it [2] |
+
+## Key Takeaways
+
+- Backups restore the same router; exports move configuration between routers.
+- Export without `show-sensitive` before you share or publish a configuration.
+- Take a backup before an upgrade, a reset, or a lab that could lock you out.
+
+## References
+
+1. [RouterOS Manual — Backup](https://manual.mikrotik.com/docs/getting-started/configuration-management/backup/)
+2. [RouterOS Manual — Configuration Management](https://manual.mikrotik.com/docs/getting-started/configuration-management/)
+
+---
+
+**Previous:** [A.06 — Users and Basic Router Security](../06-users-and-basic-router-security/README.md) · **Next:** A.08 — Upgrading RouterOS and Packages
+
+[Back to the main learning journal](../../README.md)
