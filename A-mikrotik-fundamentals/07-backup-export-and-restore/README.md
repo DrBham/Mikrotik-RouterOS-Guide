@@ -123,8 +123,10 @@ scp netadmin@192.168.88.1:lab-a07.rsc .
 scp netadmin@192.168.88.1:lab-a07.backup .
 ```
 
-> [!WARNING]
-> **Source needed:** confirm that the RouterOS SSH server accepts SCP file transfers, on the [SSH page](https://manual.mikrotik.com/docs/management-tools/ssh/). If not, use Method B Step 3 to download the files.
+The RouterOS manual documents file transfer over SFTP, which uses the router's SSH service. [3][4] Since OpenSSH 9.0, the `scp` client uses the SFTP protocol by default. [5]
+
+> [!NOTE]
+> The RouterOS manual does not mention the legacy SCP protocol (`scp -O`), and the OpenSSH version on your laptop may be older than 9.0. If `scp` fails, use Method B Step 3 to download the files.
 
 `TODO` ![Step 4](images/cli/04-copy-to-laptop.png)
 
@@ -229,6 +231,9 @@ Same checks as [Verify (CLI)](#verify-cli).
 
 1. [RouterOS Manual — Backup](https://manual.mikrotik.com/docs/getting-started/configuration-management/backup/)
 2. [RouterOS Manual — Configuration Management](https://manual.mikrotik.com/docs/getting-started/configuration-management/)
+3. [RouterOS Manual — SSH, upload a key file over SFTP](https://manual.mikrotik.com/docs/management-tools/ssh/)
+4. [RouterOS Manual — Fetch, download and upload files (SFTP)](https://manual.mikrotik.com/docs/system-information-and-utilities/fetch/)
+5. [OpenSSH 9.0 release notes — scp uses SFTP by default](https://www.openssh.org/txt/release-9.0)
 
 ---
 
