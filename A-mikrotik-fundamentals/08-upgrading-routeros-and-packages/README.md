@@ -81,3 +81,80 @@ A.07 backup ──► A.08 upgrade ──► every later topic runs on a current
 
 > [!WARNING]
 > Do not power off the router during an upgrade. Make a backup (A.07) first.
+
+## Method A — CLI
+
+### Step 1 — Record the current state
+
+```routeros
+/system/resource/print
+/system/package/print
+/system/routerboard/print
+```
+
+Note `version`, `architecture-name`, and the free storage, the installed packages, and the current and upgrade firmware versions.
+
+> [!CAUTION]
+> **Privacy:** `/system/routerboard/print` shows the serial number. Cover it. See the [privacy checklist](../../TOPIC-TEMPLATE.md#screenshot--privacy-checklist).
+
+`TODO` ![Step 1](images/cli/01-current-state.png)
+
+### Step 2 — Back up
+
+```routeros
+/system/backup/save name=before-upgrade password="YOUR_BACKUP_PASSWORD"
+```
+
+[4]
+
+`TODO` ![Step 2](images/cli/02-backup.png)
+
+### Step 3 — Check for updates
+
+```routeros
+/system/package/update/set channel=stable
+/system/package/update/check-for-updates
+```
+
+The status says either that a new version is available or that the system is up to date. [1]
+
+`TODO` ![Step 3](images/cli/03-check-for-updates.png)
+
+### Step 4 — Install
+
+```routeros
+/system/package/update/install
+```
+
+The router downloads the packages and reboots. [1] Log in again after a few minutes.
+
+`TODO` ![Step 4](images/cli/04-install.png)
+
+### Step 5 — Upgrade RouterBOOT
+
+```routeros
+/system/routerboard/upgrade
+/system/reboot
+```
+
+[1]
+
+`TODO` ![Step 5](images/cli/05-routerboard-upgrade.png)
+
+### Step 6 — Confirm
+
+```routeros
+/system/resource/print
+/system/routerboard/print
+/log/print where message~"install"
+```
+
+`TODO` ![Step 6](images/cli/06-confirm.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| `version` | Newer than before (or "already up to date") [1] | `TODO` |
+| RouterBOOT | current-firmware equals upgrade-firmware | `TODO` |
+| Configuration | Users, services, A.03 internet unchanged | `TODO` |
