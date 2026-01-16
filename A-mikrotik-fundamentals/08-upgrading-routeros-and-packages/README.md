@@ -158,3 +158,80 @@ The router downloads the packages and reboots. [1] Log in again after a few minu
 | `version` | Newer than before (or "already up to date") [1] | `TODO` |
 | RouterBOOT | current-firmware equals upgrade-firmware | `TODO` |
 | Configuration | Users, services, A.03 internet unchanged | `TODO` |
+
+## Reset Before Method B
+
+An upgrade cannot be repeated on the same version. For Method B, either wait for the next release or downgrade first by switching the channel to `long-term` and installing, which the manual describes as the way to move to an older version. [1] Otherwise follow Method B as a check-only walkthrough.
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Check the current version
+
+Open **System → Resources** and **System → Packages**.
+
+`TODO` ![Step 1](images/gui/01-resources-packages.png)
+
+### Step 2 — Check for updates
+
+In **System → Packages**, click **Check For Updates**, choose the **stable** channel, and check. The manual describes this button as the way to upgrade from WinBox. [5]
+
+`TODO` ![Step 2](images/gui/02-check-for-updates.png)
+
+### Step 3 — Download and install
+
+Click **Download & Install**. The router reboots.
+
+`TODO` ![Step 3](images/gui/03-download-install.png)
+
+### Step 4 — Upgrade RouterBOOT
+
+Open **System → RouterBOARD**, click **Upgrade**, then **System → Reboot**. [1]
+
+`TODO` ![Step 4](images/gui/04-routerboard-upgrade.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli), using **System → Resources** and **System → RouterBOARD**.
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| Check for updates fails | No DNS or no internet | `:put [:resolve upgrade.mikrotik.com]` and ping, as the manual suggests. [1] |
+| Not enough space | Too many packages on 16 MB flash [3] | Remove unused packages with `/system/package/uninstall`. [2] |
+| Package uploaded but nothing happened | Router not rebooted, or wrong architecture | Reboot; check `architecture-name`. [1][2] |
+| Wireless disappeared after upgrade | `wireless` package missing | Check `/system/package/print`; install `wireless`. [2][3] |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| `/system/package/update/check-for-updates` | Look for a new version [1] |
+| `/system/package/update/install` | Download, install, reboot [1] |
+| `channel=stable` / `long-term` | Release channel [1] |
+| `/system/routerboard/upgrade` + reboot | Firmware after RouterOS [1] |
+| `/system/package/print` | Installed packages [2] |
+| `architecture-name` | Which `.npk` files fit [2] |
+
+## Key Takeaways
+
+- Back up, upgrade RouterOS, then upgrade RouterBOOT.
+- The hAP lite uses the `wireless` package and has little flash; keep extra packages to a minimum.
+- 7.10 is newer than 7.9: RouterOS versions are not decimals.
+
+## References
+
+1. [RouterOS Manual — Upgrade](https://manual.mikrotik.com/docs/getting-started/installation-and-upgrade/upgrade/)
+2. [RouterOS Manual — Packages](https://manual.mikrotik.com/docs/getting-started/installation-and-upgrade/packages/)
+3. [MikroTik — hAP lite (RB941-2nD)](https://mikrotik.com/product/RB941-2nD)
+4. [RouterOS Manual — Backup](https://manual.mikrotik.com/docs/getting-started/configuration-management/backup/)
+5. [RouterOS Manual — Securing your router](https://manual.mikrotik.com/docs/getting-started/securing-your-router/)
+
+---
+
+**Previous:** [A.07 — Backup, Export, and Restore](../07-backup-export-and-restore/README.md) · **Next:** [Chapter B — Network Fundamentals](../../B-network-fundamentals/01-what-is-a-computer-network/README.md)
+
+[Back to the main learning journal](../../README.md)
