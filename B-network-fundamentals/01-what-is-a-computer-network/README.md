@@ -33,3 +33,24 @@ A host is the ultimate consumer of communication services: the computer that run
 The internet is built from interconnected packet networks. The computers that join those networks together are called gateways or IP routers. [1] In OSI terms they are called intermediate systems. [1] This guide uses the word router, which is what RFC 1812 calls them. [2]
 
 A router examines the IP header of each packet, removes the link-layer header, updates the IP header, and sends the packet out with a new link-layer header for the next network. [2]
+
+### The internet is a network of networks
+
+RFC 1122 states the idea directly: the internet is a network of networks. A host is attached to one particular network; its connection to the wider internet exists only through routers. [1]
+
+### Datagrams
+
+IP sends data in independent units called datagrams. IP delivers each datagram from a source to a destination across interconnected networks, but it does not guarantee delivery, order, or flow control. [3] Routers do not keep connection state; each datagram is forwarded on its own. [1] End-to-end state, such as which data has arrived, lives in the hosts. [1]
+
+### Where the work happens
+
+RFC 1122's design assumptions put routing complexity in the routers and keep hosts simpler, and they expect the network to tolerate wide variation in bandwidth, delay, loss, and packet size. [1]
+
+### How it connects
+
+```text
+B.01 hosts, routers, networks
+  └─► B.02 layers describe how a packet is built
+       └─► B.03–B.07 how hosts on one network and across networks find each other
+            └─► B.08–B.10 the services that make the internet usable (DNS, DHCP, NAT)
+```
