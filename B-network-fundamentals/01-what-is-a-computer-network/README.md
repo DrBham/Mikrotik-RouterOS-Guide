@@ -54,3 +54,53 @@ B.01 hosts, routers, networks
        └─► B.03–B.07 how hosts on one network and across networks find each other
             └─► B.08–B.10 the services that make the internet usable (DNS, DHCP, NAT)
 ```
+
+## How It Appears in RouterOS
+
+The A.03 lab is a small internet in itself:
+
+```text
+[ Laptop ] ──── ether2 ─[ hAP lite ]─ wlan1 )))) [ Home Wi-Fi ] ──── Internet
+   host                    router                    router
+ network 1: 192.168.88.0/24                 network 2: home Wi-Fi subnet
+```
+
+RouterOS automatically creates a connected route for each IP network on an enabled interface. [4] So the route table shows the networks the router joins:
+
+```routeros
+/interface/print
+/ip/route/print where connect
+```
+
+[4] Expect one connected route for the LAN bridge and one for wlan1.
+
+`TODO` ![Connected routes](images/cli/01-connected-routes.png)
+
+## Quick Recap
+
+| Term | Meaning |
+| --- | --- |
+| Host | Runs applications; the end of communication [1] |
+| Router (gateway) | Connects networks and forwards packets between them [1][2] |
+| Network of networks | The internet: hosts attach to one network, routers join them [1] |
+| Datagram | Independent unit of data; IP does not guarantee delivery [3] |
+| Connected route | Created by RouterOS for each IP network on an interface [4] |
+
+## Key Takeaways
+
+- A router is what lets a host on one network reach hosts on another.
+- Routers forward each packet on its own; reliability is the hosts' job.
+- Every IP network a MikroTik is attached to appears as a connected route.
+
+## References
+
+1. [RFC 1122 — Requirements for Internet Hosts, §1.1.1–1.1.2](https://www.rfc-editor.org/rfc/rfc1122)
+2. [RFC 1812 — Requirements for IP Version 4 Routers, §1](https://www.rfc-editor.org/rfc/rfc1812)
+3. [RFC 791 — Internet Protocol, §1.2](https://www.rfc-editor.org/rfc/rfc791)
+4. [RouterOS Manual — Routing decision](https://manual.mikrotik.com/docs/user-guides/routing-and-networking-protocols/routing-decision/)
+
+---
+
+**Previous:** [A.08 — Upgrading RouterOS and Packages](../../A-mikrotik-fundamentals/08-upgrading-routeros-and-packages/README.md) · **Next:** [B.02 — OSI and TCP/IP Models](../02-osi-and-tcp-ip-models/README.md)
+
+[Back to the main learning journal](../../README.md)
