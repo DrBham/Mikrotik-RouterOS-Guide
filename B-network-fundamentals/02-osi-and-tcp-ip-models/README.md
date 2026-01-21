@@ -57,3 +57,27 @@ ITU-T Recommendation X.200 defines the Open Systems Interconnection (OSI) Basic 
 > **Source needed:** the one-line function of each OSI layer from X.200 clauses 7.1 to 7.7, and an official source for the mapping of Session, Data Link, and Physical in the last column. RFC 1122 only states the Application/Presentation mapping. [1]
 
 The OSI model is a reference for naming layers. The protocols actually used on the internet follow the four-layer suite above. [1]
+
+### Encapsulation
+
+Each layer adds its own header in front of the data from the layer above. IP over Ethernet is a concrete example: an IP datagram travels inside an Ethernet frame whose type field is `0x0800`. [3]
+
+When a router forwards a packet, it removes the link-layer header, changes the IP header, and adds a new link-layer header for the next network. [4] The IP header survives from source to destination; the link-layer header only lives for one hop.
+
+```text
+ Application data
+ [ TCP/UDP header | data ]                      Transport
+ [ IP header | TCP/UDP header | data ]          Internet
+ [ Ethernet header | IP packet ]                Link
+```
+
+### How it connects
+
+Every topic in this chapter sits on one layer:
+
+| Topic | Layer |
+| --- | --- |
+| B.03 Ethernet, MAC, and ARP | Link |
+| B.04–B.07 IPv4, subnets, private addresses, gateways | Internet |
+| B.08 DNS, B.09 DHCP | Application |
+| B.10 NAT | Internet and Transport (addresses and ports) |
