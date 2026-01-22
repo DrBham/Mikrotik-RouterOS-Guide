@@ -43,18 +43,17 @@ IP itself is connectionless and does not guarantee end-to-end delivery. [1] Reli
 
 ITU-T Recommendation X.200 defines the Open Systems Interconnection (OSI) Basic Reference Model. Clause 7 describes its seven layers, from top to bottom [2]:
 
-| # | OSI layer [2] | Closest Internet layer |
-| --- | --- | --- |
-| 7 | Application | Application [1] |
-| 6 | Presentation | Application [1] |
-| 5 | Session | Application |
-| 4 | Transport | Transport |
-| 3 | Network | Internet |
-| 2 | Data Link | Link |
-| 1 | Physical | Link |
+| # | OSI layer [2] | Function [2] | Closest Internet layer |
+| --- | --- | --- | --- |
+| 7 | Application | The only way for an application process to reach the OSI environment. | Application [1] |
+| 6 | Presentation | A common representation of the data that applications exchange, so they do not depend on its syntax. | Application [1] |
+| 5 | Session | Organizes and synchronizes the dialogue between two presentation entities and manages their data exchange. | Partly Application, partly Transport [4] |
+| 4 | Transport | Transparent, reliable, and cost effective transfer of data between session entities, end to end. | Transport [4] |
+| 3 | Network | Transfers data between transport entities and hides routing and relaying from them. | Internet |
+| 2 | Data Link | Transfers data between network entities over physical connections, and detects and possibly corrects Physical Layer errors. | Link [4] |
+| 1 | Physical | Mechanical, electrical, functional, and procedural means to activate, maintain, and deactivate physical connections for bit transmission. | Below Link (the media) [4] |
 
-> [!WARNING]
-> **Source needed:** the one-line function of each OSI layer from X.200 clauses 7.1 to 7.7, and an official source for the mapping of Session, Data Link, and Physical in the last column. RFC 1122 only states the Application/Presentation mapping. [1]
+The functions come from the "Purpose" clauses 7.1.2 to 7.7.2 of X.200. [2] RFC 1812 places some OSI Session functions in the Internet application layer and the rest in the transport layer. [4] It describes the Link layer as everything below the Internet layer and above the Physical Layer. [4]
 
 The OSI model is a reference for naming layers. The protocols actually used on the internet follow the four-layer suite above. [1]
 
@@ -116,7 +115,7 @@ RouterOS menus follow the same layers. These commands only read information:
 1. [RFC 1122 — Requirements for Internet Hosts: Communication Layers, §1.1.3](https://www.rfc-editor.org/rfc/rfc1122)
 2. [ITU-T X.200 (07/94) — OSI Basic Reference Model, clause 7](https://www.itu.int/rec/T-REC-X.200-199407-I/en)
 3. [RFC 894 — IP Datagrams over Ethernet Networks](https://www.rfc-editor.org/rfc/rfc894)
-4. [RFC 1812 — Requirements for IP Version 4 Routers, §1](https://www.rfc-editor.org/rfc/rfc1812)
+4. [RFC 1812 — Requirements for IP Version 4 Routers, §1 and §2.2.1](https://www.rfc-editor.org/rfc/rfc1812)
 5. [RouterOS CLI Reference — interface](https://manual.mikrotik.com/docs/cli-reference/interface/)
 6. [RouterOS CLI Reference — ip/address](https://manual.mikrotik.com/docs/cli-reference/ip/address/)
 7. [RouterOS CLI Reference — ip/route](https://manual.mikrotik.com/docs/cli-reference/ip/route/)
