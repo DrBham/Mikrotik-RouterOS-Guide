@@ -81,3 +81,51 @@ Every topic in this chapter sits on one layer:
 | B.04–B.07 IPv4, subnets, private addresses, gateways | Internet |
 | B.08 DNS, B.09 DHCP | Application |
 | B.10 NAT | Internet and Transport (addresses and ports) |
+
+## How It Appears in RouterOS
+
+RouterOS menus follow the same layers. These commands only read information:
+
+| Layer | Where in RouterOS | Command |
+| --- | --- | --- |
+| Link | Interfaces, Ethernet, bridge | `/interface/print` [5] |
+| Internet | IP addresses and routes | `/ip/address/print`, `/ip/route/print` [6][7] |
+| Transport | Firewall rules match `protocol` and ports | `/ip/firewall/nat/print` [8] |
+| Application | DNS resolver, management services | `/ip/dns/print`, `/ip/service/print` [9][10] |
+
+`TODO` screenshot of the four commands: ![In RouterOS](images/cli/01-layers-in-routeros.png)
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| Internet suite | Application, Transport, Internet, Link [1] |
+| OSI | Application, Presentation, Session, Transport, Network, Data Link, Physical [2] |
+| TCP / UDP | Reliable connection oriented / connectionless datagrams [1] |
+| IP | Connectionless delivery between hosts, with addressing and fragmentation [1] |
+| Encapsulation | Each layer adds a header; routers replace only the link-layer header [4] |
+
+## Key Takeaways
+
+- The internet runs on the four-layer suite; OSI gives names used in documentation.
+- IP delivers between hosts, TCP and UDP between applications.
+- A router keeps the IP packet and swaps the link-layer frame at every hop.
+
+## References
+
+1. [RFC 1122 — Requirements for Internet Hosts: Communication Layers, §1.1.3](https://www.rfc-editor.org/rfc/rfc1122)
+2. [ITU-T X.200 (07/94) — OSI Basic Reference Model, clause 7](https://www.itu.int/rec/T-REC-X.200-199407-I/en)
+3. [RFC 894 — IP Datagrams over Ethernet Networks](https://www.rfc-editor.org/rfc/rfc894)
+4. [RFC 1812 — Requirements for IP Version 4 Routers, §1](https://www.rfc-editor.org/rfc/rfc1812)
+5. [RouterOS CLI Reference — interface](https://manual.mikrotik.com/docs/cli-reference/interface/)
+6. [RouterOS CLI Reference — ip/address](https://manual.mikrotik.com/docs/cli-reference/ip/address/)
+7. [RouterOS CLI Reference — ip/route](https://manual.mikrotik.com/docs/cli-reference/ip/route/)
+8. [RouterOS Manual — NAT](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/firewall/nat/)
+9. [RouterOS Manual — DNS](https://manual.mikrotik.com/docs/network-management/dns/)
+10. [RouterOS Manual — Services](https://manual.mikrotik.com/docs/system-information-and-utilities/services/)
+
+---
+
+**Previous:** [B.01 — What Is a Computer Network](../01-what-is-a-computer-network/README.md) · **Next:** B.03 — Ethernet, MAC, and ARP
+
+[Back to the main learning journal](../../README.md)
