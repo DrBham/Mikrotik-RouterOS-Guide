@@ -63,3 +63,64 @@ B.03 MAC + ARP (deliver within one LAN)
   └─► B.04 IPv4 addresses (who is on which network)
        └─► B.07 gateways (deliver to another network: ARP for the gateway's MAC, not the destination's)
 ```
+
+## How It Appears in RouterOS
+
+```routeros
+/interface/ethernet/print
+/ip/arp/print
+/interface/bridge/host/print
+```
+
+| Command | What to look for |
+| --- | --- |
+| `/interface/ethernet/print` | MTU and MAC address of each port [5] |
+| `/ip/arp/print` | IP-to-MAC entries. Flags: `D` dynamic, `C` complete, `H` added by the DHCP server, `P` published. Status values such as `reachable`, `stale`, `failed`. [6] |
+| `/interface/bridge/host/print` | Which MAC address was learned on which bridge port [4] |
+
+Each interface also has an `arp` mode: `enabled`, `disabled`, `proxy-arp`, `reply-only`, or `local-proxy-arp`. [5][6] `enabled` is normal behaviour.
+
+> [!CAUTION]
+> **Privacy:** these outputs are full of MAC addresses. Cover them before publishing. See the [privacy checklist](../../TOPIC-TEMPLATE.md#screenshot--privacy-checklist).
+
+`TODO` ![ARP table](images/cli/01-arp-and-host-table.png)
+
+From the laptop, the Windows ARP cache shows the router's entry:
+
+```powershell
+arp -a
+```
+
+`TODO` ![Windows ARP](images/cli/02-windows-arp.png)
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| MAC / EUI-48 | 48-bit hardware address; first 3 octets are the OUI [1] |
+| Group bit | 0 unicast, 1 multicast/broadcast [1] |
+| Ethertype `0x0800` | IPv4 inside an Ethernet frame [2] |
+| 1500 | Maximum IP datagram on Ethernet [2] |
+| ARP request / reply | Broadcast "who has", unicast answer [3] |
+| Host table | Bridge's MAC-to-port memory, 5 min ageing [4] |
+
+## Key Takeaways
+
+- Inside a LAN, frames are delivered by MAC address; ARP turns an IP address into one.
+- An ARP entry that is `failed` or missing means the device did not answer at layer 2.
+- A bridge learns MAC addresses per port and is invisible to IP tools like traceroute.
+
+## References
+
+1. [RFC 9542 — IANA Considerations and IETF Protocol Usage for IEEE 802 Parameters, §1.1, §2.1](https://www.rfc-editor.org/rfc/rfc9542)
+2. [RFC 894 — IP Datagrams over Ethernet Networks](https://www.rfc-editor.org/rfc/rfc894)
+3. [RFC 826 — An Ethernet Address Resolution Protocol](https://www.rfc-editor.org/rfc/rfc826)
+4. [RouterOS Manual — Bridging and Switching](https://manual.mikrotik.com/docs/bridging-and-switching/)
+5. [RouterOS CLI Reference — interface/ethernet](https://manual.mikrotik.com/docs/cli-reference/interface/ethernet/)
+6. [RouterOS CLI Reference — ip/arp](https://manual.mikrotik.com/docs/cli-reference/ip/arp/)
+
+---
+
+**Previous:** [B.02 — OSI and TCP/IP Models](../02-osi-and-tcp-ip-models/README.md) · **Next:** B.04 — IPv4 Addresses and Subnet Masks
+
+[Back to the main learning journal](../../README.md)
