@@ -57,3 +57,30 @@ CIDR writes the mask as a prefix length: the address, a slash, and the number of
 | /32 | 255.255.255.255 | 1 |
 
 Each extra prefix bit halves the size of the block, which is just binary arithmetic.
+
+### Same network or not
+
+A host decides whether a destination is local by applying its mask to both addresses. If the network bits match, the destination is on the connected network and the packet is sent directly. If not, the destination can only be reached through a gateway. [2]
+
+| Laptop | Destination | Same network? |
+| --- | --- | --- |
+| 192.168.88.254/24 | 192.168.88.1 | Yes: send directly (ARP for its MAC) |
+| 192.168.88.254/24 | 8.8.8.8 | No: send to the gateway (B.07) |
+
+### Addresses a host may not use
+
+A host-number field may not be all zeros or all ones, except in the special cases RFC 1122 lists. [2] Two of those cases matter every day:
+
+| Form | Meaning [2] | In 192.168.88.0/24 |
+| --- | --- | --- |
+| Host part all ones | Directed broadcast to that network; never a source address | `192.168.88.255` |
+| All bits ones | Limited broadcast: reaches every host on the physical network, never forwarded | `255.255.255.255` |
+| `127.x.x.x` | Loopback inside a host; must never appear outside it | — |
+
+With the network address (host part all zeros) and the broadcast address taken, a `/24` leaves 254 addresses for devices: `.1` to `.254`.
+
+### How it connects
+
+```text
+B.04 address + mask ──► B.05 split networks into subnets ──► B.06 which ranges are private ──► B.07 send to a gateway when "not the same network"
+```
