@@ -84,3 +84,59 @@ With the network address (host part all zeros) and the broadcast address taken, 
 ```text
 B.04 address + mask ──► B.05 split networks into subnets ──► B.06 which ranges are private ──► B.07 send to a gateway when "not the same network"
 ```
+
+## How It Appears in RouterOS
+
+An address in RouterOS is entered as an address with a prefix length; RouterOS calculates the `network` from it. [5]
+
+```routeros
+/ip/address/print
+/ip/address/print detail
+```
+
+| Field | Meaning [5] |
+| --- | --- |
+| `address` | Address and prefix, e.g. `192.168.88.1/24` |
+| `network` | Calculated network address, `192.168.88.0` |
+| `interface` | Where the address lives (here the LAN bridge) |
+
+On the laptop:
+
+```powershell
+ipconfig
+```
+
+Compare the laptop's IPv4 address and subnet mask with the router's address: both should be in `192.168.88.0/24`.
+
+`TODO` ![Address and mask](images/cli/01-address-and-mask.png)
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| IPv4 address | 32 bits, four octets [1] |
+| Mask | Selects the network bits [2]; contiguous from the left [3] |
+| `/24` | 24 network bits, mask 255.255.255.0, 256 addresses [4] |
+| Local or remote | Compare network bits; remote goes to a gateway [2] |
+| Host all ones | Directed broadcast, not a host address [2] |
+| 255.255.255.255 | Limited broadcast, never forwarded [2] |
+
+## Key Takeaways
+
+- The mask decides where the network ends and the host begins.
+- Two devices talk directly only if their network bits match.
+- In a `/24`, `.0` and `.255` are not for devices.
+
+## References
+
+1. [RFC 791 — Internet Protocol, §2.3](https://www.rfc-editor.org/rfc/rfc791)
+2. [RFC 1122 — Requirements for Internet Hosts, §3.2.1.3 and §3.3.1.1](https://www.rfc-editor.org/rfc/rfc1122)
+3. [RFC 950 — Internet Standard Subnetting Procedure, §2.1](https://www.rfc-editor.org/rfc/rfc950)
+4. [RFC 4632 — Classless Inter-domain Routing (CIDR), §3.1](https://www.rfc-editor.org/rfc/rfc4632)
+5. [RouterOS CLI Reference — ip/address](https://manual.mikrotik.com/docs/cli-reference/ip/address/)
+
+---
+
+**Previous:** [B.03 — Ethernet, MAC Addresses, and ARP](../03-ethernet-mac-and-arp/README.md) · **Next:** B.05 — Subnetting and CIDR
+
+[Back to the main learning journal](../../README.md)
