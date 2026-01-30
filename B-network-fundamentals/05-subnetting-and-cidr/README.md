@@ -71,3 +71,18 @@ Pick the smallest block whose usable addresses cover the devices plus the router
 | 10 devices | /28 | 14 |
 | 50 devices | /26 | 62 |
 | 200 devices | /24 | 254 |
+
+### Aggregation (supernetting)
+
+CIDR's purpose is to conserve address space and to limit routing table growth. [1] It does that by aggregation: one shorter prefix advertises many longer ones. [1] For example, `192.168.88.0/24`, `192.168.89.0/24`, `192.168.90.0/24`, and `192.168.91.0/24` share their first 22 bits, so one route to `192.168.88.0/22` covers all four.
+
+### Longest match
+
+When several routes match a destination, routers must use the most specific one, the route with the longest matching prefix. [4] So a route to `192.168.89.0/24` wins over a route to `192.168.88.0/22` for traffic to `192.168.89.10`. B.07 builds on this.
+
+### How it connects
+
+```text
+B.05 subnet sizes ──► C.05 LAN subnet ──► Chapter J one subnet per VLAN
+B.05 longest match ──► B.07 default route ──► Chapter G static routing
+```
