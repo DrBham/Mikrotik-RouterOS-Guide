@@ -86,3 +86,52 @@ When several routes match a destination, routers must use the most specific one,
 B.05 subnet sizes ──► C.05 LAN subnet ──► Chapter J one subnet per VLAN
 B.05 longest match ──► B.07 default route ──► Chapter G static routing
 ```
+
+## How It Appears in RouterOS
+
+RouterOS chooses the most specific route when several apply. [5] Every address added on an interface also creates a connected route for its subnet. [5]
+
+Optional exercise on a spare port (ether3 has no cable, so nothing is affected):
+
+```routeros
+/ip/address/add address=10.10.10.1/30 interface=ether3 comment="B.05 exercise"
+/ip/address/print
+/ip/route/print where connect
+/ip/address/remove [find comment="B.05 exercise"]
+```
+
+[6][5] The `network` column shows `10.10.10.0`, the start of the `/30`. The connected route appears once the interface is running.
+
+`TODO` ![Subnet exercise](images/cli/01-subnet-exercise.png)
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| CIDR | Classless prefixes of any power-of-two size [1] |
+| Subnetting | Borrow host bits to make smaller networks [2] |
+| /26, /28, /30 | 64, 16, 4 addresses [1] |
+| Usable | Block size minus network and broadcast [3] |
+| Aggregation | One short prefix covers many long ones [1] |
+| Longest match | The most specific route wins [4][5] |
+
+## Key Takeaways
+
+- Every extra prefix bit halves the block; count usable addresses as size minus two.
+- Plan subnets on power-of-two boundaries so they can be aggregated.
+- The most specific route always wins, which is what makes summarised routes safe.
+
+## References
+
+1. [RFC 4632 — Classless Inter-domain Routing (CIDR), §1–§5](https://www.rfc-editor.org/rfc/rfc4632)
+2. [RFC 950 — Internet Standard Subnetting Procedure, §2.1](https://www.rfc-editor.org/rfc/rfc950)
+3. [RFC 1122 — Requirements for Internet Hosts, §3.2.1.3](https://www.rfc-editor.org/rfc/rfc1122)
+4. [RFC 1812 — Requirements for IP Version 4 Routers, §2.2.5.2](https://www.rfc-editor.org/rfc/rfc1812)
+5. [RouterOS Manual — Routing decision](https://manual.mikrotik.com/docs/user-guides/routing-and-networking-protocols/routing-decision/)
+6. [RouterOS CLI Reference — ip/address](https://manual.mikrotik.com/docs/cli-reference/ip/address/)
+
+---
+
+**Previous:** [B.04 — IPv4 Addresses and Subnet Masks](../04-ipv4-addresses-and-subnet-masks/README.md) · **Next:** B.06 — Public and Private IP Addresses
+
+[Back to the main learning journal](../../README.md)
