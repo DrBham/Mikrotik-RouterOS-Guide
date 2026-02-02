@@ -45,3 +45,31 @@ They conserve globally unique address space and give an organisation flexible ad
 ### Shared address space for carrier-grade NAT
 
 `100.64.0.0/10` is reserved as shared address space for the links between a provider's carrier-grade NAT (CGN) and customer equipment. [2] Like RFC 1918 space it is not globally routable, but it is meant for service-provider networks, and it must not be forwarded across provider boundaries. [2]
+
+### Special-purpose ranges
+
+RFC 6890 is the registry of special-purpose IPv4 blocks. [3] The ones you will see:
+
+| Block | Name | Meaning |
+| --- | --- | --- |
+| 0.0.0.0/8 | "This host on this network" | Used only as a source while a host learns its address [3][4] |
+| 127.0.0.0/8 | Loopback | Never appears outside a host [3][4] |
+| 169.254.0.0/16 | Link local | Not forwarded by routers [3] |
+| 192.0.2.0/24, 198.51.100.0/24, 203.0.113.0/24 | Documentation (TEST-NET-1/2/3) | For examples in documents; should not appear on the internet [3][5] |
+
+### Link-local addresses
+
+A host may configure itself with an address in `169.254/16` when no other address configuration is available, such as on an isolated network. [6] Such an address only works with devices on the same link. [6] In practice, a laptop showing `169.254.x.x` did not get an address from a DHCP server.
+
+### Public addresses
+
+Everything outside the reserved blocks is globally routable public space, administered by IANA and the regional registries and assigned onward to ISPs. [7] Your ISP's router or CGN holds the public address your traffic appears to come from.
+
+### How it connects
+
+```text
+Laptop 192.168.88.x (RFC 1918)
+  └─ hAP lite: NAT ─► wlan1 address from home Wi-Fi (RFC 1918 again)
+       └─ home router: NAT ─► WAN: public address, or 100.64.x.x if the ISP uses CGN (RFC 6598)
+            └─ ISP ─► internet (public addresses only)
+```
