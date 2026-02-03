@@ -73,3 +73,53 @@ Laptop 192.168.88.x (RFC 1918)
        └─ home router: NAT ─► WAN: public address, or 100.64.x.x if the ISP uses CGN (RFC 6598)
             └─ ISP ─► internet (public addresses only)
 ```
+
+## How It Appears in RouterOS
+
+```routeros
+/ip/address/print
+/ip/dhcp-client/print
+```
+
+Classify each address: the LAN bridge (`192.168.88.1/24`) and the wlan1 address from A.03 should both be private. [1]
+
+> [!CAUTION]
+> **Privacy:** if any address shown is public, cover it. See the [privacy checklist](../../TOPIC-TEMPLATE.md#screenshot--privacy-checklist).
+
+`TODO` ![Address classes](images/cli/01-address-classes.png)
+
+On the laptop, disconnect the cable from ether2, wait, and run `ipconfig` with the Ethernet adapter still enabled. If Windows assigns a `169.254.x.x` address, that is the link-local fallback. [6]
+
+`TODO` ![Link-local](images/cli/02-link-local.png)
+
+## Quick Recap
+
+| Range | Meaning |
+| --- | --- |
+| 10/8, 172.16/12, 192.168/16 | Private, not routed on the internet [1] |
+| 100.64/10 | Carrier-grade NAT shared space [2] |
+| 127/8 | Loopback [3] |
+| 169.254/16 | Link local; "no DHCP answer" on a laptop [3][6] |
+| 192.0.2/24, 198.51.100/24, 203.0.113/24 | Documentation [5] |
+
+## Key Takeaways
+
+- Private addresses need NAT to reach the internet.
+- `169.254.x.x` on a client points to a DHCP problem.
+- `100.64.x.x` on the WAN means the ISP does NAT for you; port forwarding at home will not work through it.
+
+## References
+
+1. [RFC 1918 — Address Allocation for Private Internets](https://www.rfc-editor.org/rfc/rfc1918)
+2. [RFC 6598 — IANA-Reserved IPv4 Prefix for Shared Address Space](https://www.rfc-editor.org/rfc/rfc6598)
+3. [RFC 6890 — Special-Purpose IP Address Registries, §2.2.2](https://www.rfc-editor.org/rfc/rfc6890)
+4. [RFC 1122 — Requirements for Internet Hosts, §3.2.1.3](https://www.rfc-editor.org/rfc/rfc1122)
+5. [RFC 5737 — IPv4 Address Blocks Reserved for Documentation](https://www.rfc-editor.org/rfc/rfc5737)
+6. [RFC 3927 — Dynamic Configuration of IPv4 Link-Local Addresses](https://www.rfc-editor.org/rfc/rfc3927)
+7. [RFC 4632 — Classless Inter-domain Routing (CIDR), §3.1](https://www.rfc-editor.org/rfc/rfc4632)
+
+---
+
+**Previous:** [B.05 — Subnetting and CIDR](../05-subnetting-and-cidr/README.md) · **Next:** B.07 — Gateway and Default Route
+
+[Back to the main learning journal](../../README.md)
