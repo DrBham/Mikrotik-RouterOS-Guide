@@ -42,3 +42,33 @@ A router keeps a table of routes, each naming a destination prefix and where to 
 ### The default route
 
 The default route is the route to all networks for which there is no explicit route; by definition its prefix length is zero. [3] In IPv4 it is written `0.0.0.0/0`. [4][2] Because every destination matches a `/0`, it is used only when nothing more specific matches.
+
+### Choosing a route
+
+Two rules decide which route forwards a packet:
+
+| Rule | Meaning |
+| --- | --- |
+| Longest prefix | If several routes match, the most specific one (largest netmask) is used. [2][3] |
+| Distance | If several routes for the same destination are candidates, the one with the lowest distance becomes active. [2] |
+
+Example from the manual: a static route with distance 1 wins over an OSPF route with distance 110 to the same prefix. [2]
+
+### When there is no route
+
+If a router has no route at all to a destination, not even a default route, it must drop the packet and send an ICMP Destination Unreachable (Network Unreachable) message back. [5] That is the `network unreachable` you see in ping and traceroute.
+
+### TTL: protection against loops
+
+Every router that forwards a datagram decreases its Time to Live by at least one, and a datagram whose TTL reaches zero is destroyed. [6] A routing loop therefore cannot keep a packet alive forever. Traceroute uses this on purpose: it sends probes with TTL 1, 2, 3, and so on, and each router that drops one reports back with an ICMP time exceeded message. [7]
+
+### Checking the gateway
+
+RouterOS can check whether a route's gateway still answers, with ARP probes, ICMP, or BFD, and stop using the route when it does not. [2] Chapter N uses this for failover between two internet connections.
+
+### How it connects
+
+```text
+B.07 default route ──► C.02 from DHCP ──► C.03 static ──► C.04 from PPPoE
+                    └► Chapter G static routing, Chapter N failover with check-gateway
+```
