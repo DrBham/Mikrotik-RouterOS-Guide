@@ -72,3 +72,70 @@ RouterOS can check whether a route's gateway still answers, with ARP probes, ICM
 B.07 default route ──► C.02 from DHCP ──► C.03 static ──► C.04 from PPPoE
                     └► Chapter G static routing, Chapter N failover with check-gateway
 ```
+
+## How It Appears in RouterOS
+
+```routeros
+/ip/route/print
+/ip/route/print where dst-address=0.0.0.0/0
+```
+
+[2] With A.03 running you should see the connected LAN route, the connected wlan1 route, and a default route with the `d` (DHCP) flag and distance 1, added by the DHCP client. [8]
+
+`TODO` ![Route table](images/cli/01-route-table.png)
+
+```routeros
+/tool/traceroute 8.8.8.8 count=1
+```
+
+[7] The first hop is the home router (your A.03 uplink gateway). The hAP lite does not show itself because the probe starts there.
+
+> [!CAUTION]
+> **Privacy:** traceroute shows your ISP's routers and possibly your public address. Cover the hops after your home router. See the [privacy checklist](../../TOPIC-TEMPLATE.md#screenshot--privacy-checklist).
+
+`TODO` ![Traceroute](images/cli/02-traceroute.png)
+
+On the laptop:
+
+```powershell
+ipconfig
+route print -4
+```
+
+The laptop's default route points to `192.168.88.1`.
+
+`TODO` ![Windows route](images/cli/03-windows-route.png)
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| Gateway | Router on your own network that forwards to other networks [1] |
+| `0.0.0.0/0` | Default route; used when nothing more specific matches [3][4] |
+| Connected route | Automatic, one per IP network on an interface [2] |
+| Longest prefix, then distance | How a route is chosen [2] |
+| No route at all | Drop and ICMP network unreachable [5] |
+| TTL | Decreased per hop; traceroute relies on it [6][7] |
+
+## Key Takeaways
+
+- A host only needs to know its own network and one gateway.
+- The default route is the "everything else" route, chosen last.
+- Network unreachable means a router had no route, not even a default one.
+
+## References
+
+1. [RFC 1122 — Requirements for Internet Hosts, §3.3.1](https://www.rfc-editor.org/rfc/rfc1122)
+2. [RouterOS Manual — Routing decision](https://manual.mikrotik.com/docs/user-guides/routing-and-networking-protocols/routing-decision/)
+3. [RFC 1812 — Requirements for IP Version 4 Routers, §2.2.5.2 and §5.2.4.3](https://www.rfc-editor.org/rfc/rfc1812)
+4. [RFC 4632 — Classless Inter-domain Routing (CIDR), §5.1](https://www.rfc-editor.org/rfc/rfc4632)
+5. [RFC 1812 — §4.3.3.1 Destination Unreachable](https://www.rfc-editor.org/rfc/rfc1812)
+6. [RFC 791 — Internet Protocol, §3.1 Time to Live](https://www.rfc-editor.org/rfc/rfc791)
+7. [RouterOS Manual — Traceroute](https://manual.mikrotik.com/docs/diagnostics-monitoring-and-troubleshooting/traceroute/)
+8. [RouterOS Manual — DHCP Client](https://manual.mikrotik.com/docs/network-management/dhcp/client/)
+
+---
+
+**Previous:** [B.06 — Public and Private IP Addresses](../06-public-and-private-ip-addresses/README.md) · **Next:** B.08 — DNS Concepts
+
+[Back to the main learning journal](../../README.md)
