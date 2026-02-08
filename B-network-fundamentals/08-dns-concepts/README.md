@@ -52,3 +52,23 @@ A domain name is the list of labels from a node up to the root of the tree, for 
 | CNAME | 5 | The canonical name of an alias |
 | PTR | 12 | A pointer to another part of the name space (used for reverse lookups) |
 | MX | 15 | A mail exchange for the domain |
+
+### Caching and TTL
+
+Every record carries a TTL in seconds that says how long a resolver may cache it before discarding it. [1] Caching is why the second lookup of a name is instant, and also why a changed record can take time to be seen everywhere.
+
+### Recursive and non-recursive
+
+A server can answer a query fully on the client's behalf (recursive) or return referrals for the client to follow (non-recursive). Iterative service is required; recursion is optional. [1]
+
+### Transport
+
+DNS messages use server port 53 over UDP and over TCP. [2] A UDP message is limited to 512 bytes; longer answers are truncated, with a flag telling the client to retry. [2]
+
+### How it connects
+
+```text
+B.08 DNS ──► B.09 DHCP hands out the DNS server address
+         ──► C.03 static WAN needs DNS set by hand; C.02/C.04 receive it automatically
+         ──► Chapter H drop DNS requests from the WAN
+```
