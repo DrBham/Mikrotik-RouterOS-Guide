@@ -72,3 +72,56 @@ B.08 DNS ──► B.09 DHCP hands out the DNS server address
          ──► C.03 static WAN needs DNS set by hand; C.02/C.04 receive it automatically
          ──► Chapter H drop DNS requests from the WAN
 ```
+
+## How It Appears in RouterOS
+
+The router has its own caching DNS resolver, and the default configuration already works. [3] Upstream servers come from static `servers` or from `dynamic-servers` learned, for example, by a DHCP client with `use-peer-dns=yes`; static servers are tried first. [3][4]
+
+```routeros
+/ip/dns/print
+/ip/dns/cache/print
+:put [:resolve mikrotik.com]
+```
+
+[3] `allow-remote-requests=yes` makes the router answer DNS queries on port 53 from other devices, which is what lets the LAN use `192.168.88.1` as its DNS server. [3]
+
+> [!WARNING]
+> If you write your own firewall, drop DNS requests coming from the WAN, or the router becomes an open resolver for the internet. [3] The default firewall already blocks them.
+
+From the laptop:
+
+```powershell
+nslookup mikrotik.com 192.168.88.1
+```
+
+`TODO` ![DNS in RouterOS](images/cli/01-dns.png)
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| Name space, name servers, resolvers | The three parts of DNS [1] |
+| A, NS, CNAME, PTR, MX | Common record types [1][2] |
+| TTL | Seconds a record may be cached [1] |
+| Port 53 | UDP and TCP [2] |
+| `/ip/dns` | RouterOS caching resolver [3] |
+| `allow-remote-requests` | Serve the LAN; block from the WAN [3] |
+
+## Key Takeaways
+
+- Ping by address works but by name fails: check DNS.
+- The MikroTik caches answers for its LAN and learns upstream servers from DHCP or PPP.
+- Never let the WAN side query the router's DNS.
+
+## References
+
+1. [RFC 1034 — Domain Names: Concepts and Facilities, §2.4, §3.1, §3.6](https://www.rfc-editor.org/rfc/rfc1034)
+2. [RFC 1035 — Domain Names: Implementation and Specification, §3.2.2, §4.2](https://www.rfc-editor.org/rfc/rfc1035)
+3. [RouterOS Manual — DNS](https://manual.mikrotik.com/docs/network-management/dns/)
+4. [RouterOS Manual — DHCP Client](https://manual.mikrotik.com/docs/network-management/dhcp/client/)
+
+---
+
+**Previous:** [B.07 — Gateway and Default Route](../07-gateway-and-default-route/README.md) · **Next:** B.09 — DHCP Concepts
+
+[Back to the main learning journal](../../README.md)
