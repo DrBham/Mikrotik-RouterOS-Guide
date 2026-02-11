@@ -50,3 +50,14 @@ DHCP delivers a network address and the other configuration parameters a host ne
 DHCP uses UDP. Clients send to the DHCP server port 67, and servers reply to the client port 68. [1] Before it has an address, a client sends with source address `0` and broadcasts the DISCOVER to `255.255.255.255`. [1] This is the "this host on this network" and limited broadcast address from B.04.
 
 Other messages include DHCPNAK (the server refuses), DHCPDECLINE (the address is already in use), DHCPRELEASE, and DHCPINFORM. [1]
+
+### Leases
+
+An address is given for a limited time, a lease. The client can extend it or give it back early. [1] By default the client tries to renew at T1, half the lease time, and asks any server (rebinding) at T2, 87.5% of the lease time. [1]
+
+### How it connects
+
+```text
+LAN side:  hAP lite DHCP server ──► laptop gets 192.168.88.x, gateway .1, DNS .1   (C.05)
+WAN side:  home router DHCP server ──► hAP lite wlan1 gets an address and a default route  (A.03, C.02)
+```
