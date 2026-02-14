@@ -47,3 +47,35 @@ A connection is identified by source address, source port, destination address, 
                        ├─ NAPT on router ───┤
 192.168.88.11:51000 ──►┘                    └── 203.0.113.5:40002 ──► server
 ```
+
+### Source NAT and destination NAT
+
+RouterOS names the two directions by chain [3]:
+
+| Chain | Rewrites | Typical use |
+| --- | --- | --- |
+| `srcnat` | The source address of packets leaving the local network | LAN to internet |
+| `dstnat` | The destination address of packets arriving for the local network | Port forwarding to an inside server |
+
+### Masquerade and src-nat
+
+| Action | When to use [3] |
+| --- | --- |
+| `masquerade` | The WAN address changes (DHCP, PPPoE). Connections are removed when the interface goes down. |
+| `src-nat` with `to-addresses` | The WAN address is fixed. |
+
+### NAT and connection tracking
+
+A NAT rule only matches the first packet of a connection. Connection tracking remembers the translation and applies it to every later packet in both directions. [3] Turning connection tracking off therefore breaks NAT. [4]
+
+### Limits
+
+Inbound connections cannot reach an inside host unless a `dstnat` rule maps them. If the ISP itself uses carrier-grade NAT (`100.64.0.0/10`, B.06), your router has no public address of its own, so port forwarding at home cannot work. [5]
+
+### How it connects
+
+```text
+B.10 srcnat masquerade ──► A.03 Step 7, C.06 NAT lab
+B.10 dstnat            ──► Chapter I port forwarding and hairpin NAT
+B.10 conntrack         ──► Chapter H firewall uses the same connection states
+```
