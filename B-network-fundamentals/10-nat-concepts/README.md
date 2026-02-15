@@ -79,3 +79,53 @@ B.10 srcnat masquerade ──► A.03 Step 7, C.06 NAT lab
 B.10 dstnat            ──► Chapter I port forwarding and hairpin NAT
 B.10 conntrack         ──► Chapter H firewall uses the same connection states
 ```
+
+## How It Appears in RouterOS
+
+```routeros
+/ip/firewall/nat/print
+/ip/firewall/connection/print count-only
+```
+
+[3][4] With the default configuration plus A.03 you should see one `srcnat` `masquerade` rule. The connection count shows how many connections are being tracked and translated.
+
+The manual's general form of a masquerade rule is:
+
+```routeros
+/ip/firewall/nat add chain=srcnat action=masquerade out-interface-list=WAN
+```
+
+[3] (The manual's example also limits `src-address` to the LAN subnet.)
+
+`TODO` ![NAT in RouterOS](images/cli/01-nat-and-connections.png)
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| NAT | Rewrite addresses between realms [1] |
+| NAPT | Many inside hosts share one address using ports [2] |
+| `srcnat` / `dstnat` | Outgoing source / incoming destination [3] |
+| `masquerade` | srcnat for a changing WAN address [3] |
+| First packet only | Conntrack applies the rest [3][4] |
+| CGN | No public address at home, no port forwarding [5] |
+
+## Key Takeaways
+
+- A home router does NAPT: many private hosts, one WAN address, told apart by port.
+- Use `masquerade` on DHCP or PPPoE WAN links and `src-nat` on fixed ones.
+- NAT depends on connection tracking.
+
+## References
+
+1. [RFC 2663 — IP Network Address Translator Terminology and Considerations, §1–§3](https://www.rfc-editor.org/rfc/rfc2663)
+2. [RFC 3022 — Traditional IP Network Address Translator, §2.1–§2.2](https://www.rfc-editor.org/rfc/rfc3022)
+3. [RouterOS Manual — NAT](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/firewall/nat/)
+4. [RouterOS Manual — Connection tracking](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/connection-tracking/)
+5. [RFC 6598 — IANA-Reserved IPv4 Prefix for Shared Address Space](https://www.rfc-editor.org/rfc/rfc6598)
+
+---
+
+**Previous:** [B.09 — DHCP Concepts](../09-dhcp-concepts/README.md) · **Next:** B.11 — Static IP Configuration
+
+[Back to the main learning journal](../../README.md)
