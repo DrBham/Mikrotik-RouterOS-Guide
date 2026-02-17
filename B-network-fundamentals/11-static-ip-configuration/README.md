@@ -61,3 +61,80 @@ The router's NAT rule from the default configuration translates traffic going ou
 
 > [!WARNING]
 > Keep the laptop on ether2 until Step 3 is done, so you do not lose access to the router.
+
+## Method A — CLI
+
+### Step 1 — Check the starting point
+
+```routeros
+/ip/address/print
+/interface/bridge/port/print
+/ip/firewall/nat/print
+```
+
+`TODO` ![Step 1](images/cli/01-starting-point.png)
+
+### Step 2 — Remove ether3 from the bridge
+
+```routeros
+/interface/bridge/port/remove [find interface=ether3]
+```
+
+[5][6]
+
+`TODO` ![Step 2](images/cli/02-remove-port.png)
+
+### Step 3 — Add the static address
+
+```routeros
+/ip/address/add address=10.10.10.1/24 interface=ether3 comment="B.11 static subnet"
+/ip/address/print
+```
+
+[1] The `network` column shows `10.10.10.0`.
+
+`TODO` ![Step 3](images/cli/03-add-address.png)
+
+### Step 4 — Configure the laptop
+
+Move the cable to **ether3**. In Windows: **Settings → Network & internet → Ethernet → IP assignment → Edit → Manual**, IPv4 on, address `10.10.10.2`, subnet mask `255.255.255.0`, gateway `10.10.10.1`, DNS `10.10.10.1`. Or in an administrator PowerShell:
+
+```powershell
+netsh interface ipv4 set address name="Ethernet" static 10.10.10.2 255.255.255.0 10.10.10.1
+netsh interface ipv4 set dnsservers name="Ethernet" static 10.10.10.1 primary
+```
+
+`TODO` ![Step 4](images/cli/04-laptop-static.png)
+
+### Step 5 — Test layer by layer
+
+```powershell
+ping 10.10.10.1
+ping 8.8.8.8
+ping google.com
+```
+
+| Test | Proves |
+| --- | --- |
+| `ping 10.10.10.1` | Same subnet, ARP and addressing are right (B.03, B.04) |
+| `ping 8.8.8.8` | Gateway, routing, and NAT work (B.07, B.10) |
+| `ping google.com` | DNS works (B.08) |
+
+On the router:
+
+```routeros
+/ip/route/print where connect
+/ip/arp/print where interface=ether3
+```
+
+[2][7]
+
+`TODO` ![Step 5](images/cli/05-tests.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| Connected route | `10.10.10.0/24` on ether3 [2] | `TODO` |
+| ARP entry | Laptop address on ether3 [7] | `TODO` |
+| Laptop pings | All three succeed | `TODO` |
