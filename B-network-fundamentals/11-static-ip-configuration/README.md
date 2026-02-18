@@ -150,8 +150,7 @@ Undo Method A so Method B starts from the same point:
 
 Set the laptop back to automatic (DHCP) and reconnect it to ether2.
 
-> [!NOTE]
-> `TODO` confirm the default bridge name in your `/interface/bridge/print` output before running the second command.
+The AP Router default configuration names the LAN bridge `bridge`. [8] Your device's exact default script is shown by `/system/default-configuration/print`. [3]
 
 `TODO` ![Reset](images/gui/00-reset.png)
 
@@ -222,6 +221,7 @@ Same checks as [Verify (CLI)](#verify-cli).
 5. [RouterOS CLI Reference — interface/bridge/port](https://manual.mikrotik.com/docs/cli-reference/interface/bridge/port/)
 6. [RouterOS Manual — Console](https://manual.mikrotik.com/docs/management-tools/console/)
 7. [RouterOS CLI Reference — ip/arp](https://manual.mikrotik.com/docs/cli-reference/ip/arp/)
+8. [RouterOS Manual — Default configurations, AP Router configuration preview (RouterMode.txt)](https://manual.mikrotik.com/assets/167706790_RouterMode.txt)
 
 ---
 
