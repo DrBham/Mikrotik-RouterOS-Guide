@@ -138,3 +138,93 @@ On the router:
 | Connected route | `10.10.10.0/24` on ether3 [2] | `TODO` |
 | ARP entry | Laptop address on ether3 [7] | `TODO` |
 | Laptop pings | All three succeed | `TODO` |
+
+## Reset Before Method B
+
+Undo Method A so Method B starts from the same point:
+
+```routeros
+/ip/address/remove [find comment="B.11 static subnet"]
+/interface/bridge/port/add bridge=bridge interface=ether3
+```
+
+Set the laptop back to automatic (DHCP) and reconnect it to ether2.
+
+> [!NOTE]
+> `TODO` confirm the default bridge name in your `/interface/bridge/print` output before running the second command.
+
+`TODO` ![Reset](images/gui/00-reset.png)
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Remove ether3 from the bridge
+
+**Bridge → Ports**, select ether3, remove.
+
+`TODO` ![Step 1](images/gui/01-remove-port.png)
+
+### Step 2 — Add the address
+
+**IP → Addresses → +**: Address `10.10.10.1/24`, Interface `ether3`.
+
+`TODO` ![Step 2](images/gui/02-add-address.png)
+
+### Step 3 — Configure the laptop
+
+Same as Method A Step 4, using the Windows settings window.
+
+`TODO` ![Step 3](images/gui/03-laptop-static.png)
+
+### Step 4 — Test
+
+Run the three pings from the laptop, then check **IP → Routes** and **IP → ARP** in WinBox.
+
+`TODO` ![Step 4](images/gui/04-tests.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| Cannot ping 10.10.10.1 | ether3 still in the bridge, or wrong laptop mask | Step 2; compare networks (B.04). |
+| Can ping 10.10.10.1 but not 8.8.8.8 | Wrong laptop gateway, or NAT limited to `192.168.88.0/24` | Check gateway; check NAT `src-address`. [4] |
+| Can ping 8.8.8.8 but not google.com | Laptop DNS not set | Set DNS to `10.10.10.1`. |
+| Lost WinBox access | Laptop moved before ether3 was configured | Move back to ether2. |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| `/ip/address/add address=x/y interface=z` | Static address; network calculated [1] |
+| Connected route | Created automatically [2] |
+| Bridge port | Belongs to the bridge's network [3] |
+| Client needs | Address, mask, gateway, DNS |
+| Test order | Gateway ping, internet IP, then a name |
+
+## Key Takeaways
+
+- A static client needs the same four values DHCP would have given it.
+- Remove a port from the bridge before giving it its own subnet.
+- Test by layer: local, routed, then DNS.
+
+## References
+
+1. [RouterOS CLI Reference — ip/address](https://manual.mikrotik.com/docs/cli-reference/ip/address/)
+2. [RouterOS Manual — Routing decision](https://manual.mikrotik.com/docs/user-guides/routing-and-networking-protocols/routing-decision/)
+3. [RouterOS Manual — Default configurations](https://manual.mikrotik.com/docs/getting-started/configuration-management/default-configurations/)
+4. [RouterOS Manual — NAT](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/firewall/nat/)
+5. [RouterOS CLI Reference — interface/bridge/port](https://manual.mikrotik.com/docs/cli-reference/interface/bridge/port/)
+6. [RouterOS Manual — Console](https://manual.mikrotik.com/docs/management-tools/console/)
+7. [RouterOS CLI Reference — ip/arp](https://manual.mikrotik.com/docs/cli-reference/ip/arp/)
+
+---
+
+**Previous:** [B.10 — NAT Concepts](../10-nat-concepts/README.md) · **Next:** [Chapter C — Basic Internet Connectivity](../../C-basic-internet-connectivity/01-lab-topology-and-planning/README.md)
+
+[Back to the main learning journal](../../README.md)
