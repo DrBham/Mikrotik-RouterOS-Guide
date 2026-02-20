@@ -51,3 +51,7 @@ RouterOS interface lists group interfaces so that firewall and NAT rules can ref
 ```
 
 [4] Adding a bridge to a list is not the same as adding all its ports. [5] When the WAN changes, for example from ether1 to wlan1 or to a PPPoE interface, only the list membership changes; the NAT and firewall rules stay the same. [6]
+
+### Why start from an empty configuration
+
+After `/system/reset-configuration no-defaults=yes`, nothing is configured. [7] Every entry you see afterwards is one you added, so you know exactly what each command did. Access is through a MAC WinBox connection until the LAN has an IP address. [8]
