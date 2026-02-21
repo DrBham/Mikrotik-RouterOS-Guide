@@ -55,3 +55,78 @@ RouterOS interface lists group interfaces so that firewall and NAT rules can ref
 ### Why start from an empty configuration
 
 After `/system/reset-configuration no-defaults=yes`, nothing is configured. [7] Every entry you see afterwards is one you added, so you know exactly what each command did. Access is through a MAC WinBox connection until the LAN has an IP address. [8]
+
+## The Chapter C plan
+
+```text
+Internet
+   │
+[ Upstream: home router / phone hotspot / ISP ]
+   │  WAN: ether1 (cable)  or  wlan1 (Wi-Fi client, as in A.03)
+[ hAP lite ]
+   │  LAN: bridge-lan = ether2, ether3, ether4
+[ Laptop ]
+```
+
+| Item | Value | Topic |
+| --- | --- | --- |
+| WAN interface | `ether1`, or `wlan1` in station mode | C.02 |
+| WAN address | From DHCP (C.02), static (C.03), or PPPoE (C.04) | C.02–C.04 |
+| LAN bridge | `bridge-lan` with ether2–ether4 | C.05 |
+| LAN address | `192.168.88.1/24` | C.05 |
+| DHCP pool | `192.168.88.10–192.168.88.254` (excludes the router) | C.05 |
+| DNS for clients | `192.168.88.1` (router resolver) | C.05 |
+| NAT | `srcnat` `masquerade` out of the `WAN` list | C.06 |
+
+> [!IMPORTANT]
+> The upstream network must not use `192.168.88.0/24` (B.05). If it does, choose another LAN subnet such as `192.168.77.0/24` and use it in every topic.
+
+### Build order
+
+1. Reset to an empty configuration and connect by MAC.
+2. WAN: get an address and a default route; ping `8.8.8.8` from the router.
+3. DNS: ping `google.com` from the router.
+4. LAN: bridge, address, DHCP server; the laptop gets an address.
+5. NAT: the laptop reaches the internet.
+6. Verify and troubleshoot layer by layer.
+
+Each step can be tested before the next one, so a fault is always in the last thing you changed.
+
+### How it connects
+
+```text
+C.01 plan ──► C.02–C.04 WAN ──► C.05 LAN ──► C.06 NAT ──► C.07 verify ──► Chapter H adds the firewall
+```
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| WAN / LAN lists | Roles that NAT and firewall rules refer to [3][4] |
+| Empty start | `reset-configuration no-defaults=yes`, then MAC login [7][8] |
+| Build order | WAN, DNS, LAN, NAT, verify [1] |
+| LAN plan | `192.168.88.1/24`, pool excluding the router [9] |
+
+## Key Takeaways
+
+- Write the interface and address plan before touching the router.
+- Rules that use the `WAN` and `LAN` lists survive a change of WAN interface.
+- Build and test one layer at a time.
+
+## References
+
+1. [RouterOS Manual — First Time Configuration](https://manual.mikrotik.com/docs/getting-started/first-time-configuration)
+2. [RouterOS Manual — Default configurations](https://manual.mikrotik.com/docs/getting-started/configuration-management/default-configurations/)
+3. [RouterOS CLI Reference — interface/list](https://manual.mikrotik.com/docs/cli-reference/interface/list/)
+4. [RouterOS Manual — Filter](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/firewall/filter/)
+5. [RouterOS CLI Reference — interface/list/member](https://manual.mikrotik.com/docs/cli-reference/interface/list/member/)
+6. [RouterOS Manual — PPPoE](https://manual.mikrotik.com/docs/virtual-private-networks/pppoe/)
+7. [RouterOS Manual — Configuration Management](https://manual.mikrotik.com/docs/getting-started/configuration-management/)
+8. [RouterOS Manual — MAC server](https://manual.mikrotik.com/docs/management-tools/mac-server/)
+9. [RouterOS Manual — DHCP Server](https://manual.mikrotik.com/docs/network-management/dhcp/server/)
+
+---
+
+**Previous:** [B.11 — Static IP Configuration](../../B-network-fundamentals/11-static-ip-configuration/README.md) · **Next:** C.02 — WAN via DHCP Client
+
+[Back to the main learning journal](../../README.md)
