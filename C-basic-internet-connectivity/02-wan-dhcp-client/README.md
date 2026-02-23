@@ -61,3 +61,90 @@ The interface that faces the internet goes into the `WAN` interface list, so C.0
 | WAN | `TODO` ether1 (cable) or wlan1 (station, see A.03) |
 | Laptop | ether2, WinBox by MAC |
 | Starting state | Empty configuration |
+
+## Method A — CLI
+
+### Step 1 — Start from an empty configuration
+
+```routeros
+/system/reset-configuration no-defaults=yes skip-backup=yes
+```
+
+[7] After the reboot, connect with WinBox by MAC address and open **New Terminal**. [8]
+
+> [!CAUTION]
+> **Privacy:** cover the MAC address in the Neighbors list. See the [privacy checklist](../../TOPIC-TEMPLATE.md#screenshot--privacy-checklist).
+
+`TODO` ![Step 1](images/cli/01-empty-config.png)
+
+### Step 2 — Create the interface lists
+
+```routeros
+/interface/list add name=WAN
+/interface/list add name=LAN
+```
+
+[6]
+
+`TODO` ![Step 2](images/cli/02-interface-lists.png)
+
+### Step 3 — Prepare the WAN interface
+
+**ether1:** connect the upstream cable. Nothing else to do.
+
+**wlan1:** repeat A.03 Steps 3 and 5 (security profile and station mode). In an empty configuration wlan1 is not in any bridge, so A.03 Step 4 is not needed. [9]
+
+`TODO` ![Step 3](images/cli/03-wan-interface.png)
+
+### Step 4 — Add the DHCP client
+
+```routeros
+/ip/dhcp-client/add interface=ether1
+/ip/dhcp-client/print detail
+```
+
+[2] Use `interface=wlan1` if that is your WAN. Wait for `status=bound`. [2]
+
+`TODO` ![Step 4](images/cli/04-dhcp-client-bound.png)
+
+### Step 5 — Put the WAN interface in the WAN list
+
+```routeros
+/interface/list/member add list=WAN interface=ether1
+```
+
+[6]
+
+`TODO` ![Step 5](images/cli/05-wan-list.png)
+
+### Step 6 — Check address, route, and DNS
+
+```routeros
+/ip/address/print
+/ip/route/print
+/ip/dns/print
+```
+
+Expect a dynamic address on the WAN, a default route `0.0.0.0/0` with the DHCP flag and distance 1, and dynamic DNS servers. [2][3][10]
+
+`TODO` ![Step 6](images/cli/06-address-route-dns.png)
+
+### Step 7 — Test from the router
+
+```routeros
+/ping 8.8.8.8 count=3
+/ping google.com count=3
+```
+
+[11][1]
+
+`TODO` ![Step 7](images/cli/07-ping.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| DHCP client | `bound` [2] | `TODO` |
+| Default route | `0.0.0.0/0`, distance 1 [2] | `TODO` |
+| DNS | Dynamic servers listed [3] | `TODO` |
+| Ping 8.8.8.8 and google.com | Replies | `TODO` |
