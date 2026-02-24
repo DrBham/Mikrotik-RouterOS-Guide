@@ -148,3 +148,97 @@ Expect a dynamic address on the WAN, a default route `0.0.0.0/0` with the DHCP f
 | Default route | `0.0.0.0/0`, distance 1 [2] | `TODO` |
 | DNS | Dynamic servers listed [3] | `TODO` |
 | Ping 8.8.8.8 and google.com | Replies | `TODO` |
+
+## Reset Before Method B
+
+```routeros
+/system/reset-configuration no-defaults=yes skip-backup=yes
+```
+
+Reconnect by MAC. For wlan1, repeat the station steps first.
+
+`TODO` ![Reset](images/gui/00-reset.png)
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Create the interface lists
+
+**Interfaces → Interface List → Lists → +**: `WAN`, then `LAN`.
+
+`TODO` ![Step 1](images/gui/01-interface-lists.png)
+
+### Step 2 — Add the DHCP client
+
+**IP → DHCP Client → +**: Interface `ether1` (or `wlan1`). Leave **Use Peer DNS** and **Add Default Route** on. Click **OK** and wait for **Bound**. [2]
+
+`TODO` ![Step 2](images/gui/02-dhcp-client.png)
+
+### Step 3 — Put the WAN interface in the WAN list
+
+**Interfaces → Interface List → +**: List `WAN`, Interface `ether1`.
+
+`TODO` ![Step 3](images/gui/03-wan-list.png)
+
+### Step 4 — Check routes and DNS
+
+Open **IP → Routes** and **IP → DNS**.
+
+`TODO` ![Step 4](images/gui/04-routes-dns.png)
+
+### Step 5 — Test
+
+**Tools → Ping**: `8.8.8.8`, then `google.com`.
+
+`TODO` ![Step 5](images/gui/05-ping.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| Status stays `searching...` | No link, wrong interface, or no DHCP server upstream [4] | Check the cable or the wlan1 registration table. |
+| `bound` but no default route | `add-default-route=no` | Set it to `yes`. [2] |
+| Ping 8.8.8.8 works, google.com fails | No DNS servers | `use-peer-dns=yes`, or set static `servers`. [2][3] |
+| WAN address is in `192.168.88.0/24` | Upstream uses the planned LAN subnet | Change the LAN plan (C.01). |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| `/ip/dhcp-client/add interface=ether1` | WAN by DHCP [2] |
+| `bound` | Lease received [4] |
+| `add-default-route=yes`, distance 1 | Default route from DHCP [2] |
+| `use-peer-dns=yes` | Router uses upstream DNS [2][3] |
+| `WAN` list member | Role used by NAT and firewall [6] |
+
+## Key Takeaways
+
+- One DHCP client gives the router an address, a default route, and DNS servers.
+- Test the router itself before building the LAN.
+- Put the WAN interface in the `WAN` list now so later rules work unchanged.
+
+## References
+
+1. [RouterOS Manual — First Time Configuration](https://manual.mikrotik.com/docs/getting-started/first-time-configuration)
+2. [RouterOS Manual — DHCP Client](https://manual.mikrotik.com/docs/network-management/dhcp/client/)
+3. [RouterOS Manual — DNS](https://manual.mikrotik.com/docs/network-management/dns/)
+4. [RouterOS CLI Reference — ip/dhcp-client](https://manual.mikrotik.com/docs/cli-reference/ip/dhcp-client/)
+5. [RouterOS CLI Reference — interface/list](https://manual.mikrotik.com/docs/cli-reference/interface/list/)
+6. [RouterOS Manual — Filter](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/firewall/filter/)
+7. [RouterOS Manual — Configuration Management](https://manual.mikrotik.com/docs/getting-started/configuration-management/)
+8. [RouterOS Manual — MAC server](https://manual.mikrotik.com/docs/management-tools/mac-server/)
+9. [RouterOS Manual — Wireless Interface](https://manual.mikrotik.com/docs/wireless/abgn/wireless-interface/)
+10. [RouterOS Manual — Routing decision](https://manual.mikrotik.com/docs/user-guides/routing-and-networking-protocols/routing-decision/)
+11. [RouterOS Manual — Ping](https://manual.mikrotik.com/docs/diagnostics-monitoring-and-troubleshooting/ping/)
+
+---
+
+**Previous:** [C.01 — Lab Topology and Planning](../01-lab-topology-and-planning/README.md) · **Next:** C.03 — WAN via Static IP, Route, and DNS
+
+[Back to the main learning journal](../../README.md)
