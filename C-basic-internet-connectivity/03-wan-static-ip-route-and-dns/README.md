@@ -1,0 +1,74 @@
+<div align="center">
+
+# WAN via Static IP, Route, and DNS
+
+*Chapter C — Basic Internet Connectivity | Topic C.03*
+
+![Level](https://img.shields.io/badge/Level-Beginner-16A34A) ![Type](https://img.shields.io/badge/Type-Practice-7C3AED) ![Status](https://img.shields.io/badge/Status-Draft-F59E0B)
+
+[Overview](#overview) · [Theory](#theory) · [Method A — CLI](#method-a--cli) · [Method B — WinBox](#method-b--winbox-gui) · [Quick Recap](#quick-recap) · [References](#references)
+
+</div>
+
+> [!NOTE]
+> **Draft.** Screenshots and lab results are not recorded yet. Every `TODO` must be replaced with real lab evidence before publishing.
+
+## Overview
+
+Some ISPs give a fixed address instead of DHCP. Then the three things a DHCP client did automatically in C.02 must be set by hand: the address, the default route, and DNS. This topic does exactly that.
+
+## Why This Matters
+
+Business lines, data-centre uplinks, and links between routers often use static addresses. Doing it by hand also proves you understand what DHCP delivered: if any of the three pieces is missing or wrong, the symptom tells you which one.
+
+## Prerequisites
+
+| Topic | Why it is needed |
+| --- | --- |
+| [C.02 — WAN via DHCP Client](../02-wan-dhcp-client/README.md) | Same lab, same lists. |
+| [B.07 — Gateway and Default Route](../../B-network-fundamentals/07-gateway-and-default-route/README.md) | The default route. |
+| [B.08 — DNS Concepts](../../B-network-fundamentals/08-dns-concepts/README.md) | DNS servers. |
+
+## Theory
+
+### The three pieces
+
+The official guide configures a static WAN with three commands [1]:
+
+```routeros
+/ip/address/add address=1.2.3.100/24 interface=ether1
+/ip/route/add gateway=1.2.3.1
+/ip/dns/set servers=8.8.8.8
+```
+
+| Command | Replaces from DHCP | Theory |
+| --- | --- | --- |
+| `/ip/address/add` | The leased address | B.04 |
+| `/ip/route/add gateway=…` | `add-default-route` | B.07 |
+| `/ip/dns/set servers=…` | `use-peer-dns` | B.08 |
+
+A route added with only a `gateway` uses the default destination `0.0.0.0/0`, as the manual's example `add gateway=10.155.125.1` shows. [2]
+
+### Values come from the provider
+
+The ISP gives the address, prefix, gateway, and DNS servers. In this lab the "provider" is your upstream network, so pick an address in its subnet that its DHCP server will not hand to anyone else.
+
+> [!WARNING]
+> A static address that is also in the upstream DHCP pool can be given to another device, which causes an address conflict. Check the upstream router's DHCP range first.
+
+### Watching the gateway
+
+With a static default route, RouterOS keeps using it even if the gateway stops answering, unless `check-gateway` is set. With `check-gateway` the router verifies the gateway with ARP, ICMP, or BFD and stops using the route when it fails. [2] Chapter N builds failover on this.
+
+## Lab Environment
+
+| Item | Value |
+| --- | --- |
+| Device | MikroTik hAP lite (RB941-2nD) |
+| RouterOS version | `TODO` |
+| WAN | `TODO` ether1 or wlan1 |
+| Upstream subnet | `TODO` e.g. 192.168.1.0/24, gateway 192.168.1.1 |
+| Chosen static address | `TODO` outside the upstream DHCP pool |
+| Starting state | Empty configuration + `WAN`/`LAN` lists (C.02 Steps 1–3, 5) |
+
+The examples below use `192.168.1.50/24` and gateway `192.168.1.1`. Replace them with your values.
