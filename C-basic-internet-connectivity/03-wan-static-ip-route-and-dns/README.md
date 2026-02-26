@@ -72,3 +72,64 @@ With a static default route, RouterOS keeps using it even if the gateway stops a
 | Starting state | Empty configuration + `WAN`/`LAN` lists (C.02 Steps 1–3, 5) |
 
 The examples below use `192.168.1.50/24` and gateway `192.168.1.1`. Replace them with your values.
+
+## Method A — CLI
+
+### Step 1 — Prepare
+
+Reset to an empty configuration, create the lists, prepare wlan1 if used, and add the WAN interface to the `WAN` list, as in C.02 Steps 1, 2, 3, and 5. Do not add a DHCP client.
+
+`TODO` ![Step 1](images/cli/01-prepare.png)
+
+### Step 2 — Add the WAN address
+
+```routeros
+/ip/address/add address=192.168.1.50/24 interface=ether1
+/ip/address/print
+```
+
+[1][3]
+
+`TODO` ![Step 2](images/cli/02-address.png)
+
+### Step 3 — Test the gateway before routing
+
+```routeros
+/ping 192.168.1.1 count=3
+```
+
+The gateway is on the connected network, so this works without any route. [4]
+
+`TODO` ![Step 3](images/cli/03-ping-gateway.png)
+
+### Step 4 — Add the default route
+
+```routeros
+/ip/route/add gateway=192.168.1.1
+/ip/route/print
+/ping 8.8.8.8 count=3
+```
+
+[1][2]
+
+`TODO` ![Step 4](images/cli/04-default-route.png)
+
+### Step 5 — Set DNS
+
+```routeros
+/ip/dns/set servers=8.8.8.8
+/ping google.com count=3
+```
+
+[1][5]
+
+`TODO` ![Step 5](images/cli/05-dns.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| Ping gateway | Replies (Step 3) | `TODO` |
+| Ping 8.8.8.8 | Replies only after Step 4 | `TODO` |
+| Ping google.com | Replies only after Step 5 | `TODO` |
+| `/ip/route/print` | Static `0.0.0.0/0` via your gateway | `TODO` |
