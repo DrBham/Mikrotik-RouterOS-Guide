@@ -133,3 +133,84 @@ The gateway is on the connected network, so this works without any route. [4]
 | Ping 8.8.8.8 | Replies only after Step 4 | `TODO` |
 | Ping google.com | Replies only after Step 5 | `TODO` |
 | `/ip/route/print` | Static `0.0.0.0/0` via your gateway | `TODO` |
+
+## Reset Before Method B
+
+```routeros
+/system/reset-configuration no-defaults=yes skip-backup=yes
+```
+
+Repeat Method A Step 1 preparation (lists and WAN membership) in WinBox or the terminal.
+
+`TODO` ![Reset](images/gui/00-reset.png)
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Add the WAN address
+
+**IP → Addresses → +**: Address `192.168.1.50/24`, Interface `ether1`.
+
+`TODO` ![Step 1](images/gui/01-address.png)
+
+### Step 2 — Add the default route
+
+**IP → Routes → +**: Dst. Address `0.0.0.0/0`, Gateway `192.168.1.1`.
+
+`TODO` ![Step 2](images/gui/02-default-route.png)
+
+### Step 3 — Set DNS
+
+**IP → DNS**: Servers `8.8.8.8`.
+
+`TODO` ![Step 3](images/gui/03-dns.png)
+
+### Step 4 — Test
+
+**Tools → Ping**: the gateway, `8.8.8.8`, then `google.com`.
+
+`TODO` ![Step 4](images/gui/04-ping.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| Gateway does not answer | Wrong prefix or address, or link down | Compare with the upstream subnet (B.04). |
+| Gateway answers, 8.8.8.8 does not | No default route, or gateway typo | `/ip/route/print`. [2] |
+| 8.8.8.8 answers, names fail | No DNS server | `/ip/dns/print`. [5] |
+| Works for a while, then another device loses access | Static address inside upstream DHCP pool | Choose an address outside the pool. |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| `/ip/address/add address=a/p interface=wan` | Static WAN address [1] |
+| `/ip/route/add gateway=g` | Default route [1][2] |
+| `/ip/dns/set servers=d` | Router DNS [1][5] |
+| `check-gateway` | Stop using a dead gateway [2] |
+
+## Key Takeaways
+
+- Static WAN = address + default route + DNS; test after each one.
+- The symptom points to the missing piece: no gateway reply, no internet IP, or no names.
+- Never pick a static address from another device's DHCP pool.
+
+## References
+
+1. [RouterOS Manual — First Time Configuration](https://manual.mikrotik.com/docs/getting-started/first-time-configuration)
+2. [RouterOS Manual — Routing decision](https://manual.mikrotik.com/docs/user-guides/routing-and-networking-protocols/routing-decision/)
+3. [RouterOS CLI Reference — ip/address](https://manual.mikrotik.com/docs/cli-reference/ip/address/)
+4. [RFC 1122 — Requirements for Internet Hosts, §3.3.1](https://www.rfc-editor.org/rfc/rfc1122)
+5. [RouterOS Manual — DNS](https://manual.mikrotik.com/docs/network-management/dns/)
+
+---
+
+**Previous:** [C.02 — WAN via DHCP Client](../02-wan-dhcp-client/README.md) · **Next:** C.04 — WAN via PPPoE Client
+
+[Back to the main learning journal](../../README.md)
