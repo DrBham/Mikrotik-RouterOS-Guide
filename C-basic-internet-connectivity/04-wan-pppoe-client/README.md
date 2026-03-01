@@ -76,3 +76,59 @@ These are the manual's server commands. [1]
 Do not give the server interface an IP address or a DHCP server. [1]
 
 `TODO` ![ISP side](images/cli/00-isp-server.png)
+
+## Method A — CLI
+
+### Step 1 — Scan for PPPoE servers
+
+```routeros
+/interface/pppoe-client/scan ether1 duration=5
+```
+
+[1] The `internet` service from the CHR should appear.
+
+`TODO` ![Step 1](images/cli/01-scan.png)
+
+### Step 2 — Add the client
+
+```routeros
+/interface/pppoe-client/add name=pppoe-out1 interface=ether1 user=alice password=Example-pass-1 add-default-route=yes use-peer-dns=yes disabled=no
+```
+
+[1]
+
+> [!CAUTION]
+> **Privacy:** with a real ISP, cover the user name and password. See the [privacy checklist](../../TOPIC-TEMPLATE.md#screenshot--privacy-checklist).
+
+`TODO` ![Step 2](images/cli/02-client-add.png)
+
+### Step 3 — Check the session
+
+```routeros
+/interface/pppoe-client/monitor pppoe-out1 once
+```
+
+Expect `status: connected` and `mtu: 1492`. [1]
+
+`TODO` ![Step 3](images/cli/03-monitor.png)
+
+### Step 4 — Make it the WAN
+
+```routeros
+/interface/list/member/add list=WAN interface=pppoe-out1
+/ip/address/print
+/ip/route/print
+```
+
+[1] The address from the pool and a default route via `pppoe-out1` appear.
+
+`TODO` ![Step 4](images/cli/04-wan-list.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| Monitor | `connected`, MTU 1492 [1] | `TODO` |
+| Address | From `10.0.0.10–100` | `TODO` |
+| Default route | Via `pppoe-out1` | `TODO` |
+| Ping CHR `10.0.0.1` | Replies | `TODO` |
