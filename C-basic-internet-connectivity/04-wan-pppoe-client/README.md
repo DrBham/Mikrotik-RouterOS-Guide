@@ -132,3 +132,75 @@ Expect `status: connected` and `mtu: 1492`. [1]
 | Address | From `10.0.0.10–100` | `TODO` |
 | Default route | Via `pppoe-out1` | `TODO` |
 | Ping CHR `10.0.0.1` | Replies | `TODO` |
+
+## Reset Before Method B
+
+```routeros
+/interface/pppoe-client/remove pppoe-out1
+/interface/list/member/remove [find interface=pppoe-out1]
+```
+
+`TODO` ![Reset](images/gui/00-reset.png)
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Add the client
+
+**PPP → Interface → + → PPPoE Client**. General: Interface `ether1`. Dial Out: User `alice`, Password, tick **Use Peer DNS** and **Add Default Route**. **OK**.
+
+`TODO` ![Step 1](images/gui/01-client.png)
+
+### Step 2 — Check the status
+
+Open the client and look at **Status**: connected, MTU 1492.
+
+`TODO` ![Step 2](images/gui/02-status.png)
+
+### Step 3 — Make it the WAN
+
+**Interfaces → Interface List → +**: List `WAN`, Interface `pppoe-out1`.
+
+`TODO` ![Step 3](images/gui/03-wan-list.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| Client stays disconnected | No server reachable on that port | Run the scan. [1] |
+| Authentication fails | Wrong user or password | Check `/ppp/secret` on the server. |
+| Ping works, some websites hang | MTU 1492 | MSS clamping (`change-tcp-mss`) in the PPP profile. [1] |
+| LAN has no internet after switching to PPPoE | NAT still points at ether1 | Put `pppoe-out1` in the `WAN` list. [1] |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| `/interface/pppoe-client/add …` | Dial PPPoE [1] |
+| `monitor … once` | Status and MTU [1] |
+| MTU 1492 | 1500 minus PPPoE 6 and PPP 2 [1] |
+| WAN list | `pppoe-out1`, not ether1 [1] |
+| `scan` | Find PPPoE servers [1] |
+
+## Key Takeaways
+
+- With PPPoE, the WAN is the virtual `pppoe-out1` interface.
+- The PPPoE MTU is 1492, which explains a class of "half-working" internet problems.
+- A CHR makes a good practice ISP.
+
+## References
+
+1. [RouterOS Manual — PPPoE](https://manual.mikrotik.com/docs/virtual-private-networks/pppoe/)
+2. [RouterOS CLI Reference — interface/pppoe-client](https://manual.mikrotik.com/docs/cli-reference/interface/pppoe-client/)
+
+---
+
+**Previous:** [C.03 — WAN via Static IP, Route, and DNS](../03-wan-static-ip-route-and-dns/README.md) · **Next:** C.05 — LAN Bridge, IP, and DHCP Server
+
+[Back to the main learning journal](../../README.md)
