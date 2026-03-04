@@ -64,3 +64,85 @@ The bridge joins the `LAN` interface list. Adding a bridge to a list is not the 
 
 > [!WARNING]
 > Adding ether2 to the bridge can interrupt the MAC WinBox session for a moment. Reconnect from Neighbors if it drops.
+
+## Method A — CLI
+
+### Step 1 — Create the bridge and add ports
+
+```routeros
+/interface/bridge/add name=bridge-lan
+/interface/bridge/port/add bridge=bridge-lan interface=ether2
+/interface/bridge/port/add bridge=bridge-lan interface=ether3
+/interface/bridge/port/add bridge=bridge-lan interface=ether4
+/interface/bridge/port/print
+```
+
+[1][5]
+
+`TODO` ![Step 1](images/cli/01-bridge.png)
+
+### Step 2 — Add the LAN address and list membership
+
+```routeros
+/ip/address/add address=192.168.88.1/24 interface=bridge-lan
+/interface/list/member/add list=LAN interface=bridge-lan
+```
+
+[2][6]
+
+`TODO` ![Step 2](images/cli/02-address-list.png)
+
+### Step 3 — Create the DHCP server
+
+The manual's manual-build commands, adapted to this lab's names and pool: [2]
+
+```routeros
+/ip/pool/add name=pool-lan ranges=192.168.88.10-192.168.88.254
+/ip/dhcp-server/network/add address=192.168.88.0/24 gateway=192.168.88.1 dns-server=192.168.88.1
+/ip/dhcp-server/add address-pool=pool-lan interface=bridge-lan name=dhcp-lan
+```
+
+Alternatively, run `/ip/dhcp-server/setup` and answer its prompts. [2]
+
+`TODO` ![Step 3](images/cli/03-dhcp-server.png)
+
+### Step 4 — Let the router answer DNS for the LAN
+
+```routeros
+/ip/dns/set allow-remote-requests=yes
+```
+
+[3]
+
+`TODO` ![Step 4](images/cli/04-dns.png)
+
+### Step 5 — Test from the laptop
+
+```powershell
+ipconfig /renew
+ipconfig
+ping 192.168.88.1
+nslookup mikrotik.com 192.168.88.1
+```
+
+And on the router:
+
+```routeros
+/ip/dhcp-server/lease/print
+```
+
+[2] The laptop should have an address from `.10–.254`, gateway and DNS `192.168.88.1`. It cannot reach the internet yet: NAT comes in C.06.
+
+> [!CAUTION]
+> **Privacy:** the lease list shows the laptop's MAC address and host name. Cover them. See the [privacy checklist](../../TOPIC-TEMPLATE.md#screenshot--privacy-checklist).
+
+`TODO` ![Step 5](images/cli/05-laptop-test.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| Laptop IP | `192.168.88.10–254`, gateway `.1` | `TODO` |
+| Lease | `bound` in the lease list [2] | `TODO` |
+| `nslookup` via 192.168.88.1 | Answer returned [3] | `TODO` |
+| `ping 8.8.8.8` from laptop | Fails (no NAT yet) | `TODO` |
