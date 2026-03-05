@@ -146,3 +146,100 @@ And on the router:
 | Lease | `bound` in the lease list [2] | `TODO` |
 | `nslookup` via 192.168.88.1 | Answer returned [3] | `TODO` |
 | `ping 8.8.8.8` from laptop | Fails (no NAT yet) | `TODO` |
+
+## Reset Before Method B
+
+Remove what Method A added, keeping the WAN from C.02:
+
+```routeros
+/ip/dhcp-server/remove dhcp-lan
+/ip/dhcp-server/network/remove [find address=192.168.88.0/24]
+/ip/pool/remove pool-lan
+/ip/dns/set allow-remote-requests=no
+/interface/list/member/remove [find interface=bridge-lan]
+/ip/address/remove [find interface=bridge-lan]
+/interface/bridge/remove bridge-lan
+```
+
+Removing the bridge also removes its ports. Reconnect by MAC if needed.
+
+`TODO` ![Reset](images/gui/00-reset.png)
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Bridge and ports
+
+**Bridge → Bridge → +**: Name `bridge-lan`. **Bridge → Ports → +** three times: ether2, ether3, ether4.
+
+`TODO` ![Step 1](images/gui/01-bridge.png)
+
+### Step 2 — Address and LAN list
+
+**IP → Addresses → +**: `192.168.88.1/24` on `bridge-lan`. **Interfaces → Interface List → +**: List `LAN`, Interface `bridge-lan`.
+
+`TODO` ![Step 2](images/gui/02-address-list.png)
+
+### Step 3 — DHCP server
+
+**IP → DHCP Server → DHCP Setup**: interface `bridge-lan`, address space `192.168.88.0/24`, gateway `192.168.88.1`, pool `192.168.88.10-192.168.88.254`, DNS `192.168.88.1`. [2]
+
+`TODO` ![Step 3](images/gui/03-dhcp-setup.png)
+
+### Step 4 — DNS
+
+**IP → DNS**: tick **Allow Remote Requests**. [3]
+
+`TODO` ![Step 4](images/gui/04-dns.png)
+
+### Step 5 — Test
+
+Renew the laptop's address and repeat the tests from Method A. Check **IP → DHCP Server → Leases**.
+
+`TODO` ![Step 5](images/gui/05-test.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| Laptop gets `169.254.x.x` | DHCP server not on the bridge, or laptop port not in the bridge | Check `/interface/bridge/port/print` and the server interface. [2] |
+| DHCP server shows an error on the bridge | No bridge port receiving packets | Make sure the laptop port is a running bridge member. [2] |
+| `nslookup` times out | `allow-remote-requests=no` | Step 4. [3] |
+| Address conflict reported | Pool includes a static address | Keep the router and static devices outside the pool. [2] |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| `/interface/bridge/add`, `/port/add` | Join LAN ports [1][5] |
+| Address on the bridge | LAN gateway `192.168.88.1/24` [2] |
+| Pool, network, server | DHCP server parts [2] |
+| `allow-remote-requests=yes` | Router answers LAN DNS [3] |
+| `LAN` list member | The bridge, not each port [4] |
+
+## Key Takeaways
+
+- The bridge is the LAN; addresses and the DHCP server belong on it.
+- The DHCP network entry is where the client's gateway and DNS come from.
+- After this topic the LAN works locally; it reaches the internet only after NAT.
+
+## References
+
+1. [RouterOS Manual — Bridging and Switching](https://manual.mikrotik.com/docs/bridging-and-switching/)
+2. [RouterOS Manual — DHCP Server](https://manual.mikrotik.com/docs/network-management/dhcp/server/)
+3. [RouterOS Manual — DNS](https://manual.mikrotik.com/docs/network-management/dns/)
+4. [RouterOS CLI Reference — interface/list/member](https://manual.mikrotik.com/docs/cli-reference/interface/list/member/)
+5. [RouterOS CLI Reference — interface/bridge/port](https://manual.mikrotik.com/docs/cli-reference/interface/bridge/port/)
+6. [RouterOS Manual — Filter](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/firewall/filter/)
+
+---
+
+**Previous:** [C.04 — WAN via PPPoE Client](../04-wan-pppoe-client/README.md) · **Next:** C.06 — NAT Masquerade
+
+[Back to the main learning journal](../../README.md)
