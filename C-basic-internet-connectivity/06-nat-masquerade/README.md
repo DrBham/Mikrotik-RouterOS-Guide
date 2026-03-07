@@ -59,3 +59,65 @@ C.05 enabled `allow-remote-requests`, so the router answers DNS on every address
 | Device | MikroTik hAP lite (RB941-2nD) |
 | RouterOS version | `TODO` |
 | Starting state | C.02 + C.05 complete |
+
+## Method A — CLI
+
+### Step 1 — Confirm the problem
+
+From the laptop:
+
+```powershell
+ping 192.168.88.1
+ping 8.8.8.8
+```
+
+The first works, the second fails.
+
+`TODO` ![Step 1](images/cli/01-no-internet.png)
+
+### Step 2 — Add the masquerade rule
+
+```routeros
+/ip/firewall/nat add chain=srcnat action=masquerade src-address=192.168.88.0/24 out-interface-list=WAN comment="Masquerade the local network"
+/ip/firewall/nat/print
+```
+
+[1]
+
+`TODO` ![Step 2](images/cli/02-masquerade.png)
+
+### Step 3 — Test and watch the translations
+
+```powershell
+ping 8.8.8.8
+ping google.com
+```
+
+```routeros
+/ip/firewall/nat/print stats
+/ip/firewall/connection/print count-only
+```
+
+[1][4] The rule's packet counter grows only with new connections.
+
+`TODO` ![Step 3](images/cli/03-nat-working.png)
+
+### Step 4 — Drop DNS requests from the WAN
+
+```routeros
+/ip/firewall/filter/add chain=input in-interface-list=WAN protocol=udp dst-port=53 action=drop comment="drop DNS from WAN"
+/ip/firewall/filter/add chain=input in-interface-list=WAN protocol=tcp dst-port=53 action=drop comment="drop DNS from WAN"
+```
+
+[5]
+
+`TODO` ![Step 4](images/cli/04-dns-drop.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| Laptop ping 8.8.8.8 / google.com | Replies | `TODO` |
+| Browser | This guide opens | `TODO` |
+| NAT stats | Counters increase [1] | `TODO` |
+| DNS drop rules | Present, input chain | `TODO` |
