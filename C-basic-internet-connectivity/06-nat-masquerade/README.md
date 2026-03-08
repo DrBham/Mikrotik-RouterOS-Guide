@@ -121,3 +121,77 @@ ping google.com
 | Browser | This guide opens | `TODO` |
 | NAT stats | Counters increase [1] | `TODO` |
 | DNS drop rules | Present, input chain | `TODO` |
+
+## Reset Before Method B
+
+```routeros
+/ip/firewall/nat/remove [find comment="Masquerade the local network"]
+/ip/firewall/filter/remove [find comment="drop DNS from WAN"]
+```
+
+`TODO` ![Reset](images/gui/00-reset.png)
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Add the masquerade rule
+
+**IP → Firewall → NAT → +**. General: Chain `srcnat`, Src. Address `192.168.88.0/24`, Out. Interface List `WAN`. Action: `masquerade`. Comment: `Masquerade the local network`.
+
+`TODO` ![Step 1](images/gui/01-masquerade.png)
+
+### Step 2 — Test
+
+Ping and browse from the laptop. Watch the rule's **Packets** and **Bytes** columns.
+
+`TODO` ![Step 2](images/gui/02-test.png)
+
+### Step 3 — Drop DNS from the WAN
+
+**IP → Firewall → Filter Rules → +** twice: Chain `input`, Protocol `udp` (then `tcp`), Dst. Port `53`, In. Interface List `WAN`, Action `drop`.
+
+`TODO` ![Step 3](images/gui/03-dns-drop.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| Rule counters stay at 0 | WAN interface not in the `WAN` list | `/interface/list/member/print`. [3] |
+| Works with ether1 WAN, not after switching to wlan1 or PPPoE | New WAN interface not in the list | Add it to `WAN`. [3] |
+| Ping by IP works, browser does not | DNS (C.05 Step 4) or MTU with PPPoE (C.04) | Check each. |
+| Old connections still use a removed rule | Conntrack keeps existing translations [4] | `/ip/firewall/connection/remove [find]`. [4] |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| `chain=srcnat action=masquerade out-interface-list=WAN` | LAN to internet [1] |
+| `src-address=192.168.88.0/24` | Translate only the LAN |
+| `print stats` | Rule counters [1] |
+| Drop UDP/TCP 53 from WAN | No open resolver [5] |
+
+## Key Takeaways
+
+- The router being online does not mean the LAN is; NAT connects the two.
+- Use the `WAN` list so the rule survives a change of uplink.
+- Every service you enable for the LAN must be blocked from the WAN.
+
+## References
+
+1. [RouterOS Manual — NAT](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/firewall/nat/)
+2. [RFC 3022 — Traditional IP Network Address Translator, §2.2](https://www.rfc-editor.org/rfc/rfc3022)
+3. [RouterOS CLI Reference — interface/list](https://manual.mikrotik.com/docs/cli-reference/interface/list/)
+4. [RouterOS Manual — Connection tracking](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/connection-tracking/)
+5. [RouterOS Manual — DNS](https://manual.mikrotik.com/docs/network-management/dns/)
+
+---
+
+**Previous:** [C.05 — LAN Bridge, IP, and DHCP Server](../05-lan-bridge-ip-and-dhcp-server/README.md) · **Next:** C.07 — Verify and Troubleshoot Connectivity
+
+[Back to the main learning journal](../../README.md)
