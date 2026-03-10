@@ -63,3 +63,76 @@ The first failing test names the broken layer.
 | Device | MikroTik hAP lite (RB941-2nD) |
 | RouterOS version | `TODO` |
 | Starting state | C.02 + C.05 + C.06 complete and working |
+
+## Method A — CLI
+
+### Step 1 — Baseline: all tests pass
+
+Run the seven tests from the table. On the router:
+
+```routeros
+/ping 8.8.8.8 count=3
+/ping google.com count=3
+/tool/traceroute 8.8.8.8 count=1
+```
+
+[1][2]
+
+> [!CAUTION]
+> **Privacy:** traceroute shows your provider's routers and may show your public address. Cover the hops after your own upstream router. See the [privacy checklist](../../TOPIC-TEMPLATE.md#screenshot--privacy-checklist).
+
+`TODO` ![Step 1](images/cli/01-baseline.png)
+
+### Step 2 — Watch traffic with torch
+
+While the laptop pings `8.8.8.8` continuously (`ping -t 8.8.8.8`):
+
+```routeros
+/tool/torch bridge-lan
+```
+
+[3] Stop with Ctrl+C. Then run it on the WAN interface and compare the source address: on the WAN side it is the router's address, because of NAT.
+
+`TODO` ![Step 2](images/cli/02-torch.png)
+
+### Step 3 — Break DNS
+
+```routeros
+/ip/dns/set allow-remote-requests=no
+```
+
+Re-run tests 5–7: 5 and 6 pass, 7 fails. Restore with `allow-remote-requests=yes`. [4]
+
+`TODO` ![Step 3](images/cli/03-break-dns.png)
+
+### Step 4 — Break NAT
+
+```routeros
+/ip/firewall/nat/disable [find comment="Masquerade the local network"]
+/ip/firewall/connection/remove [find]
+```
+
+Tests 1–5 pass, 6 fails. Torch on the WAN now shows the laptop's private source address leaving the router. Re-enable the rule. [5][6]
+
+`TODO` ![Step 4](images/cli/04-break-nat.png)
+
+### Step 5 — Break the default route
+
+For a DHCP WAN:
+
+```routeros
+/ip/dhcp-client/set [find] add-default-route=no
+```
+
+Test 3 passes, test 4 fails with no reply or network unreachable. Set it back to `yes`. [7]
+
+`TODO` ![Step 5](images/cli/05-break-route.png)
+
+### Verify (CLI)
+
+| Fault | First failing test | Actual result |
+| --- | --- | --- |
+| DNS off for LAN | 7 | `TODO` |
+| NAT disabled | 6 | `TODO` |
+| No default route | 4 | `TODO` |
+| All restored | None | `TODO` |
