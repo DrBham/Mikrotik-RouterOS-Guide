@@ -136,3 +136,78 @@ Test 3 passes, test 4 fails with no reply or network unreachable. Set it back to
 | NAT disabled | 6 | `TODO` |
 | No default route | 4 | `TODO` |
 | All restored | None | `TODO` |
+
+## Reset Before Method B
+
+Make sure every fault from Method A is reverted and all seven tests pass again.
+
+`TODO` ![Reset](images/gui/00-all-pass.png)
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Ping and traceroute
+
+**Tools → Ping**: `8.8.8.8`, then `google.com`. **Tools → Traceroute**: `8.8.8.8`.
+
+`TODO` ![Step 1](images/gui/01-ping-traceroute.png)
+
+### Step 2 — Torch
+
+**Tools → Torch**: Interface `bridge-lan`, **Start**, while the laptop pings.
+
+`TODO` ![Step 2](images/gui/02-torch.png)
+
+### Step 3 — Break and fix NAT
+
+In **IP → Firewall → NAT**, disable the masquerade rule; in **Connections**, remove all. Test from the laptop, then enable the rule again.
+
+`TODO` ![Step 3](images/gui/03-break-nat.png)
+
+### Verify (WinBox)
+
+Same table as [Verify (CLI)](#verify-cli), for the faults you reproduced.
+
+## Troubleshooting
+
+This topic is the troubleshooting guide for Chapter C. Real problems met while doing the labs are added here.
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| Ping shows `timeout` everywhere | Link or address problem | Tests 1–3 first. [1] |
+| Traceroute stops at hop 1 with "packet filtered" | Firewall on the first router | Check its filter rules. [2] |
+| Torch shows traffic in but nothing out | Firewall drop or no route | Torch sees packets before the firewall. [3] |
+| `TODO` real problems from the lab | | |
+
+## Quick Recap
+
+| Tool | Shows |
+| --- | --- |
+| `/ping x count=3` | Reachability, loss, RTT, error status [1] |
+| `/tool/traceroute x` | Each hop on the path [2] |
+| `/tool/torch iface` | Live flows on one interface [3] |
+| Seven tests | Local, gateway, route, DNS, NAT, LAN DNS |
+
+## Key Takeaways
+
+- Test in layer order; the first failure names the fault.
+- Router online but LAN offline points to NAT or LAN DNS.
+- Torch shows traffic even when the firewall drops it.
+
+## References
+
+1. [RouterOS Manual — Ping](https://manual.mikrotik.com/docs/diagnostics-monitoring-and-troubleshooting/ping/)
+2. [RouterOS Manual — Traceroute](https://manual.mikrotik.com/docs/diagnostics-monitoring-and-troubleshooting/traceroute/)
+3. [RouterOS Manual — Torch](https://manual.mikrotik.com/docs/diagnostics-monitoring-and-troubleshooting/torch/)
+4. [RouterOS Manual — DNS](https://manual.mikrotik.com/docs/network-management/dns/)
+5. [RouterOS Manual — NAT](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/firewall/nat/)
+6. [RouterOS Manual — Connection tracking](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/connection-tracking/)
+7. [RouterOS Manual — DHCP Client](https://manual.mikrotik.com/docs/network-management/dhcp/client/)
+
+---
+
+**Previous:** [C.06 — NAT Masquerade](../06-nat-masquerade/README.md) · **Next:** Chapter D — Interface & Bridge
+
+[Back to the main learning journal](../../README.md)
