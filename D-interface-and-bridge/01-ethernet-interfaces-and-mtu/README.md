@@ -66,3 +66,72 @@ MTU ──► C.04 PPPoE 1492 ──► Chapter J VLAN tags ──► Chapter M 
 | RouterOS version | `TODO` |
 | Starting state | Default configuration + A.03 |
 | Laptop | ether2 |
+
+## Method A — CLI
+
+### Step 1 — List interfaces and MTU
+
+```routeros
+/interface/print
+/interface/ethernet/print
+```
+
+Note `mtu`, `l2mtu`, and `max-l2mtu` on ether2. [2]
+
+> [!CAUTION]
+> **Privacy:** cover MAC addresses. See the [privacy checklist](../../TOPIC-TEMPLATE.md#screenshot--privacy-checklist).
+
+`TODO` ![Step 1](images/cli/01-interfaces.png)
+
+### Step 2 — Monitor the laptop port
+
+```routeros
+/interface/ethernet/monitor ether2
+```
+
+[1] Record `status`, `auto-negotiation`, and `rate`. Press Ctrl+C to stop.
+
+`TODO` ![Step 2](images/cli/02-monitor.png)
+
+### Step 3 — Read error counters
+
+```routeros
+/interface/ethernet/print stats
+```
+
+[1]
+
+`TODO` ![Step 3](images/cli/03-stats.png)
+
+### Step 4 — Test the cable
+
+```routeros
+/interface/ethernet/cable-test ether2
+```
+
+[1] Repeat on an empty port to see the difference.
+
+`TODO` ![Step 4](images/cli/04-cable-test.png)
+
+### Step 5 — Find the path MTU
+
+```routeros
+/ping 8.8.8.8 size=1500 do-not-fragment count=2
+/ping 8.8.8.8 size=1400 do-not-fragment count=2
+```
+
+[3] Increase or decrease `size` until you find the largest size that passes.
+
+`TODO` ![Step 5](images/cli/05-path-mtu.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| ether2 status | `link-ok`, negotiation `done` [1] | `TODO` |
+| ether2 rate | `100Mbps` (hAP lite ports are 10/100) | `TODO` |
+| FCS errors | 0 or not increasing | `TODO` |
+| Largest DF ping | `TODO` bytes | `TODO` |
+
+> [!NOTE]
+> `TODO` confirm the hAP lite port speed from the [product page](https://mikrotik.com/product/RB941-2nD) before publishing.
