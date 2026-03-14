@@ -135,3 +135,77 @@ Note `mtu`, `l2mtu`, and `max-l2mtu` on ether2. [2]
 
 > [!NOTE]
 > `TODO` confirm the hAP lite port speed from the [product page](https://mikrotik.com/product/RB941-2nD) before publishing.
+
+## Reset Before Method B
+
+Method A only read information. No reset is needed.
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Interface list
+
+**Interfaces**: add the MTU, L2 MTU, and Max L2 MTU columns.
+
+`TODO` ![Step 1](images/gui/01-interfaces.png)
+
+### Step 2 — Port status
+
+Open **ether2 → Status**. Compare with Method A Step 2.
+
+`TODO` ![Step 2](images/gui/02-status.png)
+
+### Step 3 — Counters
+
+Open **ether2 → Overall Stats / Rx Stats**.
+
+`TODO` ![Step 3](images/gui/03-stats.png)
+
+### Step 4 — Cable test
+
+Open **ether2 → Cable Test**.
+
+`TODO` ![Step 4](images/gui/04-cable-test.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| `no-link` | Cable, port, or far end off | Cable test. [1] |
+| Link at 10 Mbps instead of 100 | Bad cable pair or forced speed | Cable test; keep auto-negotiation on both ends. [1] |
+| FCS errors increasing | Damaged cable or interference | Replace the cable. [1] |
+| Small pings work, large fail | MTU too small somewhere | Path MTU test. [3] |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| `/interface/ethernet/monitor ether2` | Link, negotiation, rate [1] |
+| `print stats` | Error counters [1] |
+| `cable-test` | Copper pair test [1] |
+| `mtu` / `l2mtu` | L3 packet / L2 frame size [2] |
+| `do-not-fragment size=` | Find the path MTU [3] |
+
+## Key Takeaways
+
+- Keep auto-negotiation on at both ends.
+- Rising FCS errors mean a physical problem, not a configuration one.
+- "Small works, large fails" is an MTU problem.
+
+## References
+
+1. [RouterOS Manual — Ethernet](https://manual.mikrotik.com/docs/wired-connections/ethernet/)
+2. [RouterOS Manual — MTU in RouterOS](https://manual.mikrotik.com/docs/hardware/mtu-in-routeros/)
+3. [RouterOS Manual — Ping](https://manual.mikrotik.com/docs/diagnostics-monitoring-and-troubleshooting/ping/)
+
+---
+
+**Previous:** [C.07 — Verify and Troubleshoot Connectivity](../../C-basic-internet-connectivity/07-verify-and-troubleshoot-connectivity/README.md) · **Next:** D.02 — Bridge Ports and Host Table
+
+[Back to the main learning journal](../../README.md)
