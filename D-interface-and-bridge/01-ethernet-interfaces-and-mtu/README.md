@@ -129,12 +129,11 @@ Note `mtu`, `l2mtu`, and `max-l2mtu` on ether2. [2]
 | Check | Expected result | Actual result |
 | --- | --- | --- |
 | ether2 status | `link-ok`, negotiation `done` [1] | `TODO` |
-| ether2 rate | `100Mbps` (hAP lite ports are 10/100) | `TODO` |
+| ether2 rate | `100Mbps` (hAP lite ports are 10/100 [4]) | `TODO` |
 | FCS errors | 0 or not increasing | `TODO` |
 | Largest DF ping | `TODO` bytes | `TODO` |
 
-> [!NOTE]
-> `TODO` confirm the hAP lite port speed from the [product page](https://mikrotik.com/product/RB941-2nD) before publishing.
+The hAP lite has four 10/100 Ethernet ports, so 100 Mbps is the highest rate a port can show. [4]
 
 ## Reset Before Method B
 
@@ -203,6 +202,7 @@ Same checks as [Verify (CLI)](#verify-cli).
 1. [RouterOS Manual — Ethernet](https://manual.mikrotik.com/docs/wired-connections/ethernet/)
 2. [RouterOS Manual — MTU in RouterOS](https://manual.mikrotik.com/docs/hardware/mtu-in-routeros/)
 3. [RouterOS Manual — Ping](https://manual.mikrotik.com/docs/diagnostics-monitoring-and-troubleshooting/ping/)
+4. [MikroTik — hAP lite (RB941-2nD) product page](https://mikrotik.com/product/RB941-2nD)
 
 ---
 
