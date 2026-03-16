@@ -74,3 +74,57 @@ D.02 bridge ──► D.03 STP between bridges ──► Chapter J VLAN filterin
 | RouterOS version | `TODO` |
 | Starting state | C.05 or default configuration |
 | Devices | Laptop on ether2, a second device (phone over Wi-Fi or a PC on ether3) |
+
+## Method A — CLI
+
+### Step 1 — Inspect the bridge
+
+```routeros
+/interface/bridge/print detail
+/interface/bridge/monitor bridge-lan
+```
+
+[1][2] Use your bridge's name (`bridge` in the default configuration).
+
+`TODO` ![Step 1](images/cli/01-bridge-monitor.png)
+
+### Step 2 — Inspect the ports
+
+```routeros
+/interface/bridge/port/print
+/interface/bridge/port/monitor [find]
+```
+
+[1]
+
+`TODO` ![Step 2](images/cli/02-ports.png)
+
+### Step 3 — Read the host table
+
+```routeros
+/interface/bridge/host/print
+```
+
+[1] Find the laptop's MAC on ether2. Move the laptop cable to ether3, wait, and print again.
+
+> [!CAUTION]
+> **Privacy:** cover MAC addresses. See the [privacy checklist](../../TOPIC-TEMPLATE.md#screenshot--privacy-checklist).
+
+`TODO` ![Step 3](images/cli/03-host-table.png)
+
+### Step 4 — Check the fast-path counters
+
+```routeros
+/interface/bridge/settings/print
+```
+
+[1]
+
+`TODO` ![Step 4](images/cli/04-settings.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| Laptop MAC | Learned on ether2, then on ether3 after moving [1] | `TODO` |
+| Port roles | All ports listed with their status | `TODO` |
