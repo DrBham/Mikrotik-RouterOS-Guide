@@ -128,3 +128,68 @@ D.02 bridge ──► D.03 STP between bridges ──► Chapter J VLAN filterin
 | --- | --- | --- |
 | Laptop MAC | Learned on ether2, then on ether3 after moving [1] | `TODO` |
 | Port roles | All ports listed with their status | `TODO` |
+
+## Reset Before Method B
+
+Method A only read information. Move the laptop back to ether2.
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Bridge settings
+
+**Bridge → Bridge** tab, open the bridge: General and STP tabs.
+
+`TODO` ![Step 1](images/gui/01-bridge.png)
+
+### Step 2 — Ports
+
+**Bridge → Ports**.
+
+`TODO` ![Step 2](images/gui/02-ports.png)
+
+### Step 3 — Hosts
+
+**Bridge → Hosts**. Move the laptop cable and watch the entry change port.
+
+`TODO` ![Step 3](images/gui/03-hosts.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| Device on a port gets no DHCP address | Port not a bridge member | `/interface/bridge/port/print`. [1] |
+| Firewall rule does not match LAN-to-LAN traffic | Bridged traffic skips the IP firewall | `use-ip-firewall=yes`, or use the bridge filter. [1] |
+| All LAN ports dropped briefly | A bridge setting that restarts ports was changed [1] | Expected; avoid changing it remotely. |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| `/interface/bridge/host/print` | Which MAC is on which port [1] |
+| `ageing-time` 5 min | How long hosts are remembered [1] |
+| Fast Forward | Two-port fast path; off with hardware offload [1] |
+| `use-ip-firewall=yes` | Send bridged traffic through the IP firewall [1] |
+
+## Key Takeaways
+
+- The host table tells you where a device is plugged in.
+- Bridged traffic does not pass the IP firewall unless you ask for it.
+- Some bridge settings restart every port; change them locally.
+
+## References
+
+1. [RouterOS Manual — Bridging and Switching](https://manual.mikrotik.com/docs/bridging-and-switching/)
+2. [RouterOS Manual — Spanning Tree Protocol](https://manual.mikrotik.com/docs/bridging-and-switching/user-guides/spanning-tree-protocol/)
+
+---
+
+**Previous:** [D.01 — Ethernet Interfaces and MTU](../01-ethernet-interfaces-and-mtu/README.md) · **Next:** D.03 — Spanning Tree Protocol
+
+[Back to the main learning journal](../../README.md)
