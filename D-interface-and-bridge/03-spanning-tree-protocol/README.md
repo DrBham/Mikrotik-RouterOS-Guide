@@ -72,3 +72,57 @@ D.03 STP ──► Chapter J VLANs (MSTP per VLAN group) ──► Chapter N red
 
 > [!WARNING]
 > Do this only with RSTP enabled (check Step 1). With STP disabled, the loop floods the LAN.
+
+## Method A — CLI
+
+### Step 1 — Check the protocol and priority
+
+```routeros
+/interface/bridge/print detail
+/interface/bridge/monitor bridge
+```
+
+[1][2] `protocol-mode` should be `rstp`. The monitor shows whether this bridge is the root.
+
+`TODO` ![Step 1](images/cli/01-rstp.png)
+
+### Step 2 — Create a loop
+
+Connect a cable from ether3 to ether4. Both are ports of the same bridge, so frames could circle back.
+
+```routeros
+/interface/bridge/port/monitor [find]
+```
+
+[1] One of the two ports should become an alternate or backup port and stop forwarding.
+
+`TODO` ![Step 2](images/cli/02-loop-blocked.png)
+
+### Step 3 — Influence the choice with port priority
+
+```routeros
+/interface/bridge/port/set [find interface=ether4] priority=0x70
+/interface/bridge/port/monitor [find]
+```
+
+A lower port priority wins the tie. [2] Watch which port now forwards.
+
+`TODO` ![Step 3](images/cli/03-port-priority.png)
+
+### Step 4 — Set the bridge priority
+
+```routeros
+/interface/bridge/set bridge priority=0x1000
+```
+
+[2] On a single router this keeps it the root; in a multi-switch network it makes this device the root on purpose.
+
+`TODO` ![Step 4](images/cli/04-bridge-priority.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| Loop cable connected | One port not forwarding | `TODO` |
+| LAN during the loop | Still works (laptop pings 192.168.88.1) | `TODO` |
+| After priority change | The other port blocks | `TODO` |
