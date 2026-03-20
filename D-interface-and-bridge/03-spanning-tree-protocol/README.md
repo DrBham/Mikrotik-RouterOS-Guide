@@ -126,3 +126,73 @@ A lower port priority wins the tie. [2] Watch which port now forwards.
 | Loop cable connected | One port not forwarding | `TODO` |
 | LAN during the loop | Still works (laptop pings 192.168.88.1) | `TODO` |
 | After priority change | The other port blocks | `TODO` |
+
+## Reset Before Method B
+
+```routeros
+/interface/bridge/port/set [find interface=ether4] priority=0x80
+/interface/bridge/set bridge priority=0x8000
+```
+
+Unplug the loop cable.
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Check STP settings
+
+**Bridge → bridge → STP** tab: Protocol Mode `RSTP`, Priority.
+
+`TODO` ![Step 1](images/gui/01-stp-settings.png)
+
+### Step 2 — Create the loop and watch the ports
+
+Connect ether3 to ether4. **Bridge → Ports**: add the Role and Status columns.
+
+`TODO` ![Step 2](images/gui/02-port-roles.png)
+
+### Step 3 — Change the port priority
+
+Open ether4 in **Bridge → Ports → STP** and set Priority `70`.
+
+`TODO` ![Step 3](images/gui/03-port-priority.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli). Unplug the loop cable afterwards.
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| LAN freezes when a loop cable is connected | `protocol-mode=none` | Set `rstp`. [1] |
+| Unexpected device becomes root | Priorities left at default; lowest MAC wins [2] | Set priorities manually. [2] |
+| STP does not work through a bridge filter | BPDUs blocked | Allow `01:80:C2:00:00:00`. [2] |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| Root bridge | Lowest priority, then lowest MAC [2] |
+| Priority steps | 4096 (`0x1000`) [2] |
+| Port priority | `0x80` default, lower wins [2] |
+| `protocol-mode=rstp` | Default on new bridges [1] |
+
+## Key Takeaways
+
+- RSTP turns an accidental loop into a blocked port instead of an outage.
+- Choose the root on purpose with bridge priority.
+- Never disable STP on a bridge with more than one path.
+
+## References
+
+1. [RouterOS Manual — Bridging and Switching](https://manual.mikrotik.com/docs/bridging-and-switching/)
+2. [RouterOS Manual — Spanning Tree Protocol](https://manual.mikrotik.com/docs/bridging-and-switching/user-guides/spanning-tree-protocol/)
+
+---
+
+**Previous:** [D.02 — Bridge Ports and Host Table](../02-bridge-ports-and-host-table/README.md) · **Next:** D.04 — Port Mirroring with the Switch Chip
+
+[Back to the main learning journal](../../README.md)
