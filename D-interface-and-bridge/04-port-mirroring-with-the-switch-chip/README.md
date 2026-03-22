@@ -65,3 +65,41 @@ D.04 mirroring ──► Chapter Q packet sniffer and Wireshark
 | Switch chip | `TODO` from Step 1 |
 | Source | A device on ether2 (or the uplink) |
 | Target | Laptop with Wireshark on ether3 |
+
+## Method A — CLI
+
+### Step 1 — Read the switch chip
+
+```routeros
+/interface/ethernet/switch/print
+```
+
+[1]
+
+`TODO` ![Step 1](images/cli/01-switch.png)
+
+### Step 2 — Mirror a port
+
+```routeros
+/interface/ethernet/switch set switch1 mirror-source=ether2 mirror-target=ether3
+```
+
+[1] Use the switch name from Step 1.
+
+`TODO` ![Step 2](images/cli/02-mirror.png)
+
+### Step 3 — Capture
+
+Start Wireshark on the laptop's Ethernet adapter. Generate traffic from the ether2 device and confirm its packets appear.
+
+> [!CAUTION]
+> **Privacy:** captures contain MAC addresses, host names, and sometimes visited domains. Do not publish raw captures; screenshot only the parts needed. See the [privacy checklist](../../TOPIC-TEMPLATE.md#screenshot--privacy-checklist).
+
+`TODO` ![Step 3](images/cli/03-wireshark.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| Switch chip listed | Name and type | `TODO` |
+| Wireshark | Frames from the source device | `TODO` |
