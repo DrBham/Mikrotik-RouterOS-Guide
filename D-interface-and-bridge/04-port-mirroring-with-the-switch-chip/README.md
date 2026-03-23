@@ -103,3 +103,68 @@ Start Wireshark on the laptop's Ethernet adapter. Generate traffic from the ethe
 | --- | --- | --- |
 | Switch chip listed | Name and type | `TODO` |
 | Wireshark | Frames from the source device | `TODO` |
+
+## Reset Before Method B
+
+```routeros
+/interface/ethernet/switch set switch1 mirror-source=none mirror-target=none
+```
+
+> [!NOTE]
+> `TODO` confirm the value that disables mirroring on this chip (`none`) from the CLI completion (Tab).
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Open the switch
+
+**Switch → Switch**, open `switch1`.
+
+`TODO` ![Step 1](images/gui/01-switch.png)
+
+### Step 2 — Set mirror source and target
+
+Mirror Source `ether2`, Mirror Target `ether3`. **OK**.
+
+`TODO` ![Step 2](images/gui/02-mirror.png)
+
+### Step 3 — Capture
+
+Same as Method A Step 3.
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli). Disable mirroring afterwards.
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| No mirrored frames | Ports on different switch chips, or chip without mirroring [1] | Check the chip table. |
+| Device unreachable after mirroring | Loop through mirrored ports [1] | Remove the mirror locally or reset. |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| `/interface/ethernet/switch/print` | Switch chips [1] |
+| `mirror-source`, `mirror-target` | Copy traffic to a capture port [1] |
+| Chip features vary | Check the chip table [1] |
+
+## Key Takeaways
+
+- The switch chip, not RouterOS, decides which hardware features exist.
+- Mirroring turns any port into a capture point.
+
+## References
+
+1. [RouterOS Manual — Switch Chip Features](https://manual.mikrotik.com/docs/bridging-and-switching/switch-chip-features/)
+2. [RouterOS Manual — Packet Sniffer](https://manual.mikrotik.com/docs/diagnostics-monitoring-and-troubleshooting/packet-sniffer/)
+
+---
+
+**Previous:** [D.03 — Spanning Tree Protocol](../03-spanning-tree-protocol/README.md) · **Next:** Chapter E — DHCP & Network Services
+
+[Back to the main learning journal](../../README.md)
