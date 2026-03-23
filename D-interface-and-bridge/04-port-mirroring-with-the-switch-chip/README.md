@@ -43,8 +43,9 @@ Mirroring copies frames from a `mirror-source` port to a `mirror-target` port. [
 
 [1] The manual warns that a mirror setup involving two switch chips can create a loop and make the device unreachable. [1]
 
-> [!WARNING]
-> **Source needed:** the switch chip model of the hAP lite and whether it supports mirroring. Check `/interface/ethernet/switch/print` in Step 1 and the chip table on the [switch chip features page](https://manual.mikrotik.com/docs/bridging-and-switching/switch-chip-features/).
+### The hAP lite switch chip
+
+The manual's device table lists the RB941-2nD (hAP lite) with an Atheros8227 switch chip on ether1 to ether4. [1] The feature table marks Port Mirroring as supported on the Atheros8227. [1] The product page names the switch chip model as QCA9533-BL3A. [3] Step 1 shows which type RouterOS reports on your device.
 
 ### Capturing on the laptop
 
@@ -110,8 +111,7 @@ Start Wireshark on the laptop's Ethernet adapter. Generate traffic from the ethe
 /interface/ethernet/switch set switch1 mirror-source=none mirror-target=none
 ```
 
-> [!NOTE]
-> `TODO` confirm the value that disables mirroring on this chip (`none`) from the CLI completion (Tab).
+`none` is a valid value and the default for both `mirror-source` and `mirror-target`, so this returns the switch to its starting state. [1]
 
 ## Method B — WinBox (GUI)
 
@@ -162,6 +162,7 @@ Same checks as [Verify (CLI)](#verify-cli). Disable mirroring afterwards.
 
 1. [RouterOS Manual — Switch Chip Features](https://manual.mikrotik.com/docs/bridging-and-switching/switch-chip-features/)
 2. [RouterOS Manual — Packet Sniffer](https://manual.mikrotik.com/docs/diagnostics-monitoring-and-troubleshooting/packet-sniffer/)
+3. [MikroTik — hAP lite (RB941-2nD) product page](https://mikrotik.com/product/RB941-2nD)
 
 ---
 
