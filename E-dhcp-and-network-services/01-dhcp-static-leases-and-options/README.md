@@ -61,3 +61,62 @@ E.01 fixed address ──► Chapter I port forwarding target ──► Chapter 
 | Starting state | Default configuration (or C.05) + A.03 internet |
 | Client | Laptop on ether2, DHCP |
 | Fixed address | `192.168.88.50` |
+
+## Method A — CLI
+
+### Step 1 — Find the laptop's lease
+
+```routeros
+/ip/dhcp-server/lease/print
+```
+
+[1]
+
+> [!CAUTION]
+> **Privacy:** cover MAC addresses and host names. See the [privacy checklist](../../TOPIC-TEMPLATE.md#screenshot--privacy-checklist).
+
+`TODO` ![Step 1](images/cli/01-leases.png)
+
+### Step 2 — Make it static and change the address
+
+The manual's commands, with the documentation MAC replaced by your laptop's MAC: [1]
+
+```routeros
+/ip/dhcp-server/lease/make-static [find mac-address=00:00:5E:00:53:10]
+/ip/dhcp-server/lease/set [find mac-address=00:00:5E:00:53:10] address=192.168.88.50
+```
+
+`TODO` ![Step 2](images/cli/02-make-static.png)
+
+### Step 3 — Renew on the laptop
+
+```powershell
+ipconfig /release
+ipconfig /renew
+ipconfig
+```
+
+The laptop now has `192.168.88.50`.
+
+`TODO` ![Step 3](images/cli/03-renew.png)
+
+### Step 4 — Limit the client's speed
+
+```routeros
+/ip/dhcp-server/lease/set [find address=192.168.88.50] rate-limit=10M/10M
+```
+
+[1] Run a speed test before and after.
+
+> [!NOTE]
+> The default FastTrack rule can bypass queues. If the limit does not apply, see Chapter K. [4]
+
+`TODO` ![Step 4](images/cli/04-rate-limit.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| Lease | Static, `192.168.88.50` [1] | `TODO` |
+| Laptop address | `192.168.88.50` after renew | `TODO` |
+| Speed | About 10 Mbps | `TODO` |
