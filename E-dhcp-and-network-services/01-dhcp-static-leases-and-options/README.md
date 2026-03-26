@@ -120,3 +120,71 @@ The laptop now has `192.168.88.50`.
 | Lease | Static, `192.168.88.50` [1] | `TODO` |
 | Laptop address | `192.168.88.50` after renew | `TODO` |
 | Speed | About 10 Mbps | `TODO` |
+
+## Reset Before Method B
+
+```routeros
+/ip/dhcp-server/lease/remove [find address=192.168.88.50]
+```
+
+Renew the laptop's address so it gets a dynamic lease again.
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Make the lease static
+
+**IP → DHCP Server → Leases**, select the laptop, **Make Static**.
+
+`TODO` ![Step 1](images/gui/01-make-static.png)
+
+### Step 2 — Change the address and rate limit
+
+Open the lease: Address `192.168.88.50`, Rate Limit `10M/10M`.
+
+`TODO` ![Step 2](images/gui/02-edit-lease.png)
+
+### Step 3 — Renew and test
+
+Same as Method A Step 3.
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| Laptop keeps the old address | Old lease not released | `ipconfig /release`, then `/renew`. |
+| Two devices with one address | Static address inside the pool given to another device | Use addresses outside the pool; static addresses are not conflict-checked. [1] |
+| Rate limit has no effect | FastTrack bypass | See Chapter K. [4] |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| `lease/make-static` | Keep a lease permanently [1] |
+| `lease/set … address=` | Fixed address for that MAC [1] |
+| `rate-limit=` on a lease | Per-client speed limit [1] |
+| Option precedence | RADIUS, lease, server, network [1] |
+
+## Key Takeaways
+
+- Use static leases, not manual addresses, for devices that need a fixed IP.
+- Keep static addresses outside the dynamic pool.
+
+## References
+
+1. [RouterOS Manual — DHCP Server](https://manual.mikrotik.com/docs/network-management/dhcp/server/)
+2. [RouterOS Manual — DHCP](https://manual.mikrotik.com/docs/network-management/dhcp/)
+3. [RFC 2131 — Dynamic Host Configuration Protocol, §4.4.5](https://www.rfc-editor.org/rfc/rfc2131)
+4. [RouterOS Manual — Simple Queue](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/queues/simple-queue/)
+
+---
+
+**Previous:** [D.04 — Port Mirroring with the Switch Chip](../../D-interface-and-bridge/04-port-mirroring-with-the-switch-chip/README.md) · **Next:** E.02 — DHCP Relay
+
+[Back to the main learning journal](../../README.md)
