@@ -69,3 +69,62 @@ Client ── broadcast ──► Relay (hAP lite) ── unicast ──► Cent
 
 > [!NOTE]
 > `TODO` draw the topology and document how the CHR is connected to the hAP lite (second NIC or USB adapter bridged in VirtualBox/GNS3).
+
+## Method A — CLI
+
+### Step 1 — Addresses
+
+On the hAP lite (remove ether3 and ether4 from the bridge first, as in B.11):
+
+```routeros
+/ip/address/add address=192.168.1.1/24 interface=ether3
+/ip/address/add address=192.168.0.2/24 interface=ether4
+```
+
+On the CHR:
+
+```routeros
+/ip/address/add address=192.168.0.1/24 interface=ether1
+/ip/route/add dst-address=192.168.1.0/24 gateway=192.168.0.2
+```
+
+`TODO` ![Step 1](images/cli/01-addresses.png)
+
+### Step 2 — DHCP server on the CHR
+
+```routeros
+/ip/pool/add name=Local1-Pool ranges=192.168.1.11-192.168.1.100
+/ip/dhcp-server/network/add address=192.168.1.0/24 gateway=192.168.1.1 dns-server=192.168.1.1
+/ip/dhcp-server/add interface=ether1 relay=192.168.1.1 address-pool=Local1-Pool name=DHCP-1
+```
+
+[1][2]
+
+`TODO` ![Step 2](images/cli/02-server.png)
+
+### Step 3 — Relay on the hAP lite
+
+```routeros
+/ip/dhcp-relay/add name=Local1-Relay interface=ether3 dhcp-server=192.168.0.1 local-address=192.168.1.1 disabled=no
+```
+
+[1]
+
+`TODO` ![Step 3](images/cli/03-relay.png)
+
+### Step 4 — Test
+
+Renew the laptop on ether3. On the CHR:
+
+```routeros
+/ip/dhcp-server/lease/print
+```
+
+`TODO` ![Step 4](images/cli/04-lease.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| Laptop address | From `192.168.1.11–100` | `TODO` |
+| Lease shown on | CHR, not hAP lite | `TODO` |
