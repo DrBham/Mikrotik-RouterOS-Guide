@@ -128,3 +128,68 @@ Renew the laptop on ether3. On the CHR:
 | --- | --- | --- |
 | Laptop address | From `192.168.1.11–100` | `TODO` |
 | Lease shown on | CHR, not hAP lite | `TODO` |
+
+## Reset Before Method B
+
+Remove the relay on the hAP lite and the server on the CHR:
+
+```routeros
+/ip/dhcp-relay/remove Local1-Relay
+```
+
+```routeros
+/ip/dhcp-server/remove DHCP-1
+```
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Server on the CHR
+
+**IP → DHCP Server → +**: Interface `ether1`, Relay `192.168.1.1`, Address Pool `Local1-Pool`.
+
+`TODO` ![Step 1](images/gui/01-server.png)
+
+### Step 2 — Relay on the hAP lite
+
+**IP → DHCP Relay → +**: Interface `ether3`, DHCP Server `192.168.0.1`, Local Address `192.168.1.1`, enabled.
+
+`TODO` ![Step 2](images/gui/02-relay.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| No address on the laptop | Relay still disabled | `disabled=no`. [1] |
+| Server ignores relayed requests | `relay=` missing or wrong on the server | Must equal the relay's `local-address`. [1] |
+| Offer sent but never arrives | Server has no route back to the relay network | Add the route. |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| `/ip/dhcp-relay/add … dhcp-server= local-address=` | Forward DHCP to another network [1] |
+| `relay=` on the server | Match relayed requests [1] |
+| `giaddr` | Relay address written into the request [1] |
+
+## Key Takeaways
+
+- A relay turns a local broadcast into a routed unicast to a central server.
+- The server matches the relay by its `local-address`.
+
+## References
+
+1. [RouterOS Manual — DHCP Relay](https://manual.mikrotik.com/docs/network-management/dhcp/relay/)
+2. [RouterOS Manual — DHCP Server](https://manual.mikrotik.com/docs/network-management/dhcp/server/)
+
+---
+
+**Previous:** [E.01 — DHCP Static Leases and Options](../01-dhcp-static-leases-and-options/README.md) · **Next:** E.03 — DNS Static Entries and Forwarding
+
+[Back to the main learning journal](../../README.md)
