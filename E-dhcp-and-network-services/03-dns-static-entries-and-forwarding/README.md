@@ -61,3 +61,69 @@ E.03 local names ──► Chapter I hairpin NAT is often avoided with a static 
 | RouterOS version | `TODO` |
 | Starting state | Default configuration + A.03 internet |
 | Laptop | ether2, DNS `192.168.88.1` from DHCP |
+
+## Method A — CLI
+
+### Step 1 — Add local names
+
+```routeros
+/ip/dns/static/add name=nas.lan address=192.168.88.20
+/ip/dns/static/add name=files.lan type=CNAME cname=nas.lan
+/ip/dns/static/print
+```
+
+[1]
+
+`TODO` ![Step 1](images/cli/01-static.png)
+
+### Step 2 — Test from the laptop
+
+```powershell
+nslookup nas.lan 192.168.88.1
+nslookup files.lan 192.168.88.1
+nslookup 192.168.88.20 192.168.88.1
+```
+
+The last line tests the reverse lookup. [1]
+
+`TODO` ![Step 2](images/cli/02-nslookup.png)
+
+### Step 3 — Block a name
+
+```routeros
+/ip/dns/static/add name=tracker.example.com type=NXDOMAIN
+```
+
+[1] `nslookup tracker.example.com 192.168.88.1` now returns "non-existent domain".
+
+`TODO` ![Step 3](images/cli/03-nxdomain.png)
+
+### Step 4 — Forward one domain
+
+```routeros
+/ip/dns/static/add name=example.org type=FWD forward-to=9.9.9.9 match-subdomain=yes
+```
+
+[1] Queries for `example.org` and its subdomains now go to `9.9.9.9`.
+
+`TODO` ![Step 4](images/cli/04-fwd.png)
+
+### Step 5 — Inspect and flush the cache
+
+```routeros
+/ip/dns/cache/print
+/ip/dns/cache/flush
+```
+
+[1]
+
+`TODO` ![Step 5](images/cli/05-cache.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| `nas.lan` | `192.168.88.20` | `TODO` |
+| `files.lan` | CNAME to `nas.lan` | `TODO` |
+| Reverse `192.168.88.20` | `nas.lan` | `TODO` |
+| `tracker.example.com` | Non-existent domain | `TODO` |
