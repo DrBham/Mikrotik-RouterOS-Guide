@@ -127,3 +127,68 @@ The last line tests the reverse lookup. [1]
 | `files.lan` | CNAME to `nas.lan` | `TODO` |
 | Reverse `192.168.88.20` | `nas.lan` | `TODO` |
 | `tracker.example.com` | Non-existent domain | `TODO` |
+
+## Reset Before Method B
+
+Remove only the entries this topic added:
+
+```routeros
+/ip/dns/static/remove [find name=nas.lan]
+/ip/dns/static/remove [find name=files.lan]
+/ip/dns/static/remove [find name=tracker.example.com]
+/ip/dns/static/remove [find name=example.org]
+/ip/dns/cache/flush
+```
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Static entries
+
+**IP → DNS → Static → +**: Name `nas.lan`, Address `192.168.88.20`. Add the CNAME, NXDOMAIN, and FWD entries with the **Type** field.
+
+`TODO` ![Step 1](images/gui/01-static.png)
+
+### Step 2 — Cache
+
+**IP → DNS → Cache**, then **Flush Cache**.
+
+`TODO` ![Step 2](images/gui/02-cache.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| Local name not found | Laptop uses another DNS server | `ipconfig /all` DNS must be `192.168.88.1`. |
+| Old answer still returned | Cache on the router or laptop | `/ip/dns/cache/flush`; `ipconfig /flushdns`. [1] |
+| LAN cannot use the router's DNS | `allow-remote-requests=no` | Enable it. [1] |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| `/ip/dns/static/add name= address=` | Local A/AAAA + PTR [1] |
+| `type=CNAME`, `NXDOMAIN`, `FWD` | Alias, block, forward [1] |
+| `match-subdomain=yes` | Also answer names below [1] |
+| `/ip/dns/cache/flush` | Clear cached answers [1] |
+
+## Key Takeaways
+
+- Static entries give LAN devices names without a separate DNS server.
+- FWD entries split DNS by domain.
+
+## References
+
+1. [RouterOS Manual — DNS](https://manual.mikrotik.com/docs/network-management/dns/)
+
+---
+
+**Previous:** [E.02 — DHCP Relay](../02-dhcp-relay/README.md) · **Next:** E.04 — NTP, Clock, and Identity
+
+[Back to the main learning journal](../../README.md)
