@@ -55,3 +55,59 @@ E.04 correct time ──► Chapter Q logs and graphs ──► Chapter M IPsec 
 | RouterOS version | `TODO` |
 | Starting state | Default configuration + A.03 internet |
 | Time zone | `Asia/Jakarta` (change to yours) |
+
+## Method A — CLI
+
+### Step 1 — Set the identity
+
+```routeros
+/system/identity/set name=LAB-hAP-lite
+/system/identity/print
+```
+
+[1] The prompt changes to the new name.
+
+`TODO` ![Step 1](images/cli/01-identity.png)
+
+### Step 2 — Check and set the clock
+
+```routeros
+/system/clock/print
+/system/clock/set time-zone-autodetect=no time-zone-name=Asia/Jakarta
+```
+
+[2] Use Tab after `time-zone-name=` to find yours.
+
+`TODO` ![Step 2](images/cli/02-clock.png)
+
+### Step 3 — Enable the NTP client
+
+```routeros
+/system/ntp/client/set enabled=yes servers=pool.ntp.org
+/system/ntp/client/print
+```
+
+[4] Wait until `status: synchronized`.
+
+> [!WARNING]
+> **Source needed:** `pool.ntp.org` is a public NTP pool, not named on the RouterOS NTP page. Its use as an example comes from [ntppool.org](https://www.ntppool.org/); confirm before publishing.
+
+`TODO` ![Step 3](images/cli/03-ntp-client.png)
+
+### Step 4 — Serve time to the LAN
+
+```routeros
+/system/ntp/server/set enabled=yes
+```
+
+[4] On Windows, `w32tm /stripchart /computer:192.168.88.1 /samples:3` queries it.
+
+`TODO` ![Step 4](images/cli/04-ntp-server.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| Prompt | `[admin@LAB-hAP-lite]` [1] | `TODO` |
+| NTP client | `synchronized` [4] | `TODO` |
+| `/system/clock/print` | Correct local time | `TODO` |
