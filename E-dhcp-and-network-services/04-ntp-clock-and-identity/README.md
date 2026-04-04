@@ -83,14 +83,13 @@ E.04 correct time ──► Chapter Q logs and graphs ──► Chapter M IPsec 
 ### Step 3 — Enable the NTP client
 
 ```routeros
-/system/ntp/client/set enabled=yes servers=pool.ntp.org
+/system/ntp/client/set enabled=yes servers=0.pool.ntp.org,1.pool.ntp.org
 /system/ntp/client/print
 ```
 
 [4] Wait until `status: synchronized`.
 
-> [!WARNING]
-> **Source needed:** `pool.ntp.org` is a public NTP pool, not named on the RouterOS NTP page. Its use as an example comes from [ntppool.org](https://www.ntppool.org/); confirm before publishing.
+`pool.ntp.org` is the NTP Pool project, a large virtual cluster of public time servers run by volunteers. [5] A lookup of `pool.ntp.org` usually returns servers in or close to your country, and the project's setup examples use the numbered names `0.pool.ntp.org` to `3.pool.ntp.org`. [6]
 
 `TODO` ![Step 3](images/cli/03-ntp-client.png)
 
@@ -176,6 +175,8 @@ Same checks as [Verify (CLI)](#verify-cli).
 2. [RouterOS Manual — Clock](https://manual.mikrotik.com/docs/system-information-and-utilities/clock/)
 3. [RouterOS Manual — Cloud](https://manual.mikrotik.com/docs/network-management/cloud/)
 4. [RouterOS Manual — NTP](https://manual.mikrotik.com/docs/system-information-and-utilities/ntp/)
+5. [NTP Pool Project — pool.ntp.org: the internet cluster of ntp servers](https://www.ntppool.org/en/)
+6. [NTP Pool Project — How do I use pool.ntp.org?](https://www.ntppool.org/en/use.html)
 
 ---
 
