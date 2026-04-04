@@ -111,3 +111,74 @@ E.04 correct time ──► Chapter Q logs and graphs ──► Chapter M IPsec 
 | Prompt | `[admin@LAB-hAP-lite]` [1] | `TODO` |
 | NTP client | `synchronized` [4] | `TODO` |
 | `/system/clock/print` | Correct local time | `TODO` |
+
+## Reset Before Method B
+
+```routeros
+/system/ntp/server/set enabled=no
+/system/ntp/client/set enabled=no
+/system/identity/set name=MikroTik
+/system/clock/set time-zone-autodetect=yes
+```
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Identity
+
+**System → Identity**.
+
+`TODO` ![Step 1](images/gui/01-identity.png)
+
+### Step 2 — Clock
+
+**System → Clock**: untick autodetect, choose the time zone.
+
+`TODO` ![Step 2](images/gui/02-clock.png)
+
+### Step 3 — NTP client and server
+
+**System → NTP Client**: enable, add a server. **System → NTP Server**: enable.
+
+`TODO` ![Step 3](images/gui/03-ntp.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| NTP stays `waiting` | No DNS or no internet, or UDP 123 blocked upstream | Ping the server name. |
+| Time off by hours | Wrong time zone | Set the name manually. [2] |
+| Log times wrong after reboot | NTP disabled, clock not kept | Enable the NTP client. [4] |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| `/system/identity/set name=` | Router name [1] |
+| `time-zone-name=` | Manual time zone [2] |
+| `/system/ntp/client/set enabled=yes servers=` | Sync time [4] |
+| `/system/ntp/server/set enabled=yes` | Serve time to the LAN [4] |
+
+## Key Takeaways
+
+- Name every router; it prevents mistakes in multi-router labs.
+- Enable NTP before you rely on logs or certificates.
+
+## References
+
+1. [RouterOS Manual — Identity](https://manual.mikrotik.com/docs/system-information-and-utilities/identity/)
+2. [RouterOS Manual — Clock](https://manual.mikrotik.com/docs/system-information-and-utilities/clock/)
+3. [RouterOS Manual — Cloud](https://manual.mikrotik.com/docs/network-management/cloud/)
+4. [RouterOS Manual — NTP](https://manual.mikrotik.com/docs/system-information-and-utilities/ntp/)
+
+---
+
+**Previous:** [E.03 — DNS Static Entries and Forwarding](../03-dns-static-entries-and-forwarding/README.md) · **Next:** E.05 — IP Cloud and DDNS
+
+[Back to the main learning journal](../../README.md)
