@@ -60,3 +60,44 @@ E.05 DDNS name ──► Chapter M WireGuard endpoint ──► Chapter I port f
 | Device | MikroTik hAP lite (RB941-2nD) |
 | RouterOS version | `TODO` |
 | Starting state | Default configuration + A.03 internet |
+
+## Method A — CLI
+
+### Step 1 — Check the current state
+
+```routeros
+/ip/cloud/print
+```
+
+[1]
+
+`TODO` ![Step 1](images/cli/01-cloud-print.png)
+
+### Step 2 — Enable DDNS
+
+```routeros
+/ip/cloud/set ddns-enabled=yes
+/ip/cloud/print
+```
+
+[1] Wait for `status: updated`.
+
+`TODO` ![Step 2](images/cli/02-ddns-enabled.png)
+
+### Step 3 — Resolve the name
+
+```routeros
+:put [:resolve [/ip/cloud/get dns-name]]
+```
+
+Compare with `public-address` in `/ip/cloud/print`. In the A.03 lab, both show your home connection's public address. [1]
+
+`TODO` ![Step 3](images/cli/03-resolve.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| `dns-name` | `<serial>.sn.mynetname.net` [1] | `TODO` (covered) |
+| `status` | `updated` | `TODO` |
+| Resolved address | Equals `public-address` | `TODO` (covered) |
