@@ -101,3 +101,58 @@ Compare with `public-address` in `/ip/cloud/print`. In the A.03 lab, both show y
 | `dns-name` | `<serial>.sn.mynetname.net` [1] | `TODO` (covered) |
 | `status` | `updated` | `TODO` |
 | Resolved address | Equals `public-address` | `TODO` (covered) |
+
+## Reset Before Method B
+
+```routeros
+/ip/cloud/set ddns-enabled=no
+```
+
+Turning DDNS off asks the cloud to delete the name. [1]
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Enable DDNS
+
+**IP → Cloud**: tick **DDNS Enabled**, **Apply**. Wait for Status `updated`.
+
+`TODO` ![Step 1](images/gui/01-cloud.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli). Disable DDNS afterwards unless you need it.
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| Status never updates | UDP 15252 blocked or no internet [1] | Check internet; check upstream firewall. |
+| Name resolves but nothing reachable | CGN, or the firewall blocks WAN access (by design) | See B.06 and Chapter H. |
+| `force-update` does nothing | DDNS is off [1] | Enable it first. |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| `/ip/cloud/set ddns-enabled=yes` | Get a `.sn.mynetname.net` name [1] |
+| TTL 60 s, update each minute behind NAT | Follows address changes [1] |
+| Serial in the name | Privacy consideration [1] |
+
+## Key Takeaways
+
+- IP Cloud gives a stable name for a changing address.
+- The name reveals the serial number and public address; treat it as private.
+
+## References
+
+1. [RouterOS Manual — Cloud](https://manual.mikrotik.com/docs/network-management/cloud/)
+2. [RouterOS Manual — Clock](https://manual.mikrotik.com/docs/system-information-and-utilities/clock/)
+
+---
+
+**Previous:** [E.04 — NTP, Clock, and Identity](../04-ntp-clock-and-identity/README.md) · **Next:** E.06 — Scheduler and Scripts
+
+[Back to the main learning journal](../../README.md)
