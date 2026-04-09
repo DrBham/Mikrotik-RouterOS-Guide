@@ -67,3 +67,60 @@ E.06 scripts ──► Chapter N Netwatch up/down scripts ──► Chapter Q lo
 
 > [!WARNING]
 > The hAP lite has 16 MB of flash. Nightly files overwrite the same names, so they do not accumulate; do not add dates to the file names on this device.
+
+## Method A — CLI
+
+### Step 1 — Create the script
+
+```routeros
+/system/script/add name=nightly-backup source={
+    /system/backup/save name=nightly
+    /export file=nightly
+    :log info "nightly backup done"
+}
+```
+
+[1][2] The backup is saved without a password here; add `password=` for a real router (A.07).
+
+`TODO` ![Step 1](images/cli/01-script.png)
+
+### Step 2 — Run it once by hand
+
+```routeros
+/system/script/run nightly-backup
+/file/print
+/log/print where message~"nightly"
+```
+
+[2]
+
+`TODO` ![Step 2](images/cli/02-run.png)
+
+### Step 3 — Schedule it
+
+```routeros
+/system/scheduler/add name=nightly-backup start-time=03:00:00 interval=1d on-event=nightly-backup
+/system/scheduler/print detail
+```
+
+[2]
+
+`TODO` ![Step 3](images/cli/03-schedule.png)
+
+### Step 4 — Test with a short interval
+
+```routeros
+/system/scheduler/set nightly-backup interval=2m start-time=startup
+```
+
+Wait two minutes and check `run-count` and the log, then set it back to `start-time=03:00:00 interval=1d`.
+
+`TODO` ![Step 4](images/cli/04-test.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| Files | `nightly.backup`, `nightly.rsc` | `TODO` |
+| Log | "nightly backup done" | `TODO` |
+| Scheduler run-count | Increases | `TODO` |
