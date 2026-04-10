@@ -124,3 +124,65 @@ Wait two minutes and check `run-count` and the log, then set it back to `start-t
 | Files | `nightly.backup`, `nightly.rsc` | `TODO` |
 | Log | "nightly backup done" | `TODO` |
 | Scheduler run-count | Increases | `TODO` |
+
+## Reset Before Method B
+
+```routeros
+/system/scheduler/remove nightly-backup
+/system/script/remove nightly-backup
+/file/remove [find name~"nightly"]
+```
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Script
+
+**System → Scripts → +**: Name `nightly-backup`, Source as in Method A. **Run Script** to test.
+
+`TODO` ![Step 1](images/gui/01-script.png)
+
+### Step 2 — Scheduler
+
+**System → Scheduler → +**: Name `nightly-backup`, Start Time `03:00:00`, Interval `1d`, On Event `nightly-backup`.
+
+`TODO` ![Step 2](images/gui/02-scheduler.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| Script runs by hand, not from the scheduler | Scheduler user lacks permissions [2] | Add it as a full-rights user. |
+| Runs at the wrong time | Clock or time zone wrong | E.04. |
+| Not available | Device mode `home` [2] | Check device mode. |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| `/system/script/add name= source={…}` | Stored commands [1][2] |
+| `/system/script/run` | Run now [2] |
+| `/system/scheduler/add start-time= interval= on-event=` | Run later or repeatedly [2] |
+| `start-time=startup` | Run at boot [2] |
+
+## Key Takeaways
+
+- Schedule backups instead of remembering them.
+- Test a schedule with a short interval, then set the real one.
+
+## References
+
+1. [RouterOS Manual — Scripting](https://manual.mikrotik.com/docs/developer-guides/scripting/)
+2. [RouterOS Manual — Scheduler](https://manual.mikrotik.com/docs/system-information-and-utilities/scheduler/)
+
+---
+
+**Previous:** [E.05 — IP Cloud and DDNS](../05-ip-cloud-and-ddns/README.md) · **Next:** Chapter F — Wireless Networking
+
+[Back to the main learning journal](../../README.md)
