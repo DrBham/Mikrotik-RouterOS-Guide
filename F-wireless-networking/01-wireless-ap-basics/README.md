@@ -130,3 +130,70 @@ F.01 radio ──► F.02 security ──► F.03 who may connect ──► F.04
 | Phone sees `LAB-AP` | Yes | `TODO` |
 | Registration table | Phone listed with signal | `TODO` |
 | Phone gets `192.168.88.x` | Yes (wlan1 is in the LAN bridge) | `TODO` |
+
+## Reset Before Method B
+
+Reset to the default configuration (A.05) so the radio returns to its defaults.
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Scan
+
+**Wireless → wlan1 → Scan**.
+
+`TODO` ![Step 1](images/gui/01-scan.png)
+
+### Step 2 — Wireless tab
+
+Mode `ap bridge`, Band `2GHz-B/G/N`, Channel Width `20MHz`, Frequency, SSID, Country.
+
+`TODO` ![Step 2](images/gui/02-wireless-tab.png)
+
+### Step 3 — Registration
+
+**Wireless → Registration**.
+
+`TODO` ![Step 3](images/gui/03-registration.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| Frequency not accepted | Not allowed in the selected country [3] | Pick another channel. |
+| Slow, unstable Wi-Fi | Crowded channel or 40 MHz width | Scan; use 20 MHz on a quieter channel. [1][3] |
+| Phone connects but gets no address | wlan1 not in the LAN bridge | Check bridge ports (D.02). |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| `mode=ap-bridge` | Access point [3] |
+| `band`, `channel-width`, `frequency` | Radio settings [3] |
+| `country` | Legal channels and power [3] |
+| `registration-table` | Connected clients [3] |
+| `hide-ssid` | Not a security feature [3] |
+
+## Key Takeaways
+
+- Scan before choosing a channel; on 2.4 GHz prefer 20 MHz.
+- Set the correct country so the radio follows local rules.
+
+## References
+
+1. [RouterOS Manual — Wireless](https://manual.mikrotik.com/docs/wireless/)
+2. [RouterOS Manual — 802.11 a/b/g/n](https://manual.mikrotik.com/docs/wireless/abgn/)
+3. [RouterOS Manual — Wireless Interface](https://manual.mikrotik.com/docs/wireless/abgn/wireless-interface/)
+4. [MikroTik — hAP lite (RB941-2nD)](https://mikrotik.com/product/RB941-2nD)
+
+---
+
+**Previous:** [E.06 — Scheduler and Scripts](../../E-dhcp-and-network-services/06-scheduler-and-scripts/README.md) · **Next:** F.02 — Wireless Security Profiles
+
+[Back to the main learning journal](../../README.md)
