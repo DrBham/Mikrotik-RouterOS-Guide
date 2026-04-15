@@ -63,3 +63,46 @@ F.02 who has the key ──► F.03 which devices are allowed ──► F.04 sep
 | Device | MikroTik hAP lite (RB941-2nD) |
 | RouterOS version | `TODO` |
 | Starting state | F.01 Method A complete |
+
+## Method A — CLI
+
+### Step 1 — Look at the profiles
+
+```routeros
+/interface/wireless/security-profiles/print
+```
+
+[1]
+
+`TODO` ![Step 1](images/cli/01-profiles.png)
+
+### Step 2 — Create a WPA2 profile
+
+```routeros
+/interface/wireless/security-profiles add name=lab-wpa2 authentication-types=wpa2-psk mode=dynamic-keys wpa2-pre-shared-key="YOUR_STRONG_PASSWORD"
+```
+
+[2] Use at least 12 random characters, as for router passwords (A.06).
+
+> [!CAUTION]
+> **Privacy:** cover the key. See the [privacy checklist](../../TOPIC-TEMPLATE.md#screenshot--privacy-checklist).
+
+`TODO` ![Step 2](images/cli/02-profile-add.png)
+
+### Step 3 — Apply it to wlan1
+
+```routeros
+/interface/wireless/set wlan1 security-profile=lab-wpa2
+```
+
+[1] The phone disconnects and must enter the new key.
+
+`TODO` ![Step 3](images/cli/03-apply.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| Phone shows WPA2 | Yes | `TODO` |
+| Wrong key | Rejected | `TODO` |
+| Registration table | Phone listed after correct key | `TODO` |
