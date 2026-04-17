@@ -47,8 +47,9 @@ For WPA2 with a password, the profile uses `mode=dynamic-keys`, `authentication-
 
 WPA3 and fast roaming are only available in the newer `wifi` menu. [3] The hAP lite cannot run it (F.01), so WPA2 with a long random key is the best available option on this device.
 
-> [!WARNING]
-> **Source needed:** cipher options (`aes-ccm`, `tkip`) and management frame protection settings come from a summary of the Wireless Interface page, not verified text. Confirm on the [Wireless Interface page](https://manual.mikrotik.com/docs/wireless/abgn/wireless-interface/) before relying on them.
+### Other profile options
+
+`authentication-types` accepts `wpa-psk`, `wpa2-psk`, `wpa-eap`, and `wpa2-eap`, and more than one can be selected. [1] `unicast-ciphers` and `group-ciphers` accept `tkip` and `aes-ccm`, and both default to `aes-ccm`. [1] Management frame protection is set with `management-protection`. [1] Its values are `disabled` (the default), `allowed` (use it if the other side supports it), and `required` (associate only with devices that support it). [1]
 
 ### How it connects
 
