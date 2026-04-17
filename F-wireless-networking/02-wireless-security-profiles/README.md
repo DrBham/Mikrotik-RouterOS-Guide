@@ -106,3 +106,63 @@ F.02 who has the key ──► F.03 which devices are allowed ──► F.04 sep
 | Phone shows WPA2 | Yes | `TODO` |
 | Wrong key | Rejected | `TODO` |
 | Registration table | Phone listed after correct key | `TODO` |
+
+## Reset Before Method B
+
+```routeros
+/interface/wireless/set wlan1 security-profile=default
+/interface/wireless/security-profiles/remove lab-wpa2
+```
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — New profile
+
+**Wireless → Security Profiles → +**: Name `lab-wpa2`, Mode `dynamic keys`, tick `WPA2 PSK`, enter the key.
+
+`TODO` ![Step 1](images/gui/01-profile.png)
+
+### Step 2 — Apply
+
+**Wireless → wlan1 → Wireless** tab: Security Profile `lab-wpa2`.
+
+`TODO` ![Step 2](images/gui/02-apply.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| Phone says "authentication problem" | Wrong key or old saved network | Forget the network on the phone and reconnect. |
+| Old devices cannot join | They do not support WPA2 | Replace them; do not weaken the AP. |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| `security-profiles add … wpa2-psk dynamic-keys` | WPA2 personal [1][2] |
+| `security-profile=` on the interface | Which profile applies [1] |
+| WPA3 | Only in the `wifi` menu, not on hAP lite [3] |
+
+## Key Takeaways
+
+- WPA2 with a long random key is the strongest option on the hAP lite.
+- Keep one profile per network so keys can be changed independently.
+
+## References
+
+1. [RouterOS Manual — Wireless Interface](https://manual.mikrotik.com/docs/wireless/abgn/wireless-interface/)
+2. [RouterOS Manual — First Time Configuration](https://manual.mikrotik.com/docs/getting-started/first-time-configuration)
+3. [RouterOS Manual — 802.11 a/b/g/n](https://manual.mikrotik.com/docs/wireless/abgn/)
+
+---
+
+**Previous:** [F.01 — Wireless AP Basics](../01-wireless-ap-basics/README.md) · **Next:** F.03 — Access List and Connect List
+
+[Back to the main learning journal](../../README.md)
