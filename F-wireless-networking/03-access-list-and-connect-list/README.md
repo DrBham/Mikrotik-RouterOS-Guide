@@ -72,3 +72,50 @@ F.03 access list ──► Chapter L HotSpot IP bindings use the same "allow by 
 | RouterOS version | `TODO` |
 | Starting state | F.02 Method A complete |
 | Clients | Two phones (or a phone and a laptop) |
+
+## Method A — CLI
+
+### Step 1 — Reject weak clients
+
+```routeros
+/interface/wireless/access-list add interface=wlan1 signal-range=-75..0 authentication=yes forwarding=yes comment="good signal"
+/interface/wireless/set wlan1 default-authentication=no
+```
+
+[1] Walk away with a phone until its signal drops below −75 dBm and watch it disconnect.
+
+`TODO` ![Step 1](images/cli/01-signal-range.png)
+
+### Step 2 — Block one device
+
+```routeros
+/interface/wireless/access-list add interface=wlan1 mac-address=00:00:5E:00:53:20 authentication=no place-before=0 comment="blocked device"
+```
+
+[1] Use the second phone's MAC (the example is a documentation address). It can no longer join.
+
+> [!CAUTION]
+> **Privacy:** cover real MAC addresses. See the [privacy checklist](../../TOPIC-TEMPLATE.md#screenshot--privacy-checklist).
+
+`TODO` ![Step 2](images/cli/02-block.png)
+
+### Step 3 — Pin a station to one AP (optional)
+
+On a router running the A.03 station uplink:
+
+```routeros
+/interface/wireless/connect-list/add interface=wlan1 connect=yes mac-address=00:00:5E:00:53:01
+/interface/wireless/set wlan1 default-authentication=no
+```
+
+[1] Use your upstream AP's MAC from the scan.
+
+`TODO` ![Step 3](images/cli/03-connect-list.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| Weak phone | Disconnected below −75 dBm | `TODO` |
+| Blocked phone | Cannot join | `TODO` |
+| Station | Joins only the listed AP | `TODO` |
