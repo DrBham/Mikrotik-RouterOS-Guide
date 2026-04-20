@@ -36,7 +36,7 @@ On an AP, `default-authentication` decides what happens to clients that match no
 
 ### Access list (AP side)
 
-Entries are checked in order and the first match applies. [1] An entry can match a MAC address, an interface, or a signal range, and allow or deny authentication and forwarding. [1] Example from the manual's description:
+Entries are checked in order and the first match applies. [1] An entry can match a MAC address, an interface, or a signal range, and allow or deny authentication and forwarding. [1] Example from the manual:
 
 ```routeros
 /interface/wireless/access-list add authentication=yes forwarding=yes interface=wlan2 signal-range=-55..0
@@ -44,15 +44,14 @@ Entries are checked in order and the first match applies. [1] An entry can match
 
 ### Connect list (station side)
 
-The connect list chooses which APs a station may join. [1] Examples from the manual's description:
+The connect list chooses which APs a station may join. [1] Examples from the manual's "Restrict station connections only to specific access points" usage:
 
 ```routeros
 /interface/wireless/set station-wlan default-authentication=no
 /interface/wireless/connect-list/add interface=station-wlan connect=yes mac-address=00:11:22:33:00:01
 ```
 
-> [!WARNING]
-> **Source needed:** the access-list and connect-list examples come from a summary of the Wireless Interface page, not verified text. Confirm them on the [Wireless Interface page](https://manual.mikrotik.com/docs/wireless/abgn/wireless-interface/) before publishing.
+[1]
 
 ### MAC filtering is not security
 
@@ -92,7 +91,7 @@ F.03 access list ──► Chapter L HotSpot IP bindings use the same "allow by 
 /interface/wireless/access-list add interface=wlan1 mac-address=00:00:5E:00:53:20 authentication=no place-before=0 comment="blocked device"
 ```
 
-[1] Use the second phone's MAC (the example is a documentation address). It can no longer join.
+[1][3] `place-before=0` puts the new rule above the "good signal" rule, so it is checked first. [3] Use the second phone's MAC (the example is a documentation address). It can no longer join.
 
 > [!CAUTION]
 > **Privacy:** cover real MAC addresses. See the [privacy checklist](../../TOPIC-TEMPLATE.md#screenshot--privacy-checklist).
@@ -174,6 +173,7 @@ Same checks as [Verify (CLI)](#verify-cli).
 
 1. [RouterOS Manual — Wireless Interface](https://manual.mikrotik.com/docs/wireless/abgn/wireless-interface/)
 2. [RouterOS Manual — HotSpot (Captive portal)](https://manual.mikrotik.com/docs/authentication-authorization-accounting/hotspot-captive-portal/)
+3. [MikroTik Help — Command Line Interface (general `add` parameters, `place-before`)](https://help.mikrotik.com/docs/spaces/ROS/pages/328134/Command+Line+Interface)
 
 ---
 
