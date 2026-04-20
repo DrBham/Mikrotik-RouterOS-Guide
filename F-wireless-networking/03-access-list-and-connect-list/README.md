@@ -119,3 +119,64 @@ On a router running the A.03 station uplink:
 | Weak phone | Disconnected below −75 dBm | `TODO` |
 | Blocked phone | Cannot join | `TODO` |
 | Station | Joins only the listed AP | `TODO` |
+
+## Reset Before Method B
+
+```routeros
+/interface/wireless/access-list/remove [find]
+/interface/wireless/connect-list/remove [find]
+/interface/wireless/set wlan1 default-authentication=yes
+```
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Access list
+
+**Wireless → Access List → +**: Interface `wlan1`, Signal Strength Range `-75..0`, Authentication and Forwarding ticked. Untick **Default Authenticate** on wlan1.
+
+`TODO` ![Step 1](images/gui/01-access-list.png)
+
+### Step 2 — Block a device
+
+Add a rule with the MAC, Authentication unticked, and move it to the top.
+
+`TODO` ![Step 2](images/gui/02-block.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| No client can connect | `default-authentication=no` and no matching allow rule | Check rule order. [1] |
+| Blocked phone still connects | Phone uses a random (private) MAC | Disable MAC randomisation for that network on the phone. |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| `access-list` | Which clients an AP accepts; first match wins [1] |
+| `connect-list` | Which APs a station joins [1] |
+| `default-authentication` | Fallback when nothing matches [1] |
+| MAC filters | Easy to copy, not security [2] |
+
+## Key Takeaways
+
+- Use signal ranges to keep edge clients from slowing the AP.
+- Rules are checked in order; put specific blocks first.
+
+## References
+
+1. [RouterOS Manual — Wireless Interface](https://manual.mikrotik.com/docs/wireless/abgn/wireless-interface/)
+2. [RouterOS Manual — HotSpot (Captive portal)](https://manual.mikrotik.com/docs/authentication-authorization-accounting/hotspot-captive-portal/)
+
+---
+
+**Previous:** [F.02 — Wireless Security Profiles](../02-wireless-security-profiles/README.md) · **Next:** F.04 — Virtual AP Guest Network
+
+[Back to the main learning journal](../../README.md)
