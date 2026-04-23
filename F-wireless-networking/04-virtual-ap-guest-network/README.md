@@ -62,3 +62,56 @@ F.04 separate SSID + subnet ──► Chapter H forward-chain rules ──► Ch
 | RouterOS version | `TODO` |
 | Starting state | F.02 complete, ether1 uplink, default firewall and NAT |
 | Guest subnet | `192.168.99.1/24` |
+
+## Method A — CLI
+
+### Step 1 — Guest security profile
+
+```routeros
+/interface/wireless/security-profiles add name=guests authentication-types=wpa2-psk mode=dynamic-keys wpa2-pre-shared-key="GUEST_PASSWORD"
+```
+
+[3]
+
+`TODO` ![Step 1](images/cli/01-guest-profile.png)
+
+### Step 2 — Virtual AP
+
+```routeros
+/interface/wireless add name=wlan-guest mode=ap-bridge master-interface=wlan1 ssid=LAB-Guest security-profile=guests disabled=no
+```
+
+[1]
+
+`TODO` ![Step 2](images/cli/02-virtual-ap.png)
+
+### Step 3 — Address and DHCP
+
+```routeros
+/ip/address/add address=192.168.99.1/24 interface=wlan-guest
+/ip/pool/add name=pool-guest ranges=192.168.99.10-192.168.99.254
+/ip/dhcp-server/network/add address=192.168.99.0/24 gateway=192.168.99.1 dns-server=192.168.99.1
+/ip/dhcp-server/add address-pool=pool-guest interface=wlan-guest name=dhcp-guest
+```
+
+[4]
+
+`TODO` ![Step 3](images/cli/03-guest-dhcp.png)
+
+### Step 4 — Block guests from the LAN
+
+```routeros
+/ip/firewall/filter add chain=forward action=drop src-address=192.168.99.0/24 dst-address=192.168.88.0/24 comment="guests to LAN" place-before=0
+```
+
+[2] Check that the NAT masquerade rule does not limit `src-address` to `192.168.88.0/24` (C.06); if it does, add a second rule for the guest subnet.
+
+`TODO` ![Step 4](images/cli/04-guest-isolation.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| Phone on `LAB-Guest` | `192.168.99.x` | `TODO` |
+| Guest browses | Works | `TODO` |
+| Guest pings `192.168.88.1` or a LAN PC | Fails | `TODO` |
