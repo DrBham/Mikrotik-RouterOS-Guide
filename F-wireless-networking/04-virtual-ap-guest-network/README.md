@@ -33,16 +33,13 @@ Guests, smart TVs, and IoT devices should reach the internet without seeing your
 
 ### Virtual AP
 
-A virtual wireless interface is created with `master-interface` set to a physical radio; it shares the radio but has its own SSID and settings. [1] The master must be in `ap-bridge`, `bridge`, `station`, or `wds-slave` mode. [1] The manual's description gives this form:
+A virtual wireless interface is created with `master-interface` set to a physical radio; it shares the radio but has its own SSID and settings. [1] The master must be in `ap-bridge`, `bridge`, `station`, or `wds-slave` mode. [1] The manual's Virtual AP example:
 
 ```routeros
 /interface wireless add mode=ap-bridge master-interface=wlan1 ssid=guests security-profile=guests
 ```
 
 [1] The guest network uses the same channel as the main one, because it is the same radio.
-
-> [!WARNING]
-> **Source needed:** this example comes from a summary of the Wireless Interface page. Confirm it on the [Wireless Interface page](https://manual.mikrotik.com/docs/wireless/abgn/wireless-interface/).
 
 ### Keeping guests apart
 
@@ -81,7 +78,7 @@ F.04 separate SSID + subnet ──► Chapter H forward-chain rules ──► Ch
 /interface/wireless add name=wlan-guest mode=ap-bridge master-interface=wlan1 ssid=LAB-Guest security-profile=guests disabled=no
 ```
 
-[1]
+[1] This is the manual's form with a `name` added. `disabled=no` is a general `add` parameter that sets whether the new item starts enabled. [5]
 
 `TODO` ![Step 2](images/cli/02-virtual-ap.png)
 
@@ -182,6 +179,7 @@ Same checks as [Verify (CLI)](#verify-cli).
 2. [RouterOS Manual — Filter](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/firewall/filter/)
 3. [RouterOS Manual — First Time Configuration](https://manual.mikrotik.com/docs/getting-started/first-time-configuration)
 4. [RouterOS Manual — DHCP Server](https://manual.mikrotik.com/docs/network-management/dhcp/server/)
+5. [MikroTik Help — Command Line Interface (general `add` parameters)](https://help.mikrotik.com/docs/spaces/ROS/pages/328134/Command+Line+Interface)
 
 ---
 
