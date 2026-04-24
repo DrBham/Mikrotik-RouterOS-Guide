@@ -115,3 +115,76 @@ F.04 separate SSID + subnet ──► Chapter H forward-chain rules ──► Ch
 | Phone on `LAB-Guest` | `192.168.99.x` | `TODO` |
 | Guest browses | Works | `TODO` |
 | Guest pings `192.168.88.1` or a LAN PC | Fails | `TODO` |
+
+## Reset Before Method B
+
+```routeros
+/ip/firewall/filter/remove [find comment="guests to LAN"]
+/ip/dhcp-server/remove dhcp-guest
+/ip/dhcp-server/network/remove [find address=192.168.99.0/24]
+/ip/pool/remove pool-guest
+/ip/address/remove [find interface=wlan-guest]
+/interface/wireless/remove wlan-guest
+/interface/wireless/security-profiles/remove guests
+```
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Virtual AP
+
+**Wireless → + → Virtual**: Master Interface `wlan1`, Mode `ap bridge`, SSID `LAB-Guest`, Security Profile `guests`.
+
+`TODO` ![Step 1](images/gui/01-virtual-ap.png)
+
+### Step 2 — Address and DHCP
+
+**IP → Addresses → +** on `wlan-guest`, then **IP → DHCP Server → DHCP Setup** on `wlan-guest`.
+
+`TODO` ![Step 2](images/gui/02-dhcp.png)
+
+### Step 3 — Firewall rule
+
+**IP → Firewall → Filter Rules → +**: Chain `forward`, Src. Address `192.168.99.0/24`, Dst. Address `192.168.88.0/24`, Action `drop`. Move it to the top.
+
+`TODO` ![Step 3](images/gui/03-filter.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| Guest gets no address | DHCP server not on `wlan-guest` | Check the server interface. |
+| Guest has no internet | NAT limited to the LAN subnet | Add NAT for `192.168.99.0/24`. |
+| Guest can still reach the LAN | Drop rule below an accept rule | Move it up; first match wins. [2] |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| `master-interface=wlan1` | Virtual AP on the same radio [1] |
+| Own subnet + DHCP | Guests separated at layer 3 |
+| `forward` drop guest→LAN | Isolation [2] |
+
+## Key Takeaways
+
+- A virtual AP gives a second SSID without a second radio.
+- Separation comes from the subnet plus a forward-chain drop rule.
+
+## References
+
+1. [RouterOS Manual — Wireless Interface](https://manual.mikrotik.com/docs/wireless/abgn/wireless-interface/)
+2. [RouterOS Manual — Filter](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/firewall/filter/)
+3. [RouterOS Manual — First Time Configuration](https://manual.mikrotik.com/docs/getting-started/first-time-configuration)
+4. [RouterOS Manual — DHCP Server](https://manual.mikrotik.com/docs/network-management/dhcp/server/)
+
+---
+
+**Previous:** [F.03 — Access List and Connect List](../03-access-list-and-connect-list/README.md) · **Next:** Chapter G — Routing Fundamentals
+
+[Back to the main learning journal](../../README.md)
