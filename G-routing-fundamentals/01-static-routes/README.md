@@ -64,3 +64,85 @@ LAN-A 10.1.1.0/24          Transit 10.0.12.0/30           LAN-B 10.2.2.0/24
 | --- | --- |
 | R1, R2 | MikroTik CHR in GNS3, `TODO` RouterOS version |
 | PC-A, PC-B | GNS3 VPCS or Linux hosts |
+
+## Method A — CLI
+
+### Step 1 — Addresses
+
+R1:
+
+```routeros
+/ip/address/add address=10.0.12.1/30 interface=ether1
+/ip/address/add address=10.1.1.1/24 interface=ether2
+```
+
+R2:
+
+```routeros
+/ip/address/add address=10.0.12.2/30 interface=ether1
+/ip/address/add address=10.2.2.1/24 interface=ether2
+```
+
+`TODO` ![Step 1](images/cli/01-addresses.png)
+
+### Step 2 — Show the problem
+
+From PC-A, ping `10.2.2.10` (PC-B): it fails. R1's table has no route to `10.2.2.0/24`.
+
+```routeros
+/ip/route/print
+```
+
+`TODO` ![Step 2](images/cli/02-no-route.png)
+
+### Step 3 — Add routes in both directions
+
+R1:
+
+```routeros
+/ip/route/add dst-address=10.2.2.0/24 gateway=10.0.12.2
+```
+
+R2:
+
+```routeros
+/ip/route/add dst-address=10.1.1.0/24 gateway=10.0.12.1
+```
+
+[2] Ping again: it works.
+
+`TODO` ![Step 3](images/cli/03-routes.png)
+
+### Step 4 — Trace the path
+
+From R1:
+
+```routeros
+/tool/traceroute 10.2.2.10 count=1
+```
+
+[4] Two hops: R2, then PC-B.
+
+`TODO` ![Step 4](images/cli/04-traceroute.png)
+
+### Step 5 — Add a backup route
+
+Add a second link `10.0.21.0/30` between R1 ether3 (`.1`) and R2 ether3 (`.2`), then on R1:
+
+```routeros
+/ip/route/set [find dst-address=10.2.2.0/24] check-gateway=ping
+/ip/route/add dst-address=10.2.2.0/24 gateway=10.0.21.2 distance=2
+/ip/route/print where dst-address=10.2.2.0/24
+```
+
+[1][3] Disable R2 ether1 and watch the distance-2 route become active. Add the mirror routes on R2.
+
+`TODO` ![Step 5](images/cli/05-backup-route.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| PC-A ↔ PC-B | Ping works after Step 3 | `TODO` |
+| Traceroute | Via `10.0.12.2` | `TODO` |
+| Primary link down | Distance-2 route active within ~20 s [3] | `TODO` |
