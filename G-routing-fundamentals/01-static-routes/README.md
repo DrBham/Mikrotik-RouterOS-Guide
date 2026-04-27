@@ -146,3 +146,71 @@ Add a second link `10.0.21.0/30` between R1 ether3 (`.1`) and R2 ether3 (`.2`), 
 | PC-A ↔ PC-B | Ping works after Step 3 | `TODO` |
 | Traceroute | Via `10.0.12.2` | `TODO` |
 | Primary link down | Distance-2 route active within ~20 s [3] | `TODO` |
+
+## Reset Before Method B
+
+```routeros
+/ip/route/remove [find dst-address=10.2.2.0/24]
+```
+
+and on R2:
+
+```routeros
+/ip/route/remove [find dst-address=10.1.1.0/24]
+```
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Add the routes
+
+**IP → Routes → +**: Dst. Address `10.2.2.0/24`, Gateway `10.0.12.2` on R1; the mirror on R2.
+
+`TODO` ![Step 1](images/gui/01-routes.png)
+
+### Step 2 — Backup route
+
+Add the distance-2 route and set **Check Gateway** `ping` on the primary.
+
+`TODO` ![Step 2](images/gui/02-backup.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| Ping times out one way | Missing return route | Check both routers. |
+| Route shown but inactive | Gateway not on a connected network | Fix the gateway address. [1] |
+| Backup never takes over | No `check-gateway` and link stays up | Add `check-gateway=ping`. [3] |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| `/ip/route/add dst-address= gateway=` | Static route [2] |
+| `distance=` | Lower wins; higher waits as backup [1] |
+| `check-gateway=ping` | Deactivate on dead gateway [3] |
+| Return route | Needed on the other router |
+
+## Key Takeaways
+
+- Every static route needs a matching route back.
+- Use distance and `check-gateway` for a simple backup path.
+
+## References
+
+1. [RouterOS Manual — Routing decision](https://manual.mikrotik.com/docs/user-guides/routing-and-networking-protocols/routing-decision/)
+2. [RouterOS Manual — Policy Routing](https://manual.mikrotik.com/docs/user-guides/routing-and-networking-protocols/policy-routing/)
+3. [RouterOS Manual — Failover (WAN Backup)](https://manual.mikrotik.com/docs/high-availability-solutions/load-balancing/failover-wan-backup/)
+4. [RouterOS Manual — Traceroute](https://manual.mikrotik.com/docs/diagnostics-monitoring-and-troubleshooting/traceroute/)
+
+---
+
+**Previous:** [F.04 — Virtual AP Guest Network](../../F-wireless-networking/04-virtual-ap-guest-network/README.md) · **Next:** G.02 — Policy Routing
+
+[Back to the main learning journal](../../README.md)
