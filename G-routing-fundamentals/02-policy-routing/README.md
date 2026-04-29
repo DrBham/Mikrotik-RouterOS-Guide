@@ -68,3 +68,64 @@ G.02 tables + rules ──► Chapter N PCC load balancing ──► Chapter M r
 
 > [!NOTE]
 > `TODO` document how the second uplink is provided in your lab.
+
+## Method A — CLI
+
+The commands follow the manual's multi-WAN example. [1]
+
+### Step 1 — A second routing table
+
+```routeros
+/routing/table/add name=to-wan2 fib
+```
+
+[1]
+
+`TODO` ![Step 1](images/cli/01-table.png)
+
+### Step 2 — Default route in that table
+
+```routeros
+/ip/route/add dst-address=0.0.0.0/0 gateway=10.20.0.1 routing-table=to-wan2 check-gateway=ping
+```
+
+[1]
+
+`TODO` ![Step 2](images/cli/02-route.png)
+
+### Step 3 — Rule for one device
+
+```routeros
+/routing/rule/add src-address=192.168.88.50/32 action=lookup table=to-wan2
+```
+
+[1]
+
+`TODO` ![Step 3](images/cli/03-rule.png)
+
+### Step 4 — NAT on the second uplink
+
+```routeros
+/ip/firewall/nat/add chain=srcnat out-interface=ether2 action=masquerade
+```
+
+[1]
+
+`TODO` ![Step 4](images/cli/04-nat.png)
+
+### Step 5 — Test
+
+From `192.168.88.50` and from another LAN device, open a "what is my IP" page or run a traceroute. The first hop differs.
+
+> [!CAUTION]
+> **Privacy:** cover public addresses. See the [privacy checklist](../../TOPIC-TEMPLATE.md#screenshot--privacy-checklist).
+
+`TODO` ![Step 5](images/cli/05-test.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| `.50` first hop | WAN2 gateway | `TODO` |
+| Other devices | WAN1 gateway | `TODO` |
+| WAN2 down | `.50` falls back to `main` (because of `action=lookup`) [1] | `TODO` |
