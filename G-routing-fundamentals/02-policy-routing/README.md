@@ -129,3 +129,72 @@ From `192.168.88.50` and from another LAN device, open a "what is my IP" page or
 | `.50` first hop | WAN2 gateway | `TODO` |
 | Other devices | WAN1 gateway | `TODO` |
 | WAN2 down | `.50` falls back to `main` (because of `action=lookup`) [1] | `TODO` |
+
+## Reset Before Method B
+
+```routeros
+/routing/rule/remove [find table=to-wan2]
+/ip/route/remove [find routing-table=to-wan2]
+/ip/firewall/nat/remove [find out-interface=ether2]
+/routing/table/remove [find name=to-wan2]
+```
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Table
+
+**Routing → Tables → +**: Name `to-wan2`, FIB ticked.
+
+`TODO` ![Step 1](images/gui/01-table.png)
+
+### Step 2 — Route
+
+**IP → Routes → +**: Dst `0.0.0.0/0`, Gateway `10.20.0.1`, Routing Table `to-wan2`.
+
+`TODO` ![Step 2](images/gui/02-route.png)
+
+### Step 3 — Rule and NAT
+
+**Routing → Rules → +**: Src. Address `192.168.88.50/32`, Action `lookup`, Table `to-wan2`. Then the NAT rule.
+
+`TODO` ![Step 3](images/gui/03-rule-nat.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| Marked device has no internet | No NAT on WAN2 | Step 4. [1] |
+| Rule ignored | Mangle routing mark overrides it [2] | Check mangle rules. |
+| Some connections ignore the table | FastTrack (main table only) [2] | Exclude marked traffic from FastTrack. |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| `/routing/table/add name= fib` | New table [1] |
+| `routing-table=` on a route | Put a route in a table [1] |
+| `/routing/rule/add … action=lookup table=` | Choose a table by source etc. [1] |
+| `mark-routing` in mangle | Choose a table by any match [2] |
+
+## Key Takeaways
+
+- Policy routing = extra tables + a rule or mark that picks them.
+- Every uplink needs its own NAT.
+
+## References
+
+1. [RouterOS Manual — Policy Routing](https://manual.mikrotik.com/docs/user-guides/routing-and-networking-protocols/policy-routing/)
+2. [RouterOS Manual — Mangle](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/firewall/mangle/)
+
+---
+
+**Previous:** [G.01 — Static Routes](../01-static-routes/README.md) · **Next:** Chapter H — Firewall & Network Security
+
+[Back to the main learning journal](../../README.md)
