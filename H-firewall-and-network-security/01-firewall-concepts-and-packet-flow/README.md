@@ -40,3 +40,41 @@ A packet passing through the router never appears in `input` or `output`. [1] Pr
 ### Rule order
 
 Rules are checked from top to bottom, and the first matching rule with `accept`, `drop`, or `reject` decides. [1] A packet that matches no rule is accepted. [1] The manual describes two styles: accept what you need and drop the rest (more secure), or drop only what you do not want. [1]
+
+### Connection states
+
+Connection tracking groups packets into connections and gives each packet a state [2]:
+
+| State | Meaning [2] |
+| --- | --- |
+| `new` | Starts a connection, or only one direction seen so far |
+| `established` | Belongs to a connection seen in both directions |
+| `related` | Not in the list, but related to one (e.g. an ICMP error, FTP data) |
+| `invalid` | Belongs to no connection and cannot start one |
+| `untracked` | Excluded from tracking by a RAW rule |
+
+The default configuration starts both `input` and `forward` with "accept established, related, untracked" and "drop invalid", and the manual says to keep them first. [2] Most packets are then accepted by the first rule, and only `new` connections reach the rules below.
+
+### FastTrack
+
+A `fasttrack-connection` rule sends established TCP and UDP connections through a fast path that skips the firewall, connection tracking, and queues. [2] It speeds up a router but means those packets are not seen by later filter, mangle, or queue rules. [2]
+
+### Packet flow
+
+For a packet passing through the router, RouterOS applies these stages in order [3]:
+
+```text
+Prerouting:  RAW prerouting → connection tracking → mangle prerouting → NAT dstnat
+Routing decision
+Forward:     TTL decrement → mangle forward → filter forward
+Postrouting: mangle postrouting → NAT srcnat → queue tree → simple queues
+```
+
+For a packet to the router, routing is followed by `mangle input` and `filter input`. [3] Destination NAT happens before the routing decision and before the filter, so forward rules see the translated (inside) address. [3]
+
+### How it connects
+
+```text
+H.01 chains + order ──► H.02 input rules ──► H.03 forward rules ──► H.04 RAW and address lists
+                    └─► Chapter I dstnat runs before filter; Chapter K queues run after
+```
