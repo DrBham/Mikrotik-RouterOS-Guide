@@ -78,3 +78,43 @@ For a packet to the router, routing is followed by `mangle input` and `filter in
 H.01 chains + order ──► H.02 input rules ──► H.03 forward rules ──► H.04 RAW and address lists
                     └─► Chapter I dstnat runs before filter; Chapter K queues run after
 ```
+
+## How It Appears in RouterOS
+
+```routeros
+/ip/firewall/filter/print
+/ip/firewall/filter/print stats
+/ip/firewall/connection/print count-only
+```
+
+[1][2] On a default configuration, identify the established/related rule, the invalid drop, the FastTrack rule, and the "drop all not coming from LAN" rule.
+
+`TODO` ![Default firewall](images/cli/01-default-firewall.png)
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| `input`, `forward`, `output` | To, through, from the router [1] |
+| First match decides; no match accepts | Rule order [1] |
+| new / established / related / invalid / untracked | Connection states [2] |
+| FastTrack | Skips firewall and queues for established flows [2] |
+| dstnat before filter, srcnat after | Packet flow [3] |
+
+## Key Takeaways
+
+- Put "accept established, related" and "drop invalid" first.
+- Protect the router in `input`, the LAN in `forward`.
+- End with a drop rule, or everything not matched is accepted.
+
+## References
+
+1. [RouterOS Manual — Filter](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/firewall/filter/)
+2. [RouterOS Manual — Connection tracking](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/connection-tracking/)
+3. [RouterOS Manual — Packet Flow in RouterOS](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/packet-flow-in-routeros/)
+
+---
+
+**Previous:** [G.02 — Policy Routing](../../G-routing-fundamentals/02-policy-routing/README.md) · **Next:** H.02 — Protecting the Router
+
+[Back to the main learning journal](../../README.md)
