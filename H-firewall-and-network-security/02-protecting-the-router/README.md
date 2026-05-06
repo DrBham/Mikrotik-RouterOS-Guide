@@ -68,3 +68,48 @@ The final drop also covers DNS from the WAN, so the separate rules from C.06 bec
 | RouterOS version | `TODO` |
 | Starting state | Chapter C build (C.02 + C.05 + C.06), lists `WAN` and `LAN` |
 | Laptop | ether2, `192.168.88.x` |
+
+## Method A — CLI
+
+### Step 1 — Turn on safe mode
+
+Press Ctrl+X. [4]
+
+### Step 2 — Add the address list and rules
+
+Enter the six commands from the theory section, in order. [1]
+
+`TODO` ![Step 2](images/cli/02-rules.png)
+
+### Step 3 — Check the order and counters
+
+```routeros
+/ip/firewall/filter/print stats
+```
+
+[1] The established rule should count most packets.
+
+`TODO` ![Step 3](images/cli/03-stats.png)
+
+### Step 4 — Leave safe mode
+
+If WinBox and SSH still work, press Ctrl+X again to keep the changes. [4]
+
+### Step 5 — Test from the WAN side
+
+From a device on the upstream network, try to reach the router's WAN address on port 8291 (WinBox) or 22 (SSH). Both should fail, while ping succeeds.
+
+```powershell
+Test-NetConnection <router-WAN-address> -Port 8291
+```
+
+`TODO` ![Step 5](images/cli/05-wan-test.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| WinBox from LAN | Works | `TODO` |
+| WinBox/SSH from WAN | Fails | `TODO` |
+| Ping router from WAN | Works (ICMP accepted) | `TODO` |
+| LAN internet | Still works (forward chain untouched) | `TODO` |
