@@ -113,3 +113,71 @@ Test-NetConnection <router-WAN-address> -Port 8291
 | WinBox/SSH from WAN | Fails | `TODO` |
 | Ping router from WAN | Works (ICMP accepted) | `TODO` |
 | LAN internet | Still works (forward chain untouched) | `TODO` |
+
+## Reset Before Method B
+
+```routeros
+/ip/firewall/filter/remove [find chain=input]
+/ip/firewall/address-list/remove [find list=allowed_to_router]
+```
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Safe mode
+
+Click **Safe Mode** in WinBox.
+
+### Step 2 — Address list
+
+**IP → Firewall → Address Lists → +**: Name `allowed_to_router`, Address `192.168.88.2-192.168.88.254`.
+
+`TODO` ![Step 2](images/gui/02-address-list.png)
+
+### Step 3 — Filter rules
+
+**IP → Firewall → Filter Rules → +** five times, matching the CLI rules. Check the order in the list.
+
+`TODO` ![Step 3](images/gui/03-rules.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli). Click **Safe Mode** again to keep the changes.
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| WinBox disconnects after the last rule | Your address or interface not allowed | Safe mode undoes it; fix the list or `LAN` membership. [1] |
+| Router cannot resolve names or update | Established rule missing or below the drop | Order matters. [1] |
+| No rule counts anything | Rules in `forward` instead of `input` | H.01. |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| Established/related first, invalid drop second | Standard start [1][2] |
+| Address list for management | Who may reach the router [1] |
+| Accept ICMP | Keep ping and errors working [1] |
+| Final drop | Default deny for `input` [1] |
+| Safe mode | Undo if you lock yourself out [4] |
+
+## Key Takeaways
+
+- Always work in safe mode when changing input rules.
+- The router should answer management only from the LAN.
+
+## References
+
+1. [RouterOS Manual — Filter](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/firewall/filter/)
+2. [RouterOS Manual — Connection tracking](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/connection-tracking/)
+3. [RouterOS Manual — DNS](https://manual.mikrotik.com/docs/network-management/dns/)
+4. [RouterOS Manual — Console](https://manual.mikrotik.com/docs/management-tools/console/)
+
+---
+
+**Previous:** [H.01 — Firewall Concepts and Packet Flow](../01-firewall-concepts-and-packet-flow/README.md) · **Next:** H.03 — Protecting the LAN
+
+[Back to the main learning journal](../../README.md)
