@@ -81,3 +81,44 @@ H.03 forward policy ──► Chapter I port forwards pass because they are dstn
 | Device | MikroTik hAP lite (RB941-2nD) |
 | RouterOS version | `TODO` |
 | Starting state | H.02 complete |
+
+## Method A — CLI
+
+### Step 1 — Forward rules
+
+Turn on safe mode (Ctrl+X), then enter the four forward rules from the theory section. [1]
+
+`TODO` ![Step 1](images/cli/01-forward.png)
+
+### Step 2 — ICMP chain
+
+Enter the eight `icmp` chain rules. [1]
+
+`TODO` ![Step 2](images/cli/02-icmp-chain.png)
+
+### Step 3 — Final WAN drop
+
+Enter the "Drop new from WAN not DSTNATed" rule.
+
+`TODO` ![Step 3](images/cli/03-wan-drop.png)
+
+### Step 4 — Test and read counters
+
+From the laptop: browse, `ping 8.8.8.8`, `tracert 8.8.8.8`. Then:
+
+```routeros
+/ip/firewall/filter/print stats where chain=forward or chain=icmp
+/ip/firewall/connection/print where fasttrack
+```
+
+[1][2]
+
+`TODO` ![Step 4](images/cli/04-stats.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| Browsing, ping, tracert | Work | `TODO` |
+| FastTrack | Connections with the F flag [2] | `TODO` |
+| ICMP counters | Echo and time-exceeded rules count | `TODO` |
