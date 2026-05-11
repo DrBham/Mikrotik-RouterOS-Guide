@@ -122,3 +122,64 @@ From the laptop: browse, `ping 8.8.8.8`, `tracert 8.8.8.8`. Then:
 | Browsing, ping, tracert | Work | `TODO` |
 | FastTrack | Connections with the F flag [2] | `TODO` |
 | ICMP counters | Echo and time-exceeded rules count | `TODO` |
+
+## Reset Before Method B
+
+```routeros
+/ip/firewall/filter/remove [find chain=forward]
+/ip/firewall/filter/remove [find chain=icmp]
+```
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Forward and ICMP rules
+
+**IP → Firewall → Filter Rules → +** for each rule. For the jump rule, Action `jump`, Jump Target `icmp`. For ICMP rules, Protocol `icmp`, ICMP Options `type:code`.
+
+`TODO` ![Step 1](images/gui/01-rules.png)
+
+### Step 2 — Counters
+
+Add the Packets and Bytes columns; browse from the laptop and watch them.
+
+`TODO` ![Step 2](images/gui/02-counters.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| Some websites hang | ICMP type 3:4 dropped, MTU discovery broken | Keep "Fragmentation required". [1] |
+| Traceroute shows only stars | Time exceeded (11:0) dropped | Keep it. [1] |
+| Queues stop limiting | FastTrack bypasses them [2] | Chapter K. |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| FastTrack + accept established | Fast path, then catch the first packets [1][2] |
+| `jump` to `icmp` chain | Allow only needed ICMP types [1] |
+| Drop new from WAN not dstnat | Only port forwards open inward |
+
+## Key Takeaways
+
+- Do not drop all ICMP; parts of it keep the network working.
+- Port forwards and the forward chain work together through `connection-nat-state`.
+
+## References
+
+1. [RouterOS Manual — Filter](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/firewall/filter/)
+2. [RouterOS Manual — Connection tracking](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/connection-tracking/)
+3. [RFC 792 — Internet Control Message Protocol](https://www.rfc-editor.org/rfc/rfc792)
+
+---
+
+**Previous:** [H.02 — Protecting the Router](../02-protecting-the-router/README.md) · **Next:** H.04 — Address Lists and RAW Rules
+
+[Back to the main learning journal](../../README.md)
