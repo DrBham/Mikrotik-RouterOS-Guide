@@ -65,8 +65,10 @@ The last rule drops new connections arriving from the WAN that were not destinat
 /ip/firewall/filter add chain=forward action=drop connection-state=new connection-nat-state=!dstnat in-interface-list=WAN comment="Drop new from WAN not DSTNATed"
 ```
 
-> [!WARNING]
-> **Source needed:** this rule's form matches the default configuration's "drop all from WAN not DSTNATed" rule. Confirm it against your router's `/system/default-configuration/print` output (A.05) and cite it from there.
+[1] The manual's advanced firewall guide uses the same rule with the comment `defconf: drop all from WAN not DSTNATed`. It protects LAN clients from direct access by someone on the WAN side who knows the LAN range. [4]
+
+> [!NOTE]
+> The manual pages do not print the full default configuration. Compare the rule with your router's `/system/default-configuration/print` output (A.05) in the lab.
 
 ### How it connects
 
@@ -177,6 +179,7 @@ Same checks as [Verify (CLI)](#verify-cli).
 1. [RouterOS Manual — Filter](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/firewall/filter/)
 2. [RouterOS Manual — Connection tracking](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/connection-tracking/)
 3. [RFC 792 — Internet Control Message Protocol](https://www.rfc-editor.org/rfc/rfc792)
+4. [RouterOS Manual — Building Advanced Firewall](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/user-guides/building-advanced-firewall/)
 
 ---
 
