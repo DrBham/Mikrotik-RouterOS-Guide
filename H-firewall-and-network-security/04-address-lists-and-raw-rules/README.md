@@ -67,3 +67,56 @@ H.04 lists + RAW ──► Chapter I restrict port forwards to a source list ─
 | RouterOS version | `TODO` |
 | Starting state | H.02 + H.03 complete |
 | Test host | A device on the upstream (WAN) network |
+
+## Method A — CLI
+
+### Step 1 — A trusted list
+
+```routeros
+/ip/firewall/address-list/add list=trusted address=192.168.88.0/24
+```
+
+[1] The detection rule skips sources in `trusted`.
+
+`TODO` ![Step 1](images/cli/01-trusted.png)
+
+### Step 2 — Detection and drop rules
+
+Enter the two RAW rules from the theory section. [1]
+
+`TODO` ![Step 2](images/cli/02-raw.png)
+
+### Step 3 — Trigger it
+
+From the WAN-side device:
+
+```powershell
+Test-NetConnection <router-WAN-address> -Port 23
+ping <router-WAN-address>
+```
+
+The port test adds the device to `port-scanners`; after that even ping fails.
+
+`TODO` ![Step 3](images/cli/03-trigger.png)
+
+### Step 4 — Inspect the list
+
+```routeros
+/ip/firewall/address-list/print where list=port-scanners
+/ip/firewall/raw/print stats
+```
+
+[1]
+
+> [!CAUTION]
+> **Privacy:** cover public addresses. See the [privacy checklist](../../TOPIC-TEMPLATE.md#screenshot--privacy-checklist).
+
+`TODO` ![Step 4](images/cli/04-list.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| After port 23 probe | Source in `port-scanners`, `D` flag, ~1d timeout [1] | `TODO` |
+| Ping from that host | Dropped | `TODO` |
+| LAN traffic | Unaffected | `TODO` |
