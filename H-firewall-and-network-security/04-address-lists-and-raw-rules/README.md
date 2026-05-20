@@ -120,3 +120,65 @@ The port test adds the device to `port-scanners`; after that even ping fails.
 | After port 23 probe | Source in `port-scanners`, `D` flag, ~1d timeout [1] | `TODO` |
 | Ping from that host | Dropped | `TODO` |
 | LAN traffic | Unaffected | `TODO` |
+
+## Reset Before Method B
+
+```routeros
+/ip/firewall/raw/remove [find]
+/ip/firewall/address-list/remove [find list=port-scanners]
+/ip/firewall/address-list/remove [find list=trusted]
+```
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Lists
+
+**IP → Firewall → Address Lists → +**: `trusted`, `192.168.88.0/24`.
+
+`TODO` ![Step 1](images/gui/01-list.png)
+
+### Step 2 — RAW rules
+
+**IP → Firewall → Raw → +**: the two rules, with Action `add src to address list` and `drop`.
+
+`TODO` ![Step 2](images/gui/02-raw.png)
+
+### Verify (WinBox)
+
+Trigger from the WAN side and watch **Address Lists** fill.
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| You blocked yourself | Your address not in `trusted` | Remove it from the list; add it to `trusted`. [1] |
+| List empty after reboot | Dynamic entries are not saved [1] | Expected. |
+| NAT broken for some traffic | `notrack` used on NATed traffic [2] | Do not notrack traffic that needs NAT. |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| `/ip/firewall/address-list` | Named address sets [1] |
+| `add-src-to-address-list` + timeout | Learn bad sources automatically [1] |
+| RAW `prerouting` | Drop before connection tracking [2] |
+| `notrack` | Skip tracking; no NAT [2] |
+
+## Key Takeaways
+
+- Lists turn many rules into one.
+- RAW is the cheapest place to drop traffic you never want.
+
+## References
+
+1. [RouterOS Manual — Address Lists](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/firewall/address-lists/)
+2. [RouterOS Manual — RAW](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/firewall/raw/)
+
+---
+
+**Previous:** [H.03 — Protecting the LAN](../03-protecting-the-lan/README.md) · **Next:** Chapter I — Network Address Translation (NAT)
+
+[Back to the main learning journal](../../README.md)
