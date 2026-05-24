@@ -75,3 +75,49 @@ I.01 dst-nat ──► I.02 hairpin NAT (reach the forward from inside) ──�
 | Tester | A phone or PC on the upstream network |
 
 Start a simple web server on the laptop, for example with Python: `python -m http.server 80` in an empty folder.
+
+## Method A — CLI
+
+### Step 1 — Find the WAN address
+
+```routeros
+/ip/address/print where interface=wlan1
+```
+
+Use `ether1` if that is your WAN.
+
+`TODO` ![Step 1](images/cli/01-wan-address.png)
+
+### Step 2 — Add the port forward
+
+```routeros
+/ip/firewall/nat add chain=dstnat action=dst-nat protocol=tcp dst-port=8080 in-interface-list=WAN dst-address-type=local to-addresses=192.168.88.50 to-ports=80 comment="Lab web server"
+```
+
+[1]
+
+`TODO` ![Step 2](images/cli/02-dst-nat.png)
+
+### Step 3 — Test from the upstream network
+
+On the tester, open `http://<hAP-lite-WAN-address>:8080`. The laptop's directory listing appears.
+
+`TODO` ![Step 3](images/cli/03-test.png)
+
+### Step 4 — Restrict the source (optional)
+
+```routeros
+/ip/firewall/nat set [find comment="Lab web server"] src-address=<tester-address>
+```
+
+[1] Only the tester can connect now.
+
+`TODO` ![Step 4](images/cli/04-restrict.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| Tester opens `:8080` | Web page from the laptop | `TODO` |
+| Rule counters | Increase | `TODO` |
+| Other device (after Step 4) | Blocked | `TODO` |
