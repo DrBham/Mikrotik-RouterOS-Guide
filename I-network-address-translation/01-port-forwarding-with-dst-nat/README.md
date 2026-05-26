@@ -121,3 +121,60 @@ On the tester, open `http://<hAP-lite-WAN-address>:8080`. The laptop's directory
 | Tester opens `:8080` | Web page from the laptop | `TODO` |
 | Rule counters | Increase | `TODO` |
 | Other device (after Step 4) | Blocked | `TODO` |
+
+## Reset Before Method B
+
+```routeros
+/ip/firewall/nat/remove [find comment="Lab web server"]
+```
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Add the rule
+
+**IP → Firewall → NAT → +**. General: Chain `dstnat`, Protocol `tcp`, Dst. Port `8080`, In. Interface List `WAN`. Advanced: Dst. Address Type `local`. Action: `dst-nat`, To Addresses `192.168.88.50`, To Ports `80`.
+
+`TODO` ![Step 1](images/gui/01-dst-nat.png)
+
+### Step 2 — Test
+
+Same as Method A Step 3.
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| Works from upstream, not from the internet | Home router NAT in front, or ISP CGN (B.06) | Forward on the home router too, or use a VPN (Chapter M). |
+| Works from outside, not from inside the LAN | Needs hairpin NAT | I.02. |
+| Counter increases, page does not load | Laptop firewall blocks port 80 | Allow it in Windows Defender Firewall. |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| `chain=dstnat action=dst-nat to-addresses= to-ports=` | Port forward [1] |
+| `in-interface-list=WAN dst-address-type=local` | Works with a changing WAN address [1] |
+| Default firewall accepts dstnat traffic | No extra filter rule [1] |
+| Opens the service to everyone | Restrict the source [1] |
+
+## Key Takeaways
+
+- Give the server a static lease before forwarding to it.
+- Forward the minimum, restrict the source when possible.
+
+## References
+
+1. [RouterOS Manual — NAT](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/firewall/nat/)
+
+---
+
+**Previous:** [H.04 — Address Lists and RAW Rules](../../H-firewall-and-network-security/04-address-lists-and-raw-rules/README.md) · **Next:** I.02 — Hairpin NAT
+
+[Back to the main learning journal](../../README.md)
