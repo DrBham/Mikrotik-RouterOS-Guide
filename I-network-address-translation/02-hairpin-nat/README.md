@@ -61,3 +61,47 @@ I.01 forward ──► I.02 hairpin ──► E.03 split DNS as the alternative
 | --- | --- |
 | Starting state | I.01 rule in place, server `192.168.88.50:80` |
 | Client | Second LAN device, e.g. a phone on Wi-Fi |
+
+## Method A — CLI
+
+### Step 1 — Reproduce the problem
+
+From the phone on the LAN, open `http://<WAN-address>:8080`: it fails.
+
+`TODO` ![Step 1](images/cli/01-fails.png)
+
+### Step 2 — Let the dstnat rule match LAN traffic
+
+```routeros
+/ip/firewall/nat set [find comment="Lab web server"] in-interface-list=""
+```
+
+The rule still requires `dst-address-type=local`, so it only matches connections to the router's own addresses. [1]
+
+> [!NOTE]
+> `TODO` confirm in the lab that an empty `in-interface-list=""` clears the matcher; otherwise use `!in-interface-list` via WinBox.
+
+`TODO` ![Step 2](images/cli/02-dstnat-any.png)
+
+### Step 3 — Add the hairpin rule
+
+```routeros
+/ip/firewall/nat add chain=srcnat action=masquerade protocol=tcp src-address=192.168.88.0/24 dst-address=192.168.88.50 out-interface-list=LAN comment="Hairpin NAT" place-before=0
+```
+
+[1]
+
+`TODO` ![Step 3](images/cli/03-hairpin.png)
+
+### Step 4 — Test again
+
+The phone now loads the page. The laptop's web server log shows the router's address as the client.
+
+`TODO` ![Step 4](images/cli/04-works.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| LAN client to WAN address | Works | `TODO` |
+| Server log source | `192.168.88.1` (router) | `TODO` |
