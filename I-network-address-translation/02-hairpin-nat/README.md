@@ -105,3 +105,60 @@ The phone now loads the page. The laptop's web server log shows the router's add
 | --- | --- | --- |
 | LAN client to WAN address | Works | `TODO` |
 | Server log source | `192.168.88.1` (router) | `TODO` |
+
+## Reset Before Method B
+
+```routeros
+/ip/firewall/nat/remove [find comment="Hairpin NAT"]
+/ip/firewall/nat set [find comment="Lab web server"] in-interface-list=WAN
+```
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Edit the dstnat rule
+
+Clear **In. Interface List** on the "Lab web server" rule.
+
+`TODO` ![Step 1](images/gui/01-dstnat.png)
+
+### Step 2 — Hairpin rule
+
+**IP → Firewall → NAT → +**: Chain `srcnat`, Protocol `tcp`, Src. Address `192.168.88.0/24`, Dst. Address `192.168.88.50`, Out. Interface List `LAN`, Action `masquerade`. Move it to the top.
+
+`TODO` ![Step 2](images/gui/02-hairpin.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| Still fails from the LAN | dstnat still limited to WAN | Step 2. [1] |
+| Works, but server sees every LAN user as the router | Expected side effect of masquerade | Use split DNS (E.03) if the real source matters. |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| Hairpin NAT | srcnat masquerade from LAN to the server [1] |
+| dstnat must match LAN traffic | Not only `in-interface-list=WAN` [1] |
+| Alternative | Local DNS entry (E.03) |
+
+## Key Takeaways
+
+- A forward that works outside but not inside needs hairpin NAT or split DNS.
+
+## References
+
+1. [RouterOS Manual — NAT](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/firewall/nat/)
+
+---
+
+**Previous:** [I.01 — Port Forwarding with dst-nat](../01-port-forwarding-with-dst-nat/README.md) · **Next:** I.03 — Redirect, Netmap, and NAT Helpers
+
+[Back to the main learning journal](../../README.md)
