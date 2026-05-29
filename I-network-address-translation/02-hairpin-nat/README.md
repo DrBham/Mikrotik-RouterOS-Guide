@@ -73,13 +73,10 @@ From the phone on the LAN, open `http://<WAN-address>:8080`: it fails.
 ### Step 2 — Let the dstnat rule match LAN traffic
 
 ```routeros
-/ip/firewall/nat set [find comment="Lab web server"] in-interface-list=""
+/ip/firewall/nat set [find comment="Lab web server"] !in-interface-list
 ```
 
-The rule still requires `dst-address-type=local`, so it only matches connections to the router's own addresses. [1]
-
-> [!NOTE]
-> `TODO` confirm in the lab that an empty `in-interface-list=""` clears the matcher; otherwise use `!in-interface-list` via WinBox.
+A `!` before a parameter name in `set` unsets that parameter. [2] The rule still requires `dst-address-type=local`, so it only matches connections to the router's own addresses. [1]
 
 `TODO` ![Step 2](images/cli/02-dstnat-any.png)
 
@@ -156,6 +153,7 @@ Same checks as [Verify (CLI)](#verify-cli).
 ## References
 
 1. [RouterOS Manual — NAT](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/firewall/nat/)
+2. [RouterOS Manual — Scripting (Common commands)](https://manual.mikrotik.com/docs/developer-guides/scripting/)
 
 ---
 
