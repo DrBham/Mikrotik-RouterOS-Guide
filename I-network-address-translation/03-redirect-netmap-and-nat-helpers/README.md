@@ -68,3 +68,45 @@ I.03 redirect ──► E.03 local DNS for every device ──► Chapter K, L H
 | --- | --- |
 | Device | MikroTik hAP lite, `TODO` version, default configuration + A.03 |
 | Laptop | DNS set manually to `8.8.8.8` to simulate a hard-coded device |
+
+## Method A — CLI
+
+### Step 1 — Show the bypass
+
+Set the laptop's DNS to `8.8.8.8` manually. Run `nslookup nas.lan` (the E.03 entry, re-add it if needed): it fails, because the router is bypassed.
+
+`TODO` ![Step 1](images/cli/01-bypass.png)
+
+### Step 2 — Redirect DNS
+
+```routeros
+/ip/firewall/nat add chain=dstnat action=redirect protocol=udp dst-port=53 in-interface-list=LAN to-ports=53 comment="DNS to the router"
+/ip/firewall/nat add chain=dstnat action=redirect protocol=tcp dst-port=53 in-interface-list=LAN to-ports=53 comment="DNS to the router"
+```
+
+[1]
+
+`TODO` ![Step 2](images/cli/02-redirect.png)
+
+### Step 3 — Test
+
+`nslookup nas.lan` now answers, even though the laptop still asks `8.8.8.8`.
+
+`TODO` ![Step 3](images/cli/03-test.png)
+
+### Step 4 — Look at the NAT helpers
+
+```routeros
+/ip/firewall/service-port print
+```
+
+[1]
+
+`TODO` ![Step 4](images/cli/04-service-ports.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| `nas.lan` with DNS `8.8.8.8` | Answered by the router | `TODO` |
+| Redirect counters | Increase | `TODO` |
