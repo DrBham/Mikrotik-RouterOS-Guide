@@ -110,3 +110,61 @@ Set the laptop's DNS to `8.8.8.8` manually. Run `nslookup nas.lan` (the E.03 ent
 | --- | --- | --- |
 | `nas.lan` with DNS `8.8.8.8` | Answered by the router | `TODO` |
 | Redirect counters | Increase | `TODO` |
+
+## Reset Before Method B
+
+```routeros
+/ip/firewall/nat/remove [find comment="DNS to the router"]
+```
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Redirect rules
+
+**IP → Firewall → NAT → +**: Chain `dstnat`, Protocol `udp`, Dst. Port `53`, In. Interface List `LAN`, Action `redirect`, To Ports `53`. Repeat for `tcp`.
+
+`TODO` ![Step 1](images/gui/01-redirect.png)
+
+### Step 2 — Service ports
+
+**IP → Firewall → Service Ports**.
+
+`TODO` ![Step 2](images/gui/02-service-ports.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli). Set the laptop DNS back to automatic.
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| Redirect works but names fail | `allow-remote-requests=no` | Enable it. [1] |
+| Some apps still bypass | They use DNS over HTTPS, not port 53 | Redirect cannot catch encrypted DNS. |
+| VoIP one-way audio | SIP helper behaviour | Check `/ip/firewall/service-port` sip settings. [1] |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| `action=redirect to-ports=` | Send to the router itself [1] |
+| `action=netmap` | 1:1 mapping of a subnet [1] |
+| `/ip/firewall/service-port` | NAT helpers for FTP, SIP, etc. [1] |
+
+## Key Takeaways
+
+- Redirect enforces the router's DNS for devices that ignore DHCP.
+- Netmap exposes every port of the mapped hosts; filter it.
+
+## References
+
+1. [RouterOS Manual — NAT](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/firewall/nat/)
+
+---
+
+**Previous:** [I.02 — Hairpin NAT](../02-hairpin-nat/README.md) · **Next:** Chapter J — VLAN & Network Segmentation
+
+[Back to the main learning journal](../../README.md)
