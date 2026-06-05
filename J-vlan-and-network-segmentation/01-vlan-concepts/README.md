@@ -58,3 +58,45 @@ The extra 4 bytes fit in the standard 1500-byte MTU on equipment that supports V
 ```text
 J.01 concepts ──► J.02 VLAN interfaces on a router port ──► J.03 bridge VLAN filtering ──► J.04 inter-VLAN routing and isolation
 ```
+
+## How It Appears in RouterOS
+
+| Concept | RouterOS menu |
+| --- | --- |
+| A VLAN on a router port (layer 3) | `/interface/vlan` [1] |
+| VLAN membership of bridge ports (layer 2) | `/interface/bridge/vlan` [2] |
+| PVID, frame types, ingress filtering | `/interface/bridge/port` [2] |
+| Turn filtering on | `/interface/bridge set … vlan-filtering=yes` [2] |
+
+```routeros
+/interface/vlan/print
+/interface/bridge/vlan/print
+```
+
+`TODO` ![VLAN menus](images/cli/01-vlan-menus.png)
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| 802.1Q | 4-byte tag in the Ethernet header [1] |
+| VLAN ID | 1–4094; avoid 0, 1, 4095 [1] |
+| Access / trunk | Untagged one VLAN / tagged many [1][2] |
+| PVID | VLAN for untagged ingress frames [2] |
+| Ingress filtering | Drop frames for non-member VLANs [2] |
+
+## Key Takeaways
+
+- One VLAN = one broadcast domain = usually one subnet.
+- Between VLANs, traffic must be routed, which is where the firewall applies.
+
+## References
+
+1. [RouterOS Manual — VLAN](https://manual.mikrotik.com/docs/bridging-and-switching/vlan/)
+2. [RouterOS Manual — Bridge VLAN Table](https://manual.mikrotik.com/docs/bridging-and-switching/user-guides/bridge-vlan-table/)
+
+---
+
+**Previous:** [I.03 — Redirect, Netmap, and NAT Helpers](../../I-network-address-translation/03-redirect-netmap-and-nat-helpers/README.md) · **Next:** J.02 — VLAN Interfaces on a Router
+
+[Back to the main learning journal](../../README.md)
