@@ -67,3 +67,53 @@ R2 ether1 trunk (20, 30) ─────── ether1 R1 (router role)
 | --- | --- |
 | R1, R2 | MikroTik CHR in GNS3, `TODO` version |
 | R2 switch config | From J.03 (or any VLAN-aware switch) |
+
+## Method A — CLI
+
+On R1.
+
+### Step 1 — VLAN interfaces
+
+```routeros
+/interface/vlan add name=VLAN20 vlan-id=20 interface=ether1 disabled=no
+/interface/vlan add name=VLAN30 vlan-id=30 interface=ether1 disabled=no
+```
+
+[1]
+
+`TODO` ![Step 1](images/cli/01-vlan-interfaces.png)
+
+### Step 2 — Addresses
+
+```routeros
+/ip/address add address=10.10.20.1/24 interface=VLAN20
+/ip/address add address=10.10.30.1/24 interface=VLAN30
+```
+
+[1]
+
+`TODO` ![Step 2](images/cli/02-addresses.png)
+
+### Step 3 — DHCP per VLAN
+
+```routeros
+/ip/dhcp-server/setup
+```
+
+Run it once for `VLAN20` and once for `VLAN30`. [2]
+
+`TODO` ![Step 3](images/cli/03-dhcp.png)
+
+### Step 4 — Test
+
+PC-20 gets `10.10.20.x`, PC-30 gets `10.10.30.x`, and each can ping the other through R1.
+
+`TODO` ![Step 4](images/cli/04-test.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| `/interface/vlan/print` | Two VLANs on ether1, running | `TODO` |
+| PC addresses | One per subnet | `TODO` |
+| PC-20 → PC-30 | Routed via R1 | `TODO` |
