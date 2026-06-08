@@ -117,3 +117,66 @@ PC-20 gets `10.10.20.x`, PC-30 gets `10.10.30.x`, and each can ping the other th
 | `/interface/vlan/print` | Two VLANs on ether1, running | `TODO` |
 | PC addresses | One per subnet | `TODO` |
 | PC-20 → PC-30 | Routed via R1 | `TODO` |
+
+## Reset Before Method B
+
+```routeros
+/ip/dhcp-server/remove [find]
+/ip/dhcp-server/network/remove [find]
+/ip/pool/remove [find]
+/ip/address/remove [find interface~"VLAN"]
+/interface/vlan/remove [find]
+```
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — VLAN interfaces
+
+**Interfaces → + → VLAN**: Name `VLAN20`, VLAN ID `20`, Interface `ether1`. Repeat for 30.
+
+`TODO` ![Step 1](images/gui/01-vlan.png)
+
+### Step 2 — Addresses and DHCP
+
+**IP → Addresses** for each VLAN, then **IP → DHCP Server → DHCP Setup** for each.
+
+`TODO` ![Step 2](images/gui/02-address-dhcp.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| VLAN interface not running | Parent port down | Check ether1. |
+| PCs get no address | Switch side not tagging the VLAN on the trunk | Check J.03 on R2. |
+| PCs reach each other but you wanted isolation | Inter-VLAN routing is on by default | J.04 firewall. |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| `/interface/vlan add vlan-id= interface=` | Tagged sub-interface [1] |
+| Address per VLAN | Router is the gateway of each VLAN [1] |
+| Inter-VLAN routing | Automatic between VLAN interfaces [1] |
+
+## Key Takeaways
+
+- A VLAN interface is a normal interface for IP, DHCP, and firewall purposes.
+- Routing between VLANs is on unless the firewall says otherwise.
+
+## References
+
+1. [RouterOS Manual — VLAN](https://manual.mikrotik.com/docs/bridging-and-switching/vlan/)
+2. [RouterOS Manual — DHCP Server](https://manual.mikrotik.com/docs/network-management/dhcp/server/)
+
+---
+
+**Previous:** [J.01 — VLAN Concepts](../01-vlan-concepts/README.md) · **Next:** J.03 — Bridge VLAN Filtering
+
+[Back to the main learning journal](../../README.md)
