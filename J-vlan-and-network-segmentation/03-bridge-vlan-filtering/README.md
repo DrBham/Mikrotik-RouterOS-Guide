@@ -73,3 +73,47 @@ On devices whose switch chip supports it, VLAN switching runs in hardware; on mu
 
 > [!WARNING]
 > Use safe mode (Ctrl+X). Keep a MAC WinBox session open from a port that you will not change.
+
+## Method A — CLI
+
+### Step 1 — Bridge and ports
+
+Enter the first four commands. [2]
+
+`TODO` ![Step 1](images/cli/01-bridge-ports.png)
+
+### Step 2 — VLAN table
+
+Enter the three `/interface/bridge/vlan` commands, then:
+
+```routeros
+/interface/bridge/vlan/print
+```
+
+[2] The access ports appear as dynamic untagged members.
+
+`TODO` ![Step 2](images/cli/02-vlan-table.png)
+
+### Step 3 — Management VLAN
+
+Enter the MGMT VLAN interface and address commands. [2]
+
+`TODO` ![Step 3](images/cli/03-mgmt.png)
+
+### Step 4 — Enable filtering
+
+```routeros
+/interface/bridge set bridge1 vlan-filtering=yes
+```
+
+[2] Connect to `192.168.99.1` from a device tagged in VLAN 99 on the trunk (R1 from J.02 with a VLAN 99 interface).
+
+`TODO` ![Step 4](images/cli/04-filtering-on.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| Port on ether2 | Only VLAN 20 traffic | `TODO` |
+| ether2 ↔ ether3 | No direct layer-2 traffic | `TODO` |
+| `192.168.99.1` | Reachable only via VLAN 99 | `TODO` |
