@@ -117,3 +117,69 @@ Enter the MGMT VLAN interface and address commands. [2]
 | Port on ether2 | Only VLAN 20 traffic | `TODO` |
 | ether2 ↔ ether3 | No direct layer-2 traffic | `TODO` |
 | `192.168.99.1` | Reachable only via VLAN 99 | `TODO` |
+
+## Reset Before Method B
+
+Reset to an empty configuration (A.05) and reconnect by MAC.
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Bridge and ports
+
+**Bridge → +** `bridge1` (VLAN tab: Frame Types `admit only VLAN tagged`, VLAN Filtering **off**). **Ports**: ether1 (admit only VLAN tagged), ether2 PVID 20 and ether3 PVID 30 (admit only untagged and priority tagged).
+
+`TODO` ![Step 1](images/gui/01-bridge-ports.png)
+
+### Step 2 — VLANs
+
+**Bridge → VLANs → +**: 20 tagged ether1; 30 tagged ether1; 99 tagged ether1, bridge1.
+
+`TODO` ![Step 2](images/gui/02-vlans.png)
+
+### Step 3 — Management, then filtering
+
+**Interfaces → + VLAN** `MGMT` 99 on bridge1, address `192.168.99.1/24`. Last: tick **VLAN Filtering** on bridge1.
+
+`TODO` ![Step 3](images/gui/03-mgmt-filter.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| Locked out after enabling filtering | Management VLAN missing on the bridge | Safe mode, or reset. [3] |
+| Access ports see each other's traffic | Several VLAN IDs in one access entry | One entry per access VLAN. [3] |
+| PVID seems ignored | Filtering not enabled yet | PVID only works with filtering on. [3] |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| `pvid=` + untagged frame types | Access port [2] |
+| `/interface/bridge/vlan tagged=` | Trunk membership [2] |
+| `tagged=…,bridge1` | Lets the router itself use the VLAN [2] |
+| `vlan-filtering=yes` last | Avoid lockout [3] |
+
+## Key Takeaways
+
+- Build management access before turning on filtering.
+- One VLAN per access port; trunks carry many.
+
+## References
+
+1. [RouterOS Manual — VLAN](https://manual.mikrotik.com/docs/bridging-and-switching/vlan/)
+2. [RouterOS Manual — Basic VLAN switching](https://manual.mikrotik.com/docs/bridging-and-switching/user-guides/basic-vlan-switching/)
+3. [RouterOS Manual — Bridge VLAN Table](https://manual.mikrotik.com/docs/bridging-and-switching/user-guides/bridge-vlan-table/)
+4. [RouterOS Manual — Bridging and Switching](https://manual.mikrotik.com/docs/bridging-and-switching/)
+
+---
+
+**Previous:** [J.02 — VLAN Interfaces on a Router](../02-vlan-interfaces-on-a-router/README.md) · **Next:** J.04 — Inter-VLAN Routing and Isolation
+
+[Back to the main learning journal](../../README.md)
