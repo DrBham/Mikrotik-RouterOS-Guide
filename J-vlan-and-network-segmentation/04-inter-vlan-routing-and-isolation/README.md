@@ -114,3 +114,66 @@ J.04 VLAN policy ──► Chapter K per-VLAN queues ──► Chapter L HotSpot
 | Staff → printer | Allowed | `TODO` |
 | Guest → staff | Dropped | `TODO` |
 | Both → internet | Allowed | `TODO` |
+
+## Reset Before Method B
+
+```routeros
+/ip/firewall/filter/remove [find chain=forward]
+/interface/list/member/remove [find list=STAFF]
+/interface/list/member/remove [find list=GUEST]
+/interface/list/remove STAFF
+/interface/list/remove GUEST
+```
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Lists
+
+**Interfaces → Interface List → Lists → +** `STAFF`, `GUEST`; then add the members.
+
+`TODO` ![Step 1](images/gui/01-lists.png)
+
+### Step 2 — Rules
+
+**IP → Firewall → Filter Rules → +** for each rule, in the order above.
+
+`TODO` ![Step 2](images/gui/02-rules.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| Nothing works after the drop rule | Established rule missing or below | Order matters. [1] |
+| Printer unreachable from staff | Allow rule below the drop | Move it up. [1] |
+| Replies from printer dropped | No established/related rule | Rule 1. [1] |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| Role interface lists | Rules by role [1][2] |
+| Established first, drop last | Default-deny between VLANs [1] |
+| Specific allows in between | The actual policy |
+
+## Key Takeaways
+
+- VLANs separate traffic; the forward chain decides what may cross.
+- Write the policy as a table first, then turn each row into a rule.
+
+## References
+
+1. [RouterOS Manual — Filter](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/firewall/filter/)
+2. [RouterOS CLI Reference — interface/list](https://manual.mikrotik.com/docs/cli-reference/interface/list/)
+
+---
+
+**Previous:** [J.03 — Bridge VLAN Filtering](../03-bridge-vlan-filtering/README.md) · **Next:** Chapter K — Bandwidth Management & QoS
+
+[Back to the main learning journal](../../README.md)
