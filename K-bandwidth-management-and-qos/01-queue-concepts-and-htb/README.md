@@ -40,3 +40,23 @@ A shaper limits a flow to a rate and drops or delays the excess; a scheduler dec
 ### Where queues run
 
 An interface queue only handles traffic leaving that interface, so the WAN interface's queue handles uploads. [1] In the packet flow, queue trees and simple queues come at the end of postrouting. [2]
+
+### HTB
+
+RouterOS uses a modified Hierarchical Token Bucket (HTB) in simple queues and queue trees. [3] Each queue has a bucket of tokens; sending a packet spends tokens, and tokens spent by a child are also charged to its parent, so children borrow from parents. [3] Inner queues only distribute bandwidth; leaf queues hold the traffic. [3]
+
+Rules of thumb from the manual: a parent's `limit-at` should be at least the sum of its children's, and its `max-limit` at least each child's `max-limit`. [3]
+
+### Priority
+
+Priority runs from 1 (highest) to 8 (lowest). It only applies to leaf queues that have a `max-limit`, and `limit-at` is given out regardless of priority. [3]
+
+### FastTrack
+
+Mangle rules do not see FastTracked packets, and the default configuration FastTracks established connections. [3] Simple queues do not limit FastTracked traffic, and queue trees with `parent=global` do not either; queue trees attached to an interface do. [4][5]
+
+### How it connects
+
+```text
+K.01 HTB, CIR/MIR ──► K.02 simple queues ──► K.03 PCQ fair sharing ──► K.04 queue tree with mangle marks
+```
