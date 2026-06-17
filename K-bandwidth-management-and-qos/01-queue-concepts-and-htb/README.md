@@ -60,3 +60,45 @@ Mangle rules do not see FastTracked packets, and the default configuration FastT
 ```text
 K.01 HTB, CIR/MIR ──► K.02 simple queues ──► K.03 PCQ fair sharing ──► K.04 queue tree with mangle marks
 ```
+
+## How It Appears in RouterOS
+
+```routeros
+/queue/interface/print
+/queue/type/print
+/queue/simple/print
+/queue/tree/print
+```
+
+[1][6] `/queue/interface/print` shows the default queue of each interface.
+
+`TODO` ![Queues](images/cli/01-queues.png)
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| `limit-at` / `max-limit` | Guaranteed / maximum rate [1] |
+| HTB | Parents lend tokens to children [3] |
+| Priority 1–8 | Leaf queues with max-limit only [3] |
+| FastTrack | Bypasses simple queues and `parent=global` trees [4][5] |
+
+## Key Takeaways
+
+- Guarantee with `limit-at`, cap with `max-limit`.
+- Decide on FastTrack before building queues.
+
+## References
+
+1. [RouterOS Manual — Queues](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/queues/)
+2. [RouterOS Manual — Packet Flow in RouterOS](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/packet-flow-in-routeros/)
+3. [RouterOS Manual — HTB (Hierarchical Token Bucket)](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/queues/htb-hierarchical-token-bucket/)
+4. [RouterOS Manual — Simple Queue](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/queues/simple-queue/)
+5. [RouterOS Manual — Queue Tree](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/queues/queue-tree/)
+6. [RouterOS Manual — Queue Types](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/queues/queue-types/)
+
+---
+
+**Previous:** [J.04 — Inter-VLAN Routing and Isolation](../../J-vlan-and-network-segmentation/04-inter-vlan-routing-and-isolation/README.md) · **Next:** K.02 — Simple Queues
+
+[Back to the main learning journal](../../README.md)
