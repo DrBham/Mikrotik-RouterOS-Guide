@@ -67,3 +67,58 @@ Children of a parent share the parent's `max-limit`; `limit-at` is only effectiv
 | Device | MikroTik hAP lite, `TODO` version, default configuration + A.03 |
 | Client | Laptop `192.168.88.50` (static lease) |
 | Test | A browser speed test |
+
+## Method A — CLI
+
+### Step 1 — Disable FastTrack
+
+```routeros
+/ip/firewall/filter disable [find action=fasttrack-connection]
+```
+
+[1]
+
+`TODO` ![Step 1](images/cli/01-fasttrack-off.png)
+
+### Step 2 — Limit one device
+
+```routeros
+/queue/simple add name=laptop target=192.168.88.50/32 max-limit=5M/10M
+```
+
+[1] Run a speed test: about 5 Mbps up, 10 Mbps down.
+
+`TODO` ![Step 2](images/cli/02-limit.png)
+
+### Step 3 — Watch it
+
+```routeros
+/queue/simple print stats where name=laptop
+```
+
+[1]
+
+`TODO` ![Step 3](images/cli/03-stats.png)
+
+### Step 4 — Parent and children
+
+Replace the queue with the manual's parent/child structure, adapted: `server` = `192.168.88.50/32`. Test while another device downloads. [1]
+
+`TODO` ![Step 4](images/cli/04-parent-child.png)
+
+### Step 5 — Time-based limit
+
+```routeros
+/queue/simple add name=work-hours target=192.168.88.0/24 max-limit=10M/50M time=8h-18h,mon,tue,wed,thu,fri
+```
+
+[1]
+
+`TODO` ![Step 5](images/cli/05-time.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| Step 2 speed | ~5/10 Mbps | `TODO` |
+| Step 4 under load | Server keeps ≥ 5/20 Mbps | `TODO` |
