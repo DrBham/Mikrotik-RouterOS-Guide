@@ -122,3 +122,67 @@ Replace the queue with the manual's parent/child structure, adapted: `server` = 
 | --- | --- | --- |
 | Step 2 speed | ~5/10 Mbps | `TODO` |
 | Step 4 under load | Server keeps ≥ 5/20 Mbps | `TODO` |
+
+## Reset Before Method B
+
+```routeros
+/queue/simple/remove [find]
+/ip/firewall/filter enable [find action=fasttrack-connection]
+```
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — FastTrack
+
+**IP → Firewall → Filter Rules**: disable the FastTrack rule.
+
+### Step 2 — Queue
+
+**Queues → Simple Queues → +**: Name `laptop`, Target `192.168.88.50/32`, Max Limit upload 5M, download 10M.
+
+`TODO` ![Step 2](images/gui/02-queue.png)
+
+### Step 3 — Watch
+
+Open the queue's **Traffic** tab during a speed test.
+
+`TODO` ![Step 3](images/gui/03-traffic.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli). Re-enable FastTrack when finished.
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| No limit | FastTrack on | Disable it. [1] |
+| Wrong queue matches | Order | Specific above general. [1] |
+| Upload and download swapped | Order in `max-limit` | Upload first. [1] |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| `target=` + `max-limit=up/down` | Basic limit [1] |
+| First match from top | Order [1] |
+| `parent=` + `limit-at` | Shared total with guarantees [1] |
+| `time=` | Active hours [1] |
+
+## Key Takeaways
+
+- Disable or exclude FastTrack before testing queues.
+- Order simple queues from specific to general.
+
+## References
+
+1. [RouterOS Manual — Simple Queue](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/queues/simple-queue/)
+
+---
+
+**Previous:** [K.01 — Queue Concepts and HTB](../01-queue-concepts-and-htb/README.md) · **Next:** K.03 — PCQ Fair Sharing
+
+[Back to the main learning journal](../../README.md)
