@@ -60,3 +60,53 @@ PCQ gives every device on a network its own speed limit with one queue. [2] It s
 | --- | --- |
 | Device | MikroTik hAP lite, `TODO` version, default configuration + A.03 |
 | Clients | Laptop and a phone |
+
+## Method A — CLI
+
+### Step 1 — Disable FastTrack
+
+```routeros
+/ip/firewall/filter disable [find action=fasttrack-connection]
+```
+
+[2]
+
+### Step 2 — Queue types
+
+```routeros
+/queue/type add name=PCQ_download kind=pcq pcq-rate=10M pcq-classifier=dst-address
+/queue/type add name=PCQ_upload kind=pcq pcq-rate=5M pcq-classifier=src-address
+```
+
+[2]
+
+`TODO` ![Step 2](images/cli/02-types.png)
+
+### Step 3 — One queue for the LAN
+
+```routeros
+/queue/simple add name=lan-pcq target=192.168.88.0/24 queue=PCQ_upload/PCQ_download
+```
+
+[2]
+
+`TODO` ![Step 3](images/cli/03-queue.png)
+
+### Step 4 — Test with two devices
+
+Run speed tests on both devices at the same time, then on one alone. Each is capped at about 10/5 Mbps in both cases.
+
+```routeros
+/queue/simple print stats
+```
+
+[2]
+
+`TODO` ![Step 4](images/cli/04-test.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| One device | ~10 down / 5 up | `TODO` |
+| Two devices together | Each ~10 / 5 | `TODO` |
