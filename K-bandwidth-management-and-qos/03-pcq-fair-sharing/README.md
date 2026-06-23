@@ -110,3 +110,65 @@ Run speed tests on both devices at the same time, then on one alone. Each is cap
 | --- | --- | --- |
 | One device | ~10 down / 5 up | `TODO` |
 | Two devices together | Each ~10 / 5 | `TODO` |
+
+## Reset Before Method B
+
+```routeros
+/queue/simple remove lan-pcq
+/queue/type remove [find name~"PCQ_"]
+/ip/firewall/filter enable [find action=fasttrack-connection]
+```
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Queue types
+
+**Queues → Queue Types → +**: Type Name `PCQ_download`, Kind `pcq`, Rate `10M`, Classifier `Dst. Address`. Repeat for upload with `Src. Address`, 5M.
+
+`TODO` ![Step 1](images/gui/01-types.png)
+
+### Step 2 — Simple queue
+
+**Queues → Simple Queues → +**: Target `192.168.88.0/24`; Advanced tab: Queue Type upload `PCQ_upload`, download `PCQ_download`.
+
+`TODO` ![Step 2](images/gui/02-queue.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli). Re-enable FastTrack when finished.
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| All devices share 10 Mbps total | Classifier wrong (e.g. none) | Use `dst-address` / `src-address`. [2] |
+| No limit | FastTrack on | Disable it. [2] |
+| Upload and download swapped | Order in `queue=` | Upload type first. [2] |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| `kind=pcq pcq-rate=` | Per-sub-stream limit [2] |
+| `pcq-classifier=dst-address` / `src-address` | Per device, down / up [2] |
+| `pcq-limit` | Queue size, not speed [2] |
+| `queue=UP/DOWN` | Simple queue types [2] |
+
+## Key Takeaways
+
+- One PCQ queue replaces a queue per device.
+- Classify downloads by destination and uploads by source.
+
+## References
+
+1. [RouterOS Manual — Queue Types](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/queues/queue-types/)
+2. [RouterOS Manual — PCQ example](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/queues/pcq-example/)
+
+---
+
+**Previous:** [K.02 — Simple Queues](../02-simple-queues/README.md) · **Next:** K.04 — Queue Tree with Mangle
+
+[Back to the main learning journal](../../README.md)
