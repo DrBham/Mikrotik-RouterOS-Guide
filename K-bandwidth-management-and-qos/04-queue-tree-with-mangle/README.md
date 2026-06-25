@@ -65,3 +65,45 @@ FastTracked packets skip mangle and queues with `parent=global`; queues whose pa
 | Router | MikroTik hAP lite or CHR, `TODO` version, WAN `ether1` |
 | Upload link | Set `max-limit` a little below your real upload speed |
 | Voice source | A softphone or a test that sets DSCP 46 (`TODO` tool) |
+
+## Method A — CLI
+
+### Step 1 — Exclude marked traffic from FastTrack
+
+```routeros
+/ip/firewall/filter set [find action=fasttrack-connection] connection-mark=no-mark
+```
+
+[2]
+
+### Step 2 — Mangle rules
+
+Enter the two mangle rules. [2] Use your WAN interface list.
+
+`TODO` ![Step 2](images/cli/02-mangle.png)
+
+### Step 3 — Queue tree
+
+Enter the three queue tree rules with your upload speed. [2]
+
+`TODO` ![Step 3](images/cli/03-tree.png)
+
+### Step 4 — Test under load
+
+Start a large upload from one device and a call from another.
+
+```routeros
+/queue/tree print stats
+/ip/firewall/mangle/print stats
+```
+
+[2]
+
+`TODO` ![Step 4](images/cli/04-stats.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| Voice counters | Increase during the call | `TODO` |
+| Call quality during upload | Clear | `TODO` |
