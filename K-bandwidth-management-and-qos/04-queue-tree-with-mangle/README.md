@@ -117,8 +117,7 @@ Start a large upload from one device and a call from another.
 /ip/firewall/filter set [find action=fasttrack-connection] !connection-mark
 ```
 
-> [!NOTE]
-> `TODO` confirm the syntax that clears `connection-mark` on the FastTrack rule (WinBox: untick the field).
+A `!` before a parameter name in `set` unsets that parameter, so the last line removes the `connection-mark` matcher from the FastTrack rule. [4]
 
 ## Method B — WinBox (GUI)
 
@@ -168,6 +167,7 @@ Same checks as [Verify (CLI)](#verify-cli).
 1. [RouterOS Manual — Mangle](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/firewall/mangle/)
 2. [RouterOS Manual — Queue Tree](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/queues/queue-tree/)
 3. [RouterOS Manual — HTB (Hierarchical Token Bucket)](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/queues/htb-hierarchical-token-bucket/)
+4. [RouterOS Manual — Scripting (Common commands)](https://manual.mikrotik.com/docs/developer-guides/scripting/)
 
 ---
 
