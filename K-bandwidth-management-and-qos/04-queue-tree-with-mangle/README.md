@@ -107,3 +107,70 @@ Start a large upload from one device and a call from another.
 | --- | --- | --- |
 | Voice counters | Increase during the call | `TODO` |
 | Call quality during upload | Clear | `TODO` |
+
+## Reset Before Method B
+
+```routeros
+/queue/tree/remove [find]
+/ip/firewall/mangle/remove [find new-connection-mark=voice]
+/ip/firewall/mangle/remove [find new-packet-mark=voice]
+/ip/firewall/filter set [find action=fasttrack-connection] !connection-mark
+```
+
+> [!NOTE]
+> `TODO` confirm the syntax that clears `connection-mark` on the FastTrack rule (WinBox: untick the field).
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Mangle
+
+**IP → Firewall → Mangle → +**: the two rules.
+
+`TODO` ![Step 1](images/gui/01-mangle.png)
+
+### Step 2 — Queue tree
+
+**Queues → Queue Tree → +**: `upload` (parent ether1), `upload-voice` (parent upload, packet mark voice, priority 1), `upload-other` (packet mark no-mark, priority 8).
+
+`TODO` ![Step 2](images/gui/02-tree.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| Voice queue counts nothing | Traffic not marked DSCP 46, or FastTracked | Check mangle counters; Step 1. [2] |
+| No effect on call quality | `max-limit` above the real link speed | Set it below; the queue must be the bottleneck. |
+| Priority ignored | Queue without `max-limit`, or not a leaf | Priority needs both. [3] |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| `mark-connection` then `mark-packet` | Efficient marking [1] |
+| `/queue/tree … packet-mark=` | Queue by mark [2] |
+| `priority=1` + `limit-at` | Voice first, guaranteed share [2][3] |
+| FastTrack `connection-mark=no-mark` | Keep marked traffic queued [2] |
+
+## Key Takeaways
+
+- Queue trees prioritise kinds of traffic; simple queues limit devices.
+- The queue only helps if it is the slowest point on the link.
+
+## References
+
+1. [RouterOS Manual — Mangle](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/firewall/mangle/)
+2. [RouterOS Manual — Queue Tree](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/queues/queue-tree/)
+3. [RouterOS Manual — HTB (Hierarchical Token Bucket)](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/queues/htb-hierarchical-token-bucket/)
+
+---
+
+**Previous:** [K.03 — PCQ Fair Sharing](../03-pcq-fair-sharing/README.md) · **Next:** Chapter L — PPP & Hotspot
+
+[Back to the main learning journal](../../README.md)
