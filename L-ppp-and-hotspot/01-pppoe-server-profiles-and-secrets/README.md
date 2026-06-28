@@ -64,3 +64,67 @@ The server runs on the client-facing interface, which must not have an IP addres
 | Server | MikroTik hAP lite, `TODO` version, internet via ether1 or A.03 |
 | Client port | ether3, removed from the LAN bridge, no IP |
 | Client | Windows laptop (PPPoE dial-up) or a second MikroTik |
+
+## Method A — CLI
+
+### Step 1 — Free ether3
+
+```routeros
+/interface/bridge/port/remove [find interface=ether3]
+```
+
+### Step 2 — Pool, profile, secret, server
+
+Enter the four commands from the theory section. [2]
+
+`TODO` ![Step 2](images/cli/02-server.png)
+
+### Step 3 — Speed and single session
+
+```routeros
+/ppp/profile/set subscribers rate-limit=5M/10M only-one=yes
+```
+
+[1]
+
+`TODO` ![Step 3](images/cli/03-profile.png)
+
+### Step 4 — NAT for subscribers
+
+```routeros
+/ip/firewall/nat add chain=srcnat action=masquerade src-address=10.0.0.0/24 out-interface-list=WAN comment="PPPoE subscribers"
+```
+
+[3]
+
+### Step 5 — Connect a client
+
+On Windows: **Settings → Network & internet → Dial-up → Set up a new connection → Connect to the Internet → Broadband (PPPoE)**, user `alice`. Then on the router:
+
+```routeros
+/ppp/active/print
+/queue/simple/print
+```
+
+[1] The session and its dynamic queue appear.
+
+> [!CAUTION]
+> **Privacy:** cover MAC addresses in `/ppp/active`. See the [privacy checklist](../../TOPIC-TEMPLATE.md#screenshot--privacy-checklist).
+
+`TODO` ![Step 5](images/cli/05-active.png)
+
+### Step 6 — Disconnect the user
+
+```routeros
+/ppp/active/remove [find name=alice]
+```
+
+[1]
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| Client address | From `10.0.0.10–100` | `TODO` |
+| Speed | ~5/10 Mbps | `TODO` |
+| Second login as alice | Refused (`only-one`) [1] | `TODO` |
