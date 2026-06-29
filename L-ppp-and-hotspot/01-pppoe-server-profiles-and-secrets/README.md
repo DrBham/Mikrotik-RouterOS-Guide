@@ -128,3 +128,74 @@ On Windows: **Settings → Network & internet → Dial-up → Set up a new conne
 | Client address | From `10.0.0.10–100` | `TODO` |
 | Speed | ~5/10 Mbps | `TODO` |
 | Second login as alice | Refused (`only-one`) [1] | `TODO` |
+
+## Reset Before Method B
+
+```routeros
+/ip/firewall/nat/remove [find comment="PPPoE subscribers"]
+/interface/pppoe-server/server/remove [find]
+/ppp/secret/remove alice
+/ppp/profile/remove subscribers
+/ip/pool/remove pppoe-pool
+```
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Pool and profile
+
+**IP → Pool → +**; **PPP → Profiles → +**: Local Address `10.0.0.1`, Remote Address `pppoe-pool`, Limits tab: Rate Limit `5M/10M`, Only One `yes`.
+
+`TODO` ![Step 1](images/gui/01-profile.png)
+
+### Step 2 — Secret
+
+**PPP → Secrets → +**: Name, Password, Service `pppoe`, Profile `subscribers`.
+
+`TODO` ![Step 2](images/gui/02-secret.png)
+
+### Step 3 — Server
+
+**PPP → PPPoE Servers → +**: Service Name `internet`, Interface `ether3`, Default Profile `subscribers`.
+
+`TODO` ![Step 3](images/gui/03-server.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli), using **PPP → Active Connections**.
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| Client cannot find the server | Wrong interface, or ether3 still in the bridge | Step 1. |
+| Users bypass login | ether3 has an IP or DHCP | Remove them. [2] |
+| Some websites hang | MTU 1492 | Use a profile with `change-tcp-mss=yes`. [2] |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| Profile | Shared settings, pools, `rate-limit` [1] |
+| Secret | One user account [1] |
+| `/ppp/active` | Who is connected; remove to disconnect [1] |
+| Server interface | No IP, no DHCP [2] |
+
+## Key Takeaways
+
+- Profiles hold policy, secrets hold users.
+- Each connected user gets a dynamic queue from `rate-limit`.
+
+## References
+
+1. [RouterOS Manual — PPP AAA](https://manual.mikrotik.com/docs/authentication-authorization-accounting/ppp-aaa/)
+2. [RouterOS Manual — PPPoE](https://manual.mikrotik.com/docs/virtual-private-networks/pppoe/)
+3. [RouterOS Manual — NAT](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/firewall/nat/)
+
+---
+
+**Previous:** [K.04 — Queue Tree with Mangle](../../K-bandwidth-management-and-qos/04-queue-tree-with-mangle/README.md) · **Next:** L.02 — HotSpot Setup
+
+[Back to the main learning journal](../../README.md)
