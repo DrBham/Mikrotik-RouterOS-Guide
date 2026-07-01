@@ -69,3 +69,65 @@ The walled garden lists sites that can be opened without logging in, for example
 | HotSpot interface | `wlan-guest` from F.04 (with its address `192.168.99.1/24`) |
 | Management | Laptop on ether2 (not on the HotSpot) |
 | Client | Phone on `LAB-Guest` |
+
+## Method A — CLI
+
+### Step 1 — Remove the F.04 DHCP server
+
+The wizard creates its own DHCP server and pool. Remove the F.04 ones on `wlan-guest` first (F.04 reset section, DHCP lines only).
+
+### Step 2 — Run the wizard
+
+```routeros
+/ip/hotspot/setup
+```
+
+[1] Answer: interface `wlan-guest`, local address `192.168.99.1/24`, masquerade yes, pool `192.168.99.10-192.168.99.254`, certificate none, SMTP `0.0.0.0`, DNS `192.168.99.1`, DNS name `hotspot.lan`, user `guest1` with a password.
+
+`TODO` ![Step 2](images/cli/02-wizard.png)
+
+### Step 3 — Inspect what was created
+
+```routeros
+/ip/hotspot print
+/ip/hotspot/profile print
+/ip/hotspot/user print
+```
+
+[1]
+
+`TODO` ![Step 3](images/cli/03-created.png)
+
+### Step 4 — Log in from the phone
+
+Join `LAB-Guest`, open any `http://` page (or wait for the phone's login prompt), and log in as `guest1`. Then:
+
+```routeros
+/ip/hotspot/host print
+/ip/hotspot/active print
+```
+
+[1]
+
+> [!CAUTION]
+> **Privacy:** cover MAC addresses and device names. See the [privacy checklist](../../TOPIC-TEMPLATE.md#screenshot--privacy-checklist).
+
+`TODO` ![Step 4](images/cli/04-login.png)
+
+### Step 5 — Walled garden
+
+```routeros
+/ip/hotspot/walled-garden add dst-host=example.com
+```
+
+[1] Log out and check that `http://example.com` opens without login.
+
+`TODO` ![Step 5](images/cli/05-walled-garden.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| Phone before login | Login page | `TODO` |
+| After login | Internet works; listed in `/ip/hotspot/active` | `TODO` |
+| example.com before login | Opens | `TODO` |
