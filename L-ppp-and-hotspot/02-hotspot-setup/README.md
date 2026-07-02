@@ -131,3 +131,73 @@ Join `LAB-Guest`, open any `http://` page (or wait for the phone's login prompt)
 | Phone before login | Login page | `TODO` |
 | After login | Internet works; listed in `/ip/hotspot/active` | `TODO` |
 | example.com before login | Opens | `TODO` |
+
+## Reset Before Method B
+
+```routeros
+/ip/hotspot/remove [find]
+/ip/hotspot/profile/remove [find name!=default]
+/ip/hotspot/user/remove [find]
+/ip/hotspot/walled-garden/remove [find]
+```
+
+Remove the DHCP server, pool, and masquerade rule the wizard created (check `/ip/dhcp-server/print` and `/ip/firewall/nat/print`).
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Wizard
+
+**IP → Hotspot → Servers → Hotspot Setup**, same answers as Method A.
+
+`TODO` ![Step 1](images/gui/01-wizard.png)
+
+### Step 2 — Users and active sessions
+
+**IP → Hotspot → Users**, **Active**, **Hosts**.
+
+`TODO` ![Step 2](images/gui/02-users-active.png)
+
+### Step 3 — Walled garden
+
+**IP → Hotspot → Walled Garden → +**: Dst. Host `example.com`.
+
+`TODO` ![Step 3](images/gui/03-walled-garden.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| Lost WinBox access | HotSpot on your management interface [1] | Manage from ether2. |
+| No login page appears | Browser opened an HTTPS page | Open an `http://` page. [1] |
+| Rate limit not applied | FastTrack [1] | Chapter K. |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| `/ip/hotspot/setup` | Wizard: profile, server, user, NAT [1] |
+| `/ip/hotspot/active` | Logged-in users [1] |
+| `/ip/hotspot/host` | All devices seen on the HotSpot [1] |
+| Walled garden | Sites allowed before login [1] |
+
+## Key Takeaways
+
+- Never run the HotSpot on the interface you manage the router from.
+- Before login, guests have DHCP and DNS only.
+
+## References
+
+1. [RouterOS Manual — HotSpot (Captive portal)](https://manual.mikrotik.com/docs/authentication-authorization-accounting/hotspot-captive-portal/)
+
+---
+
+**Previous:** [L.01 — PPPoE Server, Profiles, and Secrets](../01-pppoe-server-profiles-and-secrets/README.md) · **Next:** L.03 — HotSpot Users and Profiles
+
+[Back to the main learning journal](../../README.md)
