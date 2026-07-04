@@ -74,3 +74,64 @@ An IP binding with `type=bypassed` lets one device use the network without loggi
 | --- | --- |
 | Device | MikroTik hAP lite, `TODO` version, L.02 complete |
 | Clients | Two phones |
+
+## Method A — CLI
+
+### Step 1 — Guest profile
+
+```routeros
+/ip/hotspot/user/profile add name=guest rate-limit=512k/2M session-timeout=1h shared-users=1 address-list=hotspot-guests
+```
+
+[1]
+
+`TODO` ![Step 1](images/cli/01-profile.png)
+
+### Step 2 — Users
+
+```routeros
+/ip/hotspot/user add name=guest1 password=ChangeMe-2 profile=guest
+/ip/hotspot/user add name=daypass password=ChangeMe-3 limit-uptime=1d limit-bytes-total=2G
+```
+
+[1]
+
+`TODO` ![Step 2](images/cli/02-users.png)
+
+### Step 3 — Test shared-users
+
+Log in as `guest1` on phone 1, then on phone 2. The second login fails because only one session is allowed. [1]
+
+`TODO` ![Step 3](images/cli/03-shared-users.png)
+
+### Step 4 — Bypass a device
+
+```routeros
+/ip/hotspot/ip-binding add mac-address=00:00:5E:00:53:20 type=bypassed comment="lab bypass"
+```
+
+[1] Use phone 2's MAC. It now reaches the internet without logging in.
+
+> [!CAUTION]
+> **Privacy:** cover real MAC addresses. See the [privacy checklist](../../TOPIC-TEMPLATE.md#screenshot--privacy-checklist).
+
+`TODO` ![Step 4](images/cli/04-bypass.png)
+
+### Step 5 — Trial login
+
+```routeros
+/ip/hotspot/profile set hsprof1 login-by=cookie,http-chap,trial trial-uptime-limit=30m trial-uptime-reset=1d
+```
+
+[1] The login page now offers a free 30-minute trial.
+
+`TODO` ![Step 5](images/cli/05-trial.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| guest1 speed | ~512k up / 2M down | `TODO` |
+| Second guest1 login | Refused | `TODO` |
+| Bypassed phone | No login needed | `TODO` |
+| Trial | 30 minutes | `TODO` |
