@@ -135,3 +135,72 @@ Log in as `guest1` on phone 1, then on phone 2. The second login fails because o
 | Second guest1 login | Refused | `TODO` |
 | Bypassed phone | No login needed | `TODO` |
 | Trial | 30 minutes | `TODO` |
+
+## Reset Before Method B
+
+```routeros
+/ip/hotspot/ip-binding/remove [find comment="lab bypass"]
+/ip/hotspot/user/remove [find name=guest1]
+/ip/hotspot/user/remove [find name=daypass]
+/ip/hotspot/user/profile/remove guest
+/ip/hotspot/profile set hsprof1 login-by=cookie,http-chap
+```
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — User profile
+
+**IP → Hotspot → User Profiles → +**: Name `guest`, Rate Limit `512k/2M`, Session Timeout `1h`, Shared Users `1`.
+
+`TODO` ![Step 1](images/gui/01-profile.png)
+
+### Step 2 — Users
+
+**IP → Hotspot → Users → +**: the two users with their limits.
+
+`TODO` ![Step 2](images/gui/02-users.png)
+
+### Step 3 — IP binding and trial
+
+**IP → Hotspot → IP Bindings → +** (Type `bypassed`); **Server Profiles → hsprof1 → Login**: tick Trial.
+
+`TODO` ![Step 3](images/gui/03-binding-trial.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| "no more sessions are allowed for user" | `shared-users` reached [1] | Expected; raise it if needed. |
+| Rate limit ignored | FastTrack [1] | Chapter K. |
+| Phone keeps asking to log in | Randomised MAC changed | Disable MAC randomisation for that network. |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| User profile | `rate-limit`, `session-timeout`, `shared-users` [1] |
+| `limit-uptime`, `limit-bytes-total` | Per-user totals [1] |
+| `login-by` | Login methods incl. `mac`, `trial` [1] |
+| IP binding `bypassed` | No login for a device [1] |
+
+## Key Takeaways
+
+- Profiles set the rules, users carry the totals.
+- MAC-based access is convenient but easy to spoof.
+
+## References
+
+1. [RouterOS Manual — HotSpot (Captive portal)](https://manual.mikrotik.com/docs/authentication-authorization-accounting/hotspot-captive-portal/)
+
+---
+
+**Previous:** [L.02 — HotSpot Setup](../02-hotspot-setup/README.md) · **Next:** Chapter M — VPN & Network Tunneling
+
+[Back to the main learning journal](../../README.md)
