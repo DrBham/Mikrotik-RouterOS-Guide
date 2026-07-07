@@ -37,3 +37,34 @@ Branch offices, working from home, and managing routers safely all depend on tun
 ### Encryption
 
 GRE and EoIP do not encrypt; both can be protected with an `ipsec-secret`. [3][4] L2TP does not encrypt either, and the manual says to use IPsec on untrusted paths. [5] WireGuard and IPsec encrypt by design. [2][4]
+
+### Overhead and MTU
+
+Every tunnel adds headers, which lowers the usable MTU:
+
+| Tunnel | Overhead | MTU on a 1500-byte path |
+| --- | --- | --- |
+| GRE over IPv4 | 24 bytes | 1476 [1] |
+| EoIP | 42 bytes | 1458 [3] |
+| L2TP | | 1450 default [5] |
+
+Fragmentation or MSS clamping (C.04) handles the difference.
+
+### Keys and peers
+
+WireGuard identifies each peer by its public key; the private key never leaves the router, and only public keys are exchanged. [2] IPsec uses a pre-shared key or certificates, with phase 1 and phase 2 parameters that must match on both sides. [4]
+
+### Which to choose
+
+| Need | Good fit |
+| --- | --- |
+| Join two offices, both MikroTik | WireGuard (M.02) |
+| Phones and laptops connecting in | WireGuard (M.03) or L2TP/IPsec (M.04) |
+| One LAN across two sites | EoIP, encrypted (M.05) |
+| Third-party firewall at the other end | IPsec IKEv2 (M.06) |
+
+### How it connects
+
+```text
+M.01 concepts ──► M.02–M.06 builds ──► E.05 DDNS name as the endpoint ──► H.02 allow the VPN port in input
+```
