@@ -68,3 +68,46 @@ WireGuard identifies each peer by its public key; the private key never leaves t
 ```text
 M.01 concepts ──► M.02–M.06 builds ──► E.05 DDNS name as the endpoint ──► H.02 allow the VPN port in input
 ```
+
+## How It Appears in RouterOS
+
+| Tunnel | Menu |
+| --- | --- |
+| WireGuard | `/interface/wireguard`, `/interface/wireguard/peers` [2] |
+| L2TP | `/interface/l2tp-server`, `/interface/l2tp-client` [5] |
+| EoIP / GRE | `/interface/eoip`, `/interface/gre` [3][1] |
+| IPsec | `/ip/ipsec/...` [4] |
+
+```routeros
+/interface/print where type~"wg|gre|eoip|l2tp"
+```
+
+`TODO` ![Tunnel menus](images/cli/01-tunnels.png)
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| L3 tunnel | Routed; IP only [1] |
+| L2 tunnel | Bridged; full Ethernet [3] |
+| GRE/EoIP/L2TP | No encryption without IPsec [3][4][5] |
+| Overhead | Lower MTU: GRE 1476, EoIP 1458 [1][3] |
+
+## Key Takeaways
+
+- Decide layer 2 or layer 3 first, then whether you need encryption.
+- Every tunnel lowers the MTU; plan for it.
+
+## References
+
+1. [RouterOS Manual — GRE](https://manual.mikrotik.com/docs/virtual-private-networks/gre/)
+2. [RouterOS Manual — WireGuard](https://manual.mikrotik.com/docs/virtual-private-networks/wireguard/)
+3. [RouterOS Manual — EoIP](https://manual.mikrotik.com/docs/virtual-private-networks/eoip/)
+4. [RouterOS Manual — IPsec](https://manual.mikrotik.com/docs/virtual-private-networks/ipsec/)
+5. [RouterOS Manual — L2TP](https://manual.mikrotik.com/docs/virtual-private-networks/l2tp/)
+
+---
+
+**Previous:** [L.03 — HotSpot Users and Profiles](../../L-ppp-and-hotspot/03-hotspot-users-and-profiles/README.md) · **Next:** M.02 — WireGuard Site-to-Site
+
+[Back to the main learning journal](../../README.md)
