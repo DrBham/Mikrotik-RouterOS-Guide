@@ -65,3 +65,52 @@ LAN 10.1.202.0/24 ─ [Office1 CHR] WAN 192.168.90.1 ─── WAN 192.168.80.1 
 | --- | --- |
 | Routers | Two CHRs in GNS3, `TODO` version, WANs on one shared segment |
 | Addresses | As in the manual's example |
+
+## Method A — CLI
+
+### Step 1 — Interfaces and public keys
+
+On both routers:
+
+```routeros
+/interface/wireguard add listen-port=13231 name=wireguard1
+:put [/interface/wireguard/get [find name=wireguard1] public-key]
+```
+
+[1] Copy each router's public key.
+
+> [!CAUTION]
+> **Privacy:** never show private keys. Public keys are safe to share but are not needed in screenshots. See the [privacy checklist](../../TOPIC-TEMPLATE.md#screenshot--privacy-checklist).
+
+`TODO` ![Step 1](images/cli/01-keys.png)
+
+### Step 2 — Peers
+
+Office 1 and Office 2 peer commands from the theory section, with the other side's public key. [1]
+
+`TODO` ![Step 2](images/cli/02-peers.png)
+
+### Step 3 — Addresses, routes, firewall
+
+The address, route, and firewall lines on both routers. [1]
+
+`TODO` ![Step 3](images/cli/03-address-route-fw.png)
+
+### Step 4 — Test
+
+```routeros
+/interface/wireguard/peers/print detail
+/ping 10.1.101.1 src-address=10.1.202.1
+```
+
+The peer shows a recent handshake, and the ping crosses the tunnel.
+
+`TODO` ![Step 4](images/cli/04-test.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| Peer handshake | Recent | `TODO` |
+| LAN-to-LAN ping | Works | `TODO` |
+| Traceroute | One hop through the tunnel | `TODO` |
