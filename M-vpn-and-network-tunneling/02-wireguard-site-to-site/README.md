@@ -114,3 +114,74 @@ The peer shows a recent handshake, and the ping crosses the tunnel.
 | Peer handshake | Recent | `TODO` |
 | LAN-to-LAN ping | Works | `TODO` |
 | Traceroute | One hop through the tunnel | `TODO` |
+
+## Reset Before Method B
+
+On both routers:
+
+```routeros
+/ip/firewall/filter/remove [find dst-port=13231]
+/ip/route/remove [find gateway=wireguard1]
+/ip/address/remove [find interface=wireguard1]
+/interface/wireguard/peers/remove [find]
+/interface/wireguard/remove wireguard1
+```
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Interface
+
+**WireGuard → WireGuard → +**: Listen Port `13231`. Copy the public key.
+
+`TODO` ![Step 1](images/gui/01-interface.png)
+
+### Step 2 — Peer
+
+**WireGuard → Peers → +**: Interface, Public Key, Endpoint, Endpoint Port, Allowed Address.
+
+`TODO` ![Step 2](images/gui/02-peer.png)
+
+### Step 3 — Address, route, firewall
+
+**IP → Addresses**, **IP → Routes**, **IP → Firewall → Filter Rules** as in Method A, rule at the top of `input`.
+
+`TODO` ![Step 3](images/gui/03-rest.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| No handshake | Wrong public key, endpoint, or UDP port blocked | Check both peers and the input rule. [1] |
+| Handshake but no LAN traffic | `allowed-address` or route missing | Both must cover the remote LAN. [1] |
+| Some apps slow | Tunnel MTU | Lower MTU or clamp MSS (C.04). |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| `/interface/wireguard add listen-port=` | Interface + keys [1] |
+| Peer `public-key`, `endpoint-*` | Who and where [1] |
+| `allowed-address` | What may use the tunnel [1] |
+| Route + input rule | Make traffic enter; let handshakes in [1] |
+
+## Key Takeaways
+
+- Exchange only public keys.
+- `allowed-address` and routes must agree on both sides.
+
+## References
+
+1. [RouterOS Manual — WireGuard](https://manual.mikrotik.com/docs/virtual-private-networks/wireguard/)
+
+---
+
+**Previous:** [M.01 — VPN and Tunnel Concepts](../01-vpn-and-tunnel-concepts/README.md) · **Next:** M.03 — WireGuard Road Warrior
+
+[Back to the main learning journal](../../README.md)
