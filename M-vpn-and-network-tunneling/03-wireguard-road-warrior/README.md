@@ -57,3 +57,66 @@ The router must be reachable from the internet on UDP 13231. Behind a home route
 | Server | MikroTik hAP lite, `TODO` version, H.02 firewall |
 | Client | Phone with the official WireGuard app, on mobile data |
 | Endpoint | DDNS name (E.05) or public address |
+
+## Method A — CLI
+
+### Step 1 — Interface and address
+
+```routeros
+/interface/wireguard add listen-port=13231 name=wireguard1
+/ip/address add address=192.168.100.1/24 interface=wireguard1
+```
+
+[1]
+
+`TODO` ![Step 1](images/cli/01-interface.png)
+
+### Step 2 — Client keys and peer
+
+Create a tunnel in the phone app; it generates its own key pair. Copy the phone's public key into:
+
+```routeros
+/interface/wireguard/peers add allowed-address=192.168.100.2/32 interface=wireguard1 public-key="<phone-public-key>"
+```
+
+[1]
+
+`TODO` ![Step 2](images/cli/02-peer.png)
+
+### Step 3 — Firewall and LAN membership
+
+```routeros
+/ip/firewall/filter add chain=input action=accept comment="allow WireGuard" dst-port=13231 protocol=udp place-before=([find chain=input]->0)
+/interface/list/member add interface=wireguard1 list=LAN
+```
+
+[1] Add a port forward for UDP 13231 on the home router if the hAP lite is behind it.
+
+`TODO` ![Step 3](images/cli/03-firewall.png)
+
+### Step 4 — Phone settings
+
+In the app: address `192.168.100.2/32`, DNS `192.168.100.1`; peer public key = router's public key; endpoint = DDNS name `:13231`; allowed IPs `192.168.88.0/24, 192.168.100.0/24`.
+
+> [!CAUTION]
+> **Privacy:** cover the DDNS name, keys, and public addresses. See the [privacy checklist](../../TOPIC-TEMPLATE.md#screenshot--privacy-checklist).
+
+`TODO` ![Step 4](images/cli/04-phone.png)
+
+### Step 5 — Test
+
+On mobile data, connect and open WinBox Mobile or ping `192.168.88.1`. On the router:
+
+```routeros
+/interface/wireguard/peers/print detail
+```
+
+`TODO` ![Step 5](images/cli/05-test.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| Handshake | Recent | `TODO` |
+| Phone reaches `192.168.88.1` | Yes | `TODO` |
+| WinBox port from internet | Still closed | `TODO` |
