@@ -120,3 +120,69 @@ On mobile data, connect and open WinBox Mobile or ping `192.168.88.1`. On the ro
 | Handshake | Recent | `TODO` |
 | Phone reaches `192.168.88.1` | Yes | `TODO` |
 | WinBox port from internet | Still closed | `TODO` |
+
+## Reset Before Method B
+
+```routeros
+/interface/list/member/remove [find interface=wireguard1]
+/ip/firewall/filter/remove [find comment="allow WireGuard"]
+/interface/wireguard/peers/remove [find]
+/ip/address/remove [find interface=wireguard1]
+/interface/wireguard/remove wireguard1
+```
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Interface, address, peer
+
+**WireGuard → +**, **IP → Addresses → +**, **WireGuard → Peers → +** as in Method A.
+
+`TODO` ![Step 1](images/gui/01-setup.png)
+
+### Step 2 — Client config
+
+Select the peer and use **Show Client Config** (if available in your WinBox version) to display a configuration the app can import. [1]
+
+`TODO` ![Step 2](images/gui/02-client-config.png)
+
+### Step 3 — Firewall and list
+
+As in Method A Step 3.
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| No handshake from mobile data | UDP 13231 not reachable (home router, CGN) | Port forward upstream; see B.06. |
+| Connected but cannot reach LAN | Phone's allowed IPs too narrow, or wireguard1 not in `LAN` | Fix both. [1] |
+| Names do not resolve | DNS not set in the app | DNS `192.168.100.1`. |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| One `/32` per client in `allowed-address` | Road-warrior peers [1] |
+| `wireguard1` in `LAN` | Clients treated as LAN [1] |
+| `show-client-config` | Export for the app [1] |
+
+## Key Takeaways
+
+- A road-warrior VPN replaces open management ports.
+- Inbound VPN needs a reachable public address.
+
+## References
+
+1. [RouterOS Manual — WireGuard](https://manual.mikrotik.com/docs/virtual-private-networks/wireguard/)
+
+---
+
+**Previous:** [M.02 — WireGuard Site-to-Site](../02-wireguard-site-to-site/README.md) · **Next:** M.04 — L2TP over IPsec
+
+[Back to the main learning journal](../../README.md)
