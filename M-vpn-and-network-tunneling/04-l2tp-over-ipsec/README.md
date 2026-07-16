@@ -73,3 +73,63 @@ The default L2TP MTU is 1450. [1]
 | Server | CHR or hAP lite, `TODO` version, H.02 firewall |
 | Client | Second CHR (or Windows built-in VPN client) |
 | Server address | Documentation address `203.0.113.1` in commands; replace with yours |
+
+## Method A — CLI
+
+### Step 1 — Server
+
+Enter the four server commands. [1]
+
+`TODO` ![Step 1](images/cli/01-server.png)
+
+### Step 2 — Require IPsec
+
+```routeros
+/interface/l2tp-server/server/set use-ipsec=required ipsec-secret=Example-ipsec-secret-1
+```
+
+[1]
+
+> [!CAUTION]
+> **Privacy:** use your own secrets and cover them. See the [privacy checklist](../../TOPIC-TEMPLATE.md#screenshot--privacy-checklist).
+
+`TODO` ![Step 2](images/cli/02-ipsec.png)
+
+### Step 3 — Firewall
+
+```routeros
+/ip/firewall/filter add chain=input action=accept protocol=udp dst-port=500,4500 in-interface-list=WAN comment="accept IKE" place-before=0
+/ip/firewall/filter add chain=input action=accept protocol=ipsec-esp in-interface-list=WAN comment="accept IPsec ESP" place-before=0
+/ip/firewall/filter add chain=input action=accept protocol=udp dst-port=1701 ipsec-policy=in,ipsec in-interface-list=WAN comment="accept L2TP over IPsec" place-before=0
+```
+
+[1] The manual places them before the default drop rule; `place-before=0` puts them at the top of the list.
+
+`TODO` ![Step 3](images/cli/03-firewall.png)
+
+### Step 4 — Client and test
+
+On the client router:
+
+```routeros
+/interface/l2tp-client/add name=l2tp-office connect-to=203.0.113.1 user=alice password=Example-pass-1 use-ipsec=yes ipsec-secret=Example-ipsec-secret-1 disabled=no
+```
+
+On the server:
+
+```routeros
+/ppp/active/print
+/ip/ipsec/active-peers/print
+```
+
+[1][2]
+
+`TODO` ![Step 4](images/cli/04-test.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| `/ppp/active` | alice connected | `TODO` |
+| IPsec active peer | Present | `TODO` |
+| Client without IPsec | Refused (`required`) [1] | `TODO` |
