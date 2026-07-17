@@ -133,3 +133,75 @@ On the server:
 | `/ppp/active` | alice connected | `TODO` |
 | IPsec active peer | Present | `TODO` |
 | Client without IPsec | Refused (`required`) [1] | `TODO` |
+
+## Reset Before Method B
+
+```routeros
+/ip/firewall/filter/remove [find comment~"IKE|ESP|L2TP"]
+/interface/l2tp-server/server/set enabled=no use-ipsec=no
+/ppp/secret/remove alice
+/ppp/profile/remove vpn
+/ip/pool/remove vpn-pool
+```
+
+On the client: `/interface/l2tp-client/remove l2tp-office`.
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Pool, profile, secret
+
+As in L.01, with Service `l2tp`.
+
+`TODO` ![Step 1](images/gui/01-ppp.png)
+
+### Step 2 — L2TP server
+
+**PPP → Interface → L2TP Server**: Enabled, Default Profile `vpn`, Use IPsec `required`, IPsec Secret.
+
+`TODO` ![Step 2](images/gui/02-server.png)
+
+### Step 3 — Firewall and client
+
+Firewall rules as in Method A; on Windows: **Settings → VPN → Add**, type L2TP/IPsec with pre-shared key.
+
+`TODO` ![Step 3](images/gui/03-client.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| No IPsec peer | UDP 500/4500 or ESP blocked | Firewall rules. [1] |
+| IPsec up, L2TP fails | UDP 1701 rule missing | Third rule. [1] |
+| Large transfers stall | MTU 1450 | MSS clamping. [1] |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| `/interface/l2tp-server/server/set enabled=yes` | L2TP server [1] |
+| `use-ipsec=required ipsec-secret=` | Encrypted only [1] |
+| Accept UDP 500, 4500, ESP, 1701 | Firewall [1] |
+| `/ppp/active`, `/ip/ipsec/active-peers` | Status [1][2] |
+
+## Key Takeaways
+
+- Never run L2TP without IPsec on the internet.
+- L2TP users are ordinary PPP secrets.
+
+## References
+
+1. [RouterOS Manual — L2TP](https://manual.mikrotik.com/docs/virtual-private-networks/l2tp/)
+2. [RouterOS Manual — IPsec site-to-site](https://manual.mikrotik.com/docs/virtual-private-networks/ipsec/site-to-site/)
+
+---
+
+**Previous:** [M.03 — WireGuard Road Warrior](../03-wireguard-road-warrior/README.md) · **Next:** M.05 — EoIP and GRE Tunnels
+
+[Back to the main learning journal](../../README.md)
