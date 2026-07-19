@@ -66,3 +66,70 @@ LAN-A ─ [R1] 192.168.80.1 ─── 192.168.90.1 [R2] ─ LAN-B
 | Routers | Two CHRs in GNS3, `TODO` version |
 | Part 1 (GRE) | LAN-A `10.1.101.0/24`, LAN-B `10.1.202.0/24` |
 | Part 2 (EoIP) | Both LANs in one subnet `10.1.1.0/24` via bridge1 |
+
+## Method A — CLI
+
+### Step 1 — GRE on both routers
+
+R1:
+
+```routeros
+/interface/gre/add name=myGre remote-address=192.168.90.1 local-address=192.168.80.1
+/ip/address/add address=172.16.1.1/30 interface=myGre
+/ip/route/add dst-address=10.1.202.0/24 gateway=172.16.1.2
+```
+
+R2:
+
+```routeros
+/interface/gre/add name=myGre remote-address=192.168.80.1 local-address=192.168.90.1
+/ip/address/add address=172.16.1.2/30 interface=myGre
+/ip/route/add dst-address=10.1.101.0/24 gateway=172.16.1.1
+```
+
+[1]
+
+`TODO` ![Step 1](images/cli/01-gre.png)
+
+### Step 2 — Test GRE
+
+```routeros
+/ping 172.16.1.2
+/interface/gre/print where name=myGre
+```
+
+[1]
+
+`TODO` ![Step 2](images/cli/02-gre-test.png)
+
+### Step 3 — EoIP with matching tunnel IDs
+
+R1: `/interface/eoip/add name=eoip-remote remote-address=192.168.90.1 tunnel-id=1`
+R2: `/interface/eoip/add name=eoip-main remote-address=192.168.80.1 tunnel-id=1`
+
+[2]
+
+`TODO` ![Step 3](images/cli/03-eoip.png)
+
+### Step 4 — Bridge EoIP into the LAN
+
+On each router, create `bridge1` with the LAN port and the EoIP interface, then address it:
+
+```routeros
+/interface/bridge/add name=bridge1
+/interface/bridge/port/add bridge=bridge1 interface=ether2
+/interface/bridge/port/add bridge=bridge1 interface=eoip-main
+/ip/address/add address=10.1.1.11/24 interface=bridge1
+```
+
+[2] (Use `eoip-remote` and `10.1.1.10/24` on R1.)
+
+`TODO` ![Step 4](images/cli/04-eoip-bridge.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| GRE running | `R` flag; ping 172.16.1.2 | `TODO` |
+| EoIP running | `R` flag on both ends [2] | `TODO` |
+| PC on LAN-A gets DHCP from R2 (one LAN) | Yes, if R2 serves DHCP | `TODO` |
