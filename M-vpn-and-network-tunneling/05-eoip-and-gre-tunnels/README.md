@@ -133,3 +133,60 @@ On each router, create `bridge1` with the LAN port and the EoIP interface, then 
 | GRE running | `R` flag; ping 172.16.1.2 | `TODO` |
 | EoIP running | `R` flag on both ends [2] | `TODO` |
 | PC on LAN-A gets DHCP from R2 (one LAN) | Yes, if R2 serves DHCP | `TODO` |
+
+## Reset Before Method B
+
+Remove the bridges, EoIP and GRE interfaces, addresses, and routes on both routers.
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — GRE
+
+**Interfaces → + → GRE Tunnel**: Local and Remote Address. Then the address and route.
+
+`TODO` ![Step 1](images/gui/01-gre.png)
+
+### Step 2 — EoIP
+
+**Interfaces → + → EoIP Tunnel**: Remote Address, Tunnel ID `1`. Add it to **Bridge → Ports**.
+
+`TODO` ![Step 2](images/gui/02-eoip.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| EoIP not running | Tunnel IDs differ, or protocol 47 blocked | Match IDs; allow GRE. [2] |
+| Large frames fail | MTU 1476/1458 | Account for overhead. [1][2] |
+| Routing over GRE flaps with check-gateway | `arp` check on a GRE gateway | Do not use `arp` there. [1] |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| GRE | L3, IP only, 24 bytes [1] |
+| EoIP | L2, full Ethernet, matching `tunnel-id`, 42 bytes [2] |
+| `ipsec-secret` | Encrypt either [2] |
+
+## Key Takeaways
+
+- Route through GRE; bridge through EoIP.
+- Neither encrypts unless you add IPsec.
+
+## References
+
+1. [RouterOS Manual — GRE](https://manual.mikrotik.com/docs/virtual-private-networks/gre/)
+2. [RouterOS Manual — EoIP](https://manual.mikrotik.com/docs/virtual-private-networks/eoip/)
+
+---
+
+**Previous:** [M.04 — L2TP over IPsec](../04-l2tp-over-ipsec/README.md) · **Next:** M.06 — IPsec Site-to-Site
+
+[Back to the main learning journal](../../README.md)
