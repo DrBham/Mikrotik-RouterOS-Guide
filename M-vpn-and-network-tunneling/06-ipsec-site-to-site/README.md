@@ -73,3 +73,60 @@ Accept UDP 500 and 4500 (IKE) and ESP from the peer before the input drop rule. 
 | --- | --- |
 | Routers | Two CHRs in GNS3, `TODO` version, H.02/H.03 firewall |
 | Addresses | As in the manual (documentation ranges) |
+
+## Method A — CLI
+
+### Step 1 — Phase 1 and 2, peer, identity
+
+The first four commands on Office 1, and the mirror on Office 2. [2]
+
+`TODO` ![Step 1](images/cli/01-ike.png)
+
+### Step 2 — Policy
+
+The policy line on both sides. [2]
+
+`TODO` ![Step 2](images/cli/02-policy.png)
+
+### Step 3 — NAT bypass
+
+Office 1:
+
+```routeros
+/ip/firewall/nat/add chain=srcnat action=accept place-before=0 src-address=10.1.202.0/24 dst-address=10.1.101.0/24
+```
+
+Office 2 with the addresses swapped. [2]
+
+`TODO` ![Step 3](images/cli/03-nat-bypass.png)
+
+### Step 4 — Firewall
+
+```routeros
+/ip/firewall/filter add chain=input action=accept protocol=udp dst-port=500,4500 src-address=203.0.113.2 comment="accept IKE" place-before=0
+/ip/firewall/filter add chain=input action=accept protocol=ipsec-esp src-address=203.0.113.2 comment="accept IPsec ESP" place-before=0
+```
+
+[2] Use the other office's address on each side.
+
+`TODO` ![Step 4](images/cli/04-firewall.png)
+
+### Step 5 — Check
+
+```routeros
+/ip/ipsec/active-peers/print
+/ip/ipsec/installed-sa/print
+/ping 10.1.101.1 src-address=10.1.202.1
+```
+
+[2] The peer shows `established`.
+
+`TODO` ![Step 5](images/cli/05-check.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| Active peer | `established` [2] | `TODO` |
+| Installed SAs | Two (one per direction) | `TODO` |
+| LAN-to-LAN ping | Works | `TODO` |
