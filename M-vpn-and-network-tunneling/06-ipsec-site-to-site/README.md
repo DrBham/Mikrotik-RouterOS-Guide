@@ -130,3 +130,67 @@ Office 2 with the addresses swapped. [2]
 | Active peer | `established` [2] | `TODO` |
 | Installed SAs | Two (one per direction) | `TODO` |
 | LAN-to-LAN ping | Works | `TODO` |
+
+## Reset Before Method B
+
+On both routers, remove the policy, identity, peer, proposal, profile, NAT bypass, and the two input rules.
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — IPsec objects
+
+**IP → IPsec**: Profiles, Proposals, Peers, Identities, Policies tabs, with the same values.
+
+`TODO` ![Step 1](images/gui/01-ipsec.png)
+
+### Step 2 — NAT and firewall
+
+**IP → Firewall → NAT**: accept rule at the top. **Filter Rules**: IKE and ESP.
+
+`TODO` ![Step 2](images/gui/02-nat-fw.png)
+
+### Step 3 — Status
+
+**IP → IPsec → Active Peers** and **Installed SAs**.
+
+`TODO` ![Step 3](images/gui/03-status.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| Peer never established | Phase 1 mismatch, wrong secret, IKE blocked | Compare profiles; firewall. [1][2] |
+| Established, no traffic | Traffic masqueraded or FastTracked | NAT bypass; FastTrack exclusion. [2] |
+| Drops after hours | Clock or lifetime problems | NTP (E.04). [1] |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| profile / proposal | Phase 1 / phase 2 [1] |
+| peer + identity | Who and how to authenticate [1] |
+| policy `tunnel=yes` | Which subnets [2] |
+| srcnat accept above masquerade | NAT bypass [2] |
+
+## Key Takeaways
+
+- Every phase 1 and phase 2 value must match on both ends.
+- Keep tunnel traffic away from NAT and FastTrack.
+
+## References
+
+1. [RouterOS Manual — IPsec](https://manual.mikrotik.com/docs/virtual-private-networks/ipsec/)
+2. [RouterOS Manual — IPsec site-to-site](https://manual.mikrotik.com/docs/virtual-private-networks/ipsec/site-to-site/)
+
+---
+
+**Previous:** [M.05 — EoIP and GRE Tunnels](../05-eoip-and-gre-tunnels/README.md) · **Next:** Chapter N — Load Balancing & High Availability
+
+[Back to the main learning journal](../../README.md)
