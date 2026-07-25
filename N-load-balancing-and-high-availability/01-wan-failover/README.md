@@ -69,3 +69,48 @@ Each WAN needs its own masquerade rule. [1] Connections open at the moment of fa
 | Router | CHR in GNS3 (or hAP lite with two uplinks), `TODO` version |
 | ISP1 | ether1, gateway `10.111.0.1` (CHR) |
 | ISP2 | ether2, gateway `10.112.0.1` (CHR) |
+
+## Method A — CLI
+
+### Step 1 — Second WAN and NAT
+
+```routeros
+/interface/bridge/port remove [find interface=ether2]
+/interface/list/member add list=WAN interface=ether2
+/ip/firewall/nat add chain=srcnat action=masquerade out-interface=ether1
+/ip/firewall/nat add chain=srcnat action=masquerade out-interface=ether2
+```
+
+[1] Add addresses for both links.
+
+`TODO` ![Step 1](images/cli/01-wan2.png)
+
+### Step 2 — Method 1 routes
+
+Enter the two default routes with distances 1 and 2. [1]
+
+`TODO` ![Step 2](images/cli/02-method1.png)
+
+### Step 3 — Test Method 1
+
+Disconnect ISP1's gateway. Within about 20 seconds the distance-2 route becomes active. [1]
+
+```routeros
+/ip/route/print where dst-address=0.0.0.0/0
+```
+
+`TODO` ![Step 3](images/cli/03-failover1.png)
+
+### Step 4 — Method 2 routes
+
+Remove the Method 1 routes and add the four Method 2 routes. [1] Now break ISP1's upstream instead of its gateway; failover still happens.
+
+`TODO` ![Step 4](images/cli/04-method2.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| Both up | Distance-1 route active | `TODO` |
+| ISP1 gateway down | Distance-2 active (~20 s) [1] | `TODO` |
+| ISP1 upstream down (Method 2) | Distance-2 active | `TODO` |
