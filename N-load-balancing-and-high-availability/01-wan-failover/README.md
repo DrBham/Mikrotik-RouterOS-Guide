@@ -114,3 +114,59 @@ Remove the Method 1 routes and add the four Method 2 routes. [1] Now break ISP1'
 | Both up | Distance-1 route active | `TODO` |
 | ISP1 gateway down | Distance-2 active (~20 s) [1] | `TODO` |
 | ISP1 upstream down (Method 2) | Distance-2 active | `TODO` |
+
+## Reset Before Method B
+
+Remove the failover routes and the ether2 NAT rule; return ether2 to the bridge if needed.
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Routes
+
+**IP → Routes → +**: Gateway, Distance, Check Gateway `ping`; for Method 2, also Scope and Target Scope.
+
+`TODO` ![Step 1](images/gui/01-routes.png)
+
+### Step 2 — Test
+
+Disconnect ISP1 and watch the route flags change.
+
+`TODO` ![Step 2](images/gui/02-test.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| No failover when ISP1's internet fails | Only the gateway is checked | Method 2. [1] |
+| Method 2 routes inactive | Host routes left at scope 30 | `scope=10`. [1] |
+| Backup works, internet still fails | No NAT on ether2 | Step 1. [1] |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| Distance 1 / 2 + `check-gateway=ping` | Basic failover [1] |
+| Host routes `scope=10` + `target-scope=11` | Check the internet, not the gateway [1] |
+| One masquerade per WAN | NAT [1] |
+
+## Key Takeaways
+
+- Check something beyond the ISP's router to detect real outages.
+- Expect existing connections to drop at the switch-over.
+
+## References
+
+1. [RouterOS Manual — Failover (WAN Backup)](https://manual.mikrotik.com/docs/high-availability-solutions/load-balancing/failover-wan-backup/)
+
+---
+
+**Previous:** [M.06 — IPsec Site-to-Site](../../M-vpn-and-network-tunneling/06-ipsec-site-to-site/README.md) · **Next:** N.02 — PCC Load Balancing
+
+[Back to the main learning journal](../../README.md)
