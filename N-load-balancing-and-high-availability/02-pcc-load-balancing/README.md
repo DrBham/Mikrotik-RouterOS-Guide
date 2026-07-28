@@ -70,3 +70,68 @@ PCC does not work with HotSpot. [1] FastTrack works only with the `main` table (
 | LAN | `ether_LAN` `192.168.100.1/24` |
 
 Rename interfaces with `/interface/set ether1 name=ether_ISP1` etc. to match the manual.
+
+## Method A — CLI
+
+### Step 1 — Addresses and tables
+
+```routeros
+/ip/address add address=10.10.4.100/24 interface=ether_ISP1
+/ip/address add address=10.10.5.100/24 interface=ether_ISP2
+/ip/address add address=192.168.100.1/24 interface=ether_LAN
+/routing/table add name=ISP1_table fib
+/routing/table add name=ISP2_table fib
+```
+
+[1]
+
+`TODO` ![Step 1](images/cli/01-tables.png)
+
+### Step 2 — Exclude connected networks
+
+```routeros
+/ip/firewall/address-list add address=10.10.4.0/24 list=ConnectedNetworks
+/ip/firewall/address-list add address=10.10.5.0/24 list=ConnectedNetworks
+/ip/firewall/address-list add address=192.168.100.0/24 list=ConnectedNetworks
+/ip/firewall/mangle add chain=prerouting action=accept dst-address-list=ConnectedNetworks
+/ip/firewall/mangle add chain=output action=accept dst-address-list=ConnectedNetworks
+```
+
+[1]
+
+`TODO` ![Step 2](images/cli/02-connected.png)
+
+### Step 3 — Classify and route
+
+Enter the four mangle rules and four routes from the theory section, plus the input/output rules from the manual's full example. [1]
+
+`TODO` ![Step 3](images/cli/03-pcc.png)
+
+### Step 4 — NAT
+
+```routeros
+/ip/firewall/nat add chain=srcnat action=masquerade out-interface=ether_ISP1
+/ip/firewall/nat add chain=srcnat action=masquerade out-interface=ether_ISP2
+```
+
+[1]
+
+### Step 5 — Watch the split
+
+Generate many connections from LAN hosts (several browser tabs or downloads), then:
+
+```routeros
+/ip/firewall/mangle/print stats
+/ip/firewall/connection/print
+```
+
+[1]
+
+`TODO` ![Step 5](images/cli/05-stats.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| Mark counters | Roughly even between ISP1 and ISP2 | `TODO` |
+| One ISP down | All new connections use the other (check-gateway) | `TODO` |
