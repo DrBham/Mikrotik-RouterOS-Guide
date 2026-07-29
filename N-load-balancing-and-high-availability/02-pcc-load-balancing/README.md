@@ -135,3 +135,60 @@ Generate many connections from LAN hosts (several browser tabs or downloads), th
 | --- | --- | --- |
 | Mark counters | Roughly even between ISP1 and ISP2 | `TODO` |
 | One ISP down | All new connections use the other (check-gateway) | `TODO` |
+
+## Reset Before Method B
+
+Remove the mangle rules, address list, routing tables and their routes, and the two NAT rules.
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Tables and routes
+
+**Routing → Tables**, **IP → Routes** as in Method A.
+
+`TODO` ![Step 1](images/gui/01-tables-routes.png)
+
+### Step 2 — Mangle
+
+**IP → Firewall → Mangle → +**: Advanced tab → Per Connection Classifier `both addresses`, `2/0` and `2/1`.
+
+`TODO` ![Step 2](images/gui/02-mangle.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| LAN cannot reach the router or local subnets | Connected networks not excluded | Step 2. [1] |
+| All traffic on one ISP | FastTrack, or rules not in prerouting | Exclude marked traffic from FastTrack; check chains. [1] |
+| HotSpot users broken | PCC is incompatible with HotSpot [1] | Do not combine them. |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| `per-connection-classifier=both-addresses:2/0` | Group connections [1] |
+| mark-connection → mark-routing | Turn groups into tables [1] |
+| One table + default route per ISP | Where each group goes [1] |
+| ConnectedNetworks accept | Keep local traffic local [1] |
+
+## Key Takeaways
+
+- PCC balances connections, not packets, so sessions stay on one line.
+- Always exclude local networks before marking.
+
+## References
+
+1. [RouterOS Manual — Per Connection Classifier](https://manual.mikrotik.com/docs/high-availability-solutions/load-balancing/per-connection-classifier/)
+
+---
+
+**Previous:** [N.01 — WAN Failover](../01-wan-failover/README.md) · **Next:** N.03 — VRRP Gateway Redundancy
+
+[Back to the main learning journal](../../README.md)
