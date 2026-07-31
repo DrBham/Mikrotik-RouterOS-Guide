@@ -69,3 +69,56 @@ LAN ──────┤        virtual 192.168.1.1                 ├── u
 | --- | --- |
 | Routers | Two CHRs in GNS3, `TODO` version |
 | Client | VPCS with gateway `192.168.1.1` |
+
+## Method A — CLI
+
+### Step 1 — Real addresses
+
+R1: `/ip/address add address=192.168.1.2/24 interface=ether5`
+R2: `/ip/address add address=192.168.1.3/24 interface=ether5`
+
+[1]
+
+### Step 2 — VRRP interfaces
+
+R1:
+
+```routeros
+/interface/vrrp add name=vrrp1 interface=ether5 priority=200
+/ip/address add address=192.168.1.1/32 interface=vrrp1
+```
+
+R2:
+
+```routeros
+/interface/vrrp add name=vrrp1 interface=ether5
+/ip/address add address=192.168.1.1/32 interface=vrrp1
+```
+
+[1]
+
+`TODO` ![Step 2](images/cli/02-vrrp.png)
+
+### Step 3 — Check roles
+
+```routeros
+/interface/vrrp print
+```
+
+[1] R1 is master, R2 backup.
+
+`TODO` ![Step 3](images/cli/03-roles.png)
+
+### Step 4 — Fail over
+
+Run a continuous ping from the client to `192.168.1.1`, then shut down R1. R2 becomes master; the ping loses only a few replies. Start R1 again; it takes back the master role (preemption).
+
+`TODO` ![Step 4](images/cli/04-failover.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| Normal | R1 master | `TODO` |
+| R1 down | R2 master; gateway keeps answering | `TODO` |
+| R1 back | R1 master again [1] | `TODO` |
