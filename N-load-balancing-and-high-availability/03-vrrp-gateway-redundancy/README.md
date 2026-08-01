@@ -122,3 +122,60 @@ Run a continuous ping from the client to `192.168.1.1`, then shut down R1. R2 be
 | Normal | R1 master | `TODO` |
 | R1 down | R2 master; gateway keeps answering | `TODO` |
 | R1 back | R1 master again [1] | `TODO` |
+
+## Reset Before Method B
+
+Remove the VRRP interfaces and their addresses on both routers.
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — VRRP interface
+
+**Interfaces → + → VRRP**: Interface `ether5`, VRID `1`, Priority (200 on R1).
+
+`TODO` ![Step 1](images/gui/01-vrrp.png)
+
+### Step 2 — Virtual address
+
+**IP → Addresses → +**: `192.168.1.1/32` on `vrrp1`.
+
+`TODO` ![Step 2](images/gui/02-address.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| "No IPv4 address!" | No real address on the parent | Step 1. [1] |
+| Both routers master | Advertisements not seen (filtered or different VRID) | Allow protocol 112; match VRID. [1] |
+| Traffic to the virtual address dropped | `rp-filter=strict` | Use `loose`. [1] |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| `/interface/vrrp add interface=` | VRRP group member [1] |
+| Virtual address on vrrp interface | Shared gateway [1] |
+| Highest priority = master | Default 100 [1] |
+| `sync-connection-tracking` | Keep sessions on failover [1] |
+
+## Key Takeaways
+
+- VRRP makes the gateway address survive a router failure.
+- Each router still needs its own real address.
+
+## References
+
+1. [RouterOS Manual — VRRP](https://manual.mikrotik.com/docs/high-availability-solutions/vrrp/)
+
+---
+
+**Previous:** [N.02 — PCC Load Balancing](../02-pcc-load-balancing/README.md) · **Next:** N.04 — Netwatch
+
+[Back to the main learning journal](../../README.md)
