@@ -1,0 +1,58 @@
+<div align="center">
+
+# Netwatch
+
+*Chapter N — Load Balancing & High Availability | Topic N.04*
+
+![Level](https://img.shields.io/badge/Level-Intermediate-2563EB) ![Type](https://img.shields.io/badge/Type-Practice-7C3AED) ![Status](https://img.shields.io/badge/Status-Draft-F59E0B)
+
+[Overview](#overview) · [Theory](#theory) · [Method A — CLI](#method-a--cli) · [Method B — WinBox](#method-b--winbox-gui) · [Quick Recap](#quick-recap) · [References](#references)
+
+</div>
+
+> [!NOTE]
+> **Draft.** Screenshots and lab results are not recorded yet. Every `TODO` must be replaced with real lab evidence before publishing.
+
+## Overview
+
+Netwatch monitors hosts and runs a script when one goes down or comes back. This topic watches an internet host and a LAN server, logs their state changes, and uses a down script to switch something off.
+
+## Why This Matters
+
+Routes with `check-gateway` react to gateway failures only. Netwatch can react to anything you can probe, such as a website or a DNS server, and can do anything a script can do: log, disable an interface, or switch a route.
+
+## Prerequisites
+
+| Topic | Why it is needed |
+| --- | --- |
+| [E.06 — Scheduler and Scripts](../../E-dhcp-and-network-services/06-scheduler-and-scripts/README.md) | Scripts. |
+| [N.01 — WAN Failover](../01-wan-failover/README.md) | What failover is for. |
+
+## Theory
+
+### Probe types
+
+Netwatch probe types are `simple`, `icmp`, `tcp-conn`, `http-get`, `https-get`, and `dns`. [1] The default interval is 60 seconds for `simple` and 10 seconds for the others. [1] Examples from the manual: [1]
+
+```routeros
+/tool/netwatch/add host=8.8.8.8 type=icmp thr-avg=10ms
+/tool/netwatch/add host=8.8.8.8 type=tcp-conn port=53
+/tool/netwatch/add host=mikrotik.com type=dns dns-server=8.8.8.8 record-type=A
+```
+
+### Scripts
+
+`up-script` and `down-script` run when the state changes. They run as the system user with only the `read`, `write`, `test`, and `reboot` policies. [1] `/tool/netwatch/print stats` shows each probe's status. [1]
+
+### How it connects
+
+```text
+N.04 Netwatch ──► E.06 scripts ──► Chapter Q logs and alerts
+```
+
+## Lab Environment
+
+| Item | Value |
+| --- | --- |
+| Device | MikroTik hAP lite, `TODO` version, default configuration + A.03 |
+| LAN server | Laptop `192.168.88.50` |
