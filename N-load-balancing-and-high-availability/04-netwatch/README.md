@@ -56,3 +56,45 @@ N.04 Netwatch ──► E.06 scripts ──► Chapter Q logs and alerts
 | --- | --- |
 | Device | MikroTik hAP lite, `TODO` version, default configuration + A.03 |
 | LAN server | Laptop `192.168.88.50` |
+
+## Method A — CLI
+
+### Step 1 — Watch the internet
+
+```routeros
+/tool/netwatch/add host=8.8.8.8 type=icmp up-script=":log info \"internet up\"" down-script=":log warning \"internet down\""
+```
+
+[1][2]
+
+`TODO` ![Step 1](images/cli/01-internet.png)
+
+### Step 2 — Watch a LAN service
+
+```routeros
+/tool/netwatch/add host=192.168.88.50 type=tcp-conn port=80 down-script=":log warning \"web server down\""
+```
+
+[1] Run the web server from I.01 on the laptop.
+
+`TODO` ![Step 2](images/cli/02-service.png)
+
+### Step 3 — Trigger and observe
+
+Stop the laptop's web server, wait about 10 seconds, then:
+
+```routeros
+/tool/netwatch/print stats
+/log/print where message~"down|up"
+```
+
+[1][2]
+
+`TODO` ![Step 3](images/cli/03-observe.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| Web server stopped | Status down; log entry | `TODO` |
+| Web server started | Status up | `TODO` |
