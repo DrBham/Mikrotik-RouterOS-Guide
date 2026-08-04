@@ -98,3 +98,61 @@ Stop the laptop's web server, wait about 10 seconds, then:
 | --- | --- | --- |
 | Web server stopped | Status down; log entry | `TODO` |
 | Web server started | Status up | `TODO` |
+
+## Reset Before Method B
+
+```routeros
+/tool/netwatch/remove [find]
+```
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Netwatch entry
+
+**Tools → Netwatch → +**: Host, Type, and the Up/Down scripts.
+
+`TODO` ![Step 1](images/gui/01-netwatch.png)
+
+### Step 2 — Observe
+
+Watch the Status column and **Log**.
+
+`TODO` ![Step 2](images/gui/02-status.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| Script does nothing | Needs a policy netwatch does not have [1] | Use commands within read/write/test/reboot. |
+| Flapping up/down | Thresholds too tight | Relax `thr-*` values or interval. [1] |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| `/tool/netwatch/add host= type=` | Probe a host or service [1] |
+| `up-script`, `down-script` | React to changes [1] |
+| `print stats` | Current status [1] |
+
+## Key Takeaways
+
+- Netwatch watches services, not just gateways.
+- Keep scripts small and log every change.
+
+## References
+
+1. [RouterOS Manual — Netwatch](https://manual.mikrotik.com/docs/diagnostics-monitoring-and-troubleshooting/netwatch/)
+2. [RouterOS Manual — Logs](https://manual.mikrotik.com/docs/diagnostics-monitoring-and-troubleshooting/log/)
+
+---
+
+**Previous:** [N.03 — VRRP Gateway Redundancy](../03-vrrp-gateway-redundancy/README.md) · **Next:** Chapter O — Dynamic Routing
+
+[Back to the main learning journal](../../README.md)
