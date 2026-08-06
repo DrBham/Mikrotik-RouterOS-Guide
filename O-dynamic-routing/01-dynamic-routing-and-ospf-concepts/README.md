@@ -45,3 +45,17 @@ Beyond three or four routers, static routes become a maintenance problem and a s
 | Cost | Per-link value based on media speed; OSPF prefers the lowest total cost. |
 | DR / BDR | Designated and backup designated router on broadcast networks; point-to-point links need none. |
 | ABR / ASBR | Router between areas / router connected to an external network. |
+
+### Neighbours
+
+OSPF routers send Hello packets every 10 seconds by default; a neighbour that is silent for the dead interval (40 seconds by default) is considered down. [5] Two routers become neighbours only if they share the area, subnet, mask, and Hello and Dead intervals. [5] OSPF uses IP protocol 89 and the multicast groups `224.0.0.5` and `224.0.0.6`. [5] On a broadcast segment, the first router becomes DR and the second BDR; priority 0 means the router never takes part in the election. [5]
+
+### Areas
+
+Large networks are split into areas so that each router only holds detailed information for its own area. [6] The manual advises not to split areas with fewer than 50 routers. [6] Area types include standard, stub, totally stubby, and NSSA. [6]
+
+### How it connects
+
+```text
+O.01 concepts ──► O.02 single-area OSPF ──► O.03 areas and default route ──► O.04 BGP between ASes
+```
