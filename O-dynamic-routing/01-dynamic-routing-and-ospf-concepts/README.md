@@ -59,3 +59,52 @@ Large networks are split into areas so that each router only holds detailed info
 ```text
 O.01 concepts ──► O.02 single-area OSPF ──► O.03 areas and default route ──► O.04 BGP between ASes
 ```
+
+## How It Appears in RouterOS
+
+| Protocol | Menus |
+| --- | --- |
+| OSPF | `/routing/ospf/instance`, `/routing/ospf/area`, `/routing/ospf/interface-template` [5] |
+| RIP | `/routing/rip/instance`, `/routing/rip/interface-template` [2][7] |
+| BGP | `/routing/bgp/instance`, `/routing/bgp/connection`, `/routing/bgp/session` [4] |
+
+> [!WARNING]
+> BGP is not supported on SMIPS devices such as the hAP lite. [4] Use CHR in GNS3 for this chapter.
+
+```routeros
+/routing/ospf/instance/print
+/ip/route/print
+```
+
+`TODO` ![Routing menus](images/cli/01-routing-menus.png)
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| RIP | Hops, max 15 [1][2] |
+| OSPF | Link state, areas, cost [3] |
+| BGP | Path vector, TCP 179, between ASes [4] |
+| Area 0.0.0.0 | OSPF backbone [6] |
+| Hello 10 s / dead 40 s | OSPF neighbour timers [5] |
+
+## Key Takeaways
+
+- Use OSPF inside your network, BGP between networks.
+- OSPF neighbours must agree on area, subnet, and timers.
+
+## References
+
+1. [RouterOS Manual — RIP](https://manual.mikrotik.com/docs/user-guides/routing-and-networking-protocols/unicast/rip/)
+2. [RouterOS CLI Reference — routing/rip/instance](https://manual.mikrotik.com/docs/cli-reference/routing/rip/instance/)
+3. [RouterOS Manual — Understanding OSPF](https://manual.mikrotik.com/docs/user-guides/routing-and-networking-protocols/unicast/ospf/understanding-ospf/)
+4. [RouterOS Manual — Understanding BGP](https://manual.mikrotik.com/docs/user-guides/routing-and-networking-protocols/unicast/bgp/understanding-bgp/)
+5. [RouterOS Manual — OSPF Neighbor Relationship](https://manual.mikrotik.com/docs/user-guides/routing-and-networking-protocols/unicast/ospf/neighbour-relationship/)
+6. [RouterOS Manual — OSPF Areas and Virtual Links](https://manual.mikrotik.com/docs/user-guides/routing-and-networking-protocols/unicast/ospf/areas-and-virtual-links/)
+7. [RouterOS CLI Reference — routing/rip/interface-template](https://manual.mikrotik.com/docs/cli-reference/routing/rip/interface-template/)
+
+---
+
+**Previous:** [N.04 — Netwatch](../../N-load-balancing-and-high-availability/04-netwatch/README.md) · **Next:** O.02 — Single-Area OSPF
+
+[Back to the main learning journal](../../README.md)
