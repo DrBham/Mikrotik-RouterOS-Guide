@@ -63,3 +63,58 @@ The manual's basic example: [1]
 | --- | --- |
 | Routers | Three CHRs in GNS3, `TODO` version |
 | Addresses | `.1` on the lower-numbered router of each link |
+
+## Method A — CLI
+
+### Step 1 — Addresses
+
+Configure the links and LANs on each router as in the diagram, with no static routes.
+
+`TODO` ![Step 1](images/cli/01-addresses.png)
+
+### Step 2 — OSPF on each router
+
+R1 (change the router ID on R2 and R3):
+
+```routeros
+/routing/ospf/instance add name=v2inst version=2 router-id=1.1.1.1
+/routing/ospf/area add name=backbone_v2 area-id=0.0.0.0 instance=v2inst
+/routing/ospf/interface-template add networks=10.0.0.0/16 area=backbone_v2
+/routing/ospf/interface-template add networks=10.1.1.0/24 area=backbone_v2
+```
+
+[1] The `10.0.0.0/16` template covers all three transit links; the second template adds the LAN (use `10.2.2.0/24` and `10.3.3.0/24` on R2 and R3).
+
+`TODO` ![Step 2](images/cli/02-ospf.png)
+
+### Step 3 — Neighbours and routes
+
+```routeros
+/routing/ospf/neighbor/print
+/ip/route/print where ospf
+```
+
+> [!NOTE]
+> `TODO` confirm these two status commands on your RouterOS version; they were not in the manual pages used for this topic.
+
+Each router should have two neighbours and routes to the two remote LANs.
+
+`TODO` ![Step 3](images/cli/03-neighbours.png)
+
+### Step 4 — Break a link
+
+Disable the R1–R2 link. After the dead interval (40 s by default [2]), R1 reaches `10.2.2.0/24` via R3.
+
+```routeros
+/tool/traceroute 10.2.2.1 count=1
+```
+
+`TODO` ![Step 4](images/cli/04-reroute.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| Neighbours | Two per router | `TODO` |
+| LAN routes | Learned by OSPF | `TODO` |
+| R1–R2 down | Path via R3 | `TODO` |
