@@ -94,8 +94,10 @@ R1 (change the router ID on R2 and R3):
 /ip/route/print where ospf
 ```
 
+The `/routing/ospf/neighbor` menu lists the active OSPF neighbours. A neighbour in the `Full` state is fully adjacent. [4] In `/ip/route`, routes added by OSPF carry the `o` (`ospf`) flag. [5] The manual filters the route list by a flag the same way, with `/ip/route print where static`. [6]
+
 > [!NOTE]
-> `TODO` confirm these two status commands on your RouterOS version; they were not in the manual pages used for this topic.
+> The manual does not print `where ospf` verbatim. The filter applies the documented flag to the documented `where` pattern.
 
 Each router should have two neighbours and routes to the two remote LANs.
 
@@ -176,6 +178,9 @@ Same checks as [Verify (CLI)](#verify-cli).
 1. [RouterOS Manual — OSPF Neighbor Relationship](https://manual.mikrotik.com/docs/user-guides/routing-and-networking-protocols/unicast/ospf/neighbour-relationship/)
 2. [RouterOS Manual — OSPF Neighbor Relationship (timers)](https://manual.mikrotik.com/docs/user-guides/routing-and-networking-protocols/unicast/ospf/neighbour-relationship/)
 3. [RouterOS Manual — Understanding OSPF](https://manual.mikrotik.com/docs/user-guides/routing-and-networking-protocols/unicast/ospf/understanding-ospf/)
+4. [RouterOS CLI Reference — routing/ospf/neighbor](https://manual.mikrotik.com/docs/cli-reference/routing/ospf/neighbor/)
+5. [RouterOS CLI Reference — ip/route](https://manual.mikrotik.com/docs/cli-reference/ip/route/)
+6. [RouterOS Help — IP Routing (Hardware Offloaded Route example)](https://help.mikrotik.com/docs/spaces/ROS/pages/328084/IP+Routing)
 
 ---
 
