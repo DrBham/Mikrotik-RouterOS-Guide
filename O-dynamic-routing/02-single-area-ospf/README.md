@@ -118,3 +118,67 @@ Disable the R1–R2 link. After the dead interval (40 s by default [2]), R1 reac
 | Neighbours | Two per router | `TODO` |
 | LAN routes | Learned by OSPF | `TODO` |
 | R1–R2 down | Path via R3 | `TODO` |
+
+## Reset Before Method B
+
+On each router:
+
+```routeros
+/routing/ospf/interface-template/remove [find]
+/routing/ospf/area/remove [find]
+/routing/ospf/instance/remove [find]
+```
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Instance, area, templates
+
+**Routing → OSPF**: Instances, Areas, Interface Templates tabs, same values as Method A.
+
+`TODO` ![Step 1](images/gui/01-ospf.png)
+
+### Step 2 — Neighbours and routes
+
+**Routing → OSPF → Neighbors**; **IP → Routes**.
+
+`TODO` ![Step 2](images/gui/02-status.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| No neighbour | Different area, subnet, mask, or timers | They must match. [2] |
+| Neighbour up, LAN missing | LAN not in an interface template | Add it. [1] |
+| Duplicate router IDs | Same `router-id` on two routers | Set unique IDs. [3] |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| `/routing/ospf/instance add router-id=` | OSPF process [1] |
+| `/routing/ospf/area add area-id=0.0.0.0` | Backbone [1] |
+| `/routing/ospf/interface-template add networks= area=` | Where OSPF runs [1] |
+
+## Key Takeaways
+
+- Three objects: instance, area, interface template.
+- OSPF reroutes around a failed link without manual changes.
+
+## References
+
+1. [RouterOS Manual — OSPF Neighbor Relationship](https://manual.mikrotik.com/docs/user-guides/routing-and-networking-protocols/unicast/ospf/neighbour-relationship/)
+2. [RouterOS Manual — OSPF Neighbor Relationship (timers)](https://manual.mikrotik.com/docs/user-guides/routing-and-networking-protocols/unicast/ospf/neighbour-relationship/)
+3. [RouterOS Manual — Understanding OSPF](https://manual.mikrotik.com/docs/user-guides/routing-and-networking-protocols/unicast/ospf/understanding-ospf/)
+
+---
+
+**Previous:** [O.01 — Dynamic Routing and OSPF Concepts](../01-dynamic-routing-and-ospf-concepts/README.md) · **Next:** O.03 — OSPF Areas and Default Route
+
+[Back to the main learning journal](../../README.md)
