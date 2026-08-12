@@ -73,3 +73,52 @@ A stub area receives no external routes; a totally stubby area (stub with `no-su
 | --- | --- |
 | Routers | O.02 lab; R1 also gets an internet uplink (`ether4`, DHCP) |
 | Area 1 | R3's LAN moves to area 1 (`10.3.0.0/16`, with `10.3.3.0/24` and `10.3.4.0/24`) |
+
+## Method A — CLI
+
+### Step 1 — Internet on R1 and default origination
+
+R1:
+
+```routeros
+/ip/dhcp-client/add interface=ether4
+/routing/ospf/instance set v2inst originate-default=if-installed
+```
+
+[1] R2 and R3 now learn `0.0.0.0/0` from OSPF.
+
+`TODO` ![Step 1](images/cli/01-default.png)
+
+### Step 2 — Area 1 on R3
+
+R3:
+
+```routeros
+/routing/ospf/area add name=area1 area-id=1.1.1.1 type=default instance=v2inst
+/routing/ospf/interface-template remove [find networks=10.3.3.0/24]
+/routing/ospf/interface-template add networks=10.3.0.0/16 area=area1
+```
+
+[1] Add a second LAN `10.3.4.1/24` on R3 so the summary has two routes to replace.
+
+`TODO` ![Step 2](images/cli/02-area1.png)
+
+### Step 3 — Summarise on the ABR
+
+R3:
+
+```routeros
+/routing/ospf/area/range add prefix=10.3.0.0/16 area=area1 advertise=yes
+```
+
+[1] R1 and R2 now see one `10.3.0.0/16` route instead of two `/24`s.
+
+`TODO` ![Step 3](images/cli/03-range.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| R2 default route | Learned from OSPF | `TODO` |
+| R1/R2 routes to area 1 | One `10.3.0.0/16` | `TODO` |
+| R1 uplink down | Default route withdrawn (`if-installed`) [1] | `TODO` |
