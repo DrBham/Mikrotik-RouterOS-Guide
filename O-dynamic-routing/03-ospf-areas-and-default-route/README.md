@@ -122,3 +122,61 @@ R3:
 | R2 default route | Learned from OSPF | `TODO` |
 | R1/R2 routes to area 1 | One `10.3.0.0/16` | `TODO` |
 | R1 uplink down | Default route withdrawn (`if-installed`) [1] | `TODO` |
+
+## Reset Before Method B
+
+Undo Steps 1–3 (remove the range, area1 template and area, set `originate-default=never`).
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Default origination
+
+**Routing → OSPF → Instances → v2inst**: Originate Default `if-installed`.
+
+`TODO` ![Step 1](images/gui/01-default.png)
+
+### Step 2 — Area and range
+
+**Routing → OSPF → Areas → +** `area1`; **Area Ranges → +** `10.3.0.0/16`.
+
+`TODO` ![Step 2](images/gui/02-area-range.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| No default in OSPF | R1 has no default route itself (`if-installed`) | Check R1's DHCP client. [1] |
+| Area 1 routes missing | R3 not connected to the backbone | An ABR needs a backbone interface. [2] |
+| Summary not shown | Range on the wrong router | Configure it on the ABR. [1] |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| `originate-default=if-installed` | Share the default route [1] |
+| `area-id=1.1.1.1` | Non-backbone area [1] |
+| `/routing/ospf/area/range` | Summarise on the ABR [1] |
+| `type=stub`, `no-summaries` | Fewer routes in an area [1] |
+
+## Key Takeaways
+
+- Only the edge router needs a static default; OSPF spreads it.
+- Summarise at area borders to keep tables small.
+
+## References
+
+1. [RouterOS Manual — OSPF Areas and Virtual Links](https://manual.mikrotik.com/docs/user-guides/routing-and-networking-protocols/unicast/ospf/areas-and-virtual-links/)
+2. [RouterOS Manual — Understanding OSPF](https://manual.mikrotik.com/docs/user-guides/routing-and-networking-protocols/unicast/ospf/understanding-ospf/)
+
+---
+
+**Previous:** [O.02 — Single-Area OSPF](../02-single-area-ospf/README.md) · **Next:** O.04 — BGP Basics
+
+[Back to the main learning journal](../../README.md)
