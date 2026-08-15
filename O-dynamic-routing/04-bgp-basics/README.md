@@ -71,3 +71,62 @@ AS 65531  R1 192.168.1.1 ──── 192.168.1.2 R2  AS 65532
 | --- | --- |
 | Routers | Two CHRs in GNS3, `TODO` version |
 | ASNs | Private 65531 and 65532 (from the manual) |
+
+## Method A — CLI
+
+### Step 1 — Instances and connections
+
+R1:
+
+```routeros
+/routing/bgp/instance add name=myInstance as=65531
+/routing/bgp/connection add name=toR2 remote.address=192.168.1.2 instance=myInstance local.role=ebgp
+```
+
+R2:
+
+```routeros
+/routing/bgp/instance add name=myInstance as=65532
+/routing/bgp/connection add name=toR1 remote.address=192.168.1.1 instance=myInstance local.role=ebgp
+```
+
+[2]
+
+`TODO` ![Step 1](images/cli/01-bgp.png)
+
+### Step 2 — Session
+
+```routeros
+/routing/bgp/session print
+```
+
+[2] The session shows the `E` (established) flag.
+
+`TODO` ![Step 2](images/cli/02-session.png)
+
+### Step 3 — Advertise the LAN
+
+Advertise each LAN with the connection's `output.network` setting. [1]
+
+> [!WARNING]
+> **Source needed:** the exact `output.network` syntax (address list name or prefix) was not shown on the manual pages used. Check the [BGP connection CLI reference](https://manual.mikrotik.com/docs/cli-reference/routing/bgp/connection/) and record the command here.
+
+`TODO` ![Step 3](images/cli/03-advertise.png)
+
+### Step 4 — Check routes
+
+```routeros
+/ip/route/print where bgp
+```
+
+`TODO` confirm the filter syntax. R1 should have `10.2.2.0/24` from BGP.
+
+`TODO` ![Step 4](images/cli/04-routes.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| Session | Established | `TODO` |
+| Routes | Remote LAN via BGP | `TODO` |
+| LAN-to-LAN ping | Works | `TODO` |
