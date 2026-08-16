@@ -106,10 +106,21 @@ R2:
 
 ### Step 3 — Advertise the LAN
 
-Advertise each LAN with the connection's `output.network` setting. [1]
+Advertise each LAN with the connection's `output.network` setting. [1] Its value is the name of an address list. BGP sends a network from the list only if a matching route exists in the routing table. [3] The connected LAN route is that matching route. Address list entries take a `list` name and an `address` prefix. [4]
 
-> [!WARNING]
-> **Source needed:** the exact `output.network` syntax (address list name or prefix) was not shown on the manual pages used. Check the [BGP connection CLI reference](https://manual.mikrotik.com/docs/cli-reference/routing/bgp/connection/) and record the command here.
+R1:
+
+```routeros
+/ip/firewall/address-list add list=bgp-networks address=10.1.1.0/24
+/routing/bgp/connection set toR2 output.network=bgp-networks
+```
+
+R2:
+
+```routeros
+/ip/firewall/address-list add list=bgp-networks address=10.2.2.0/24
+/routing/bgp/connection set toR1 output.network=bgp-networks
+```
 
 `TODO` ![Step 3](images/cli/03-advertise.png)
 
@@ -119,7 +130,10 @@ Advertise each LAN with the connection's `output.network` setting. [1]
 /ip/route/print where bgp
 ```
 
-`TODO` confirm the filter syntax. R1 should have `10.2.2.0/24` from BGP.
+Routes added by BGP carry the `b` (`bgp`) flag in `/ip/route`. [5] The manual filters the route list by a flag the same way, with `/ip/route print where static`. [6] R1 should have `10.2.2.0/24` from BGP.
+
+> [!NOTE]
+> The manual does not print `where bgp` verbatim. The filter applies the documented flag to the documented `where` pattern.
 
 `TODO` ![Step 4](images/cli/04-routes.png)
 
@@ -186,6 +200,10 @@ Same checks as [Verify (CLI)](#verify-cli).
 
 1. [RouterOS Manual — Understanding BGP](https://manual.mikrotik.com/docs/user-guides/routing-and-networking-protocols/unicast/bgp/understanding-bgp/)
 2. [RouterOS Manual — BGP Peering Sessions](https://manual.mikrotik.com/docs/user-guides/routing-and-networking-protocols/unicast/bgp/peering-sessions/)
+3. [RouterOS CLI Reference — routing/bgp/connection](https://manual.mikrotik.com/docs/cli-reference/routing/bgp/connection/)
+4. [RouterOS CLI Reference — ip/firewall/address-list](https://manual.mikrotik.com/docs/cli-reference/ip/firewall/address-list/)
+5. [RouterOS CLI Reference — ip/route](https://manual.mikrotik.com/docs/cli-reference/ip/route/)
+6. [RouterOS Help — IP Routing (Hardware Offloaded Route example)](https://help.mikrotik.com/docs/spaces/ROS/pages/328084/IP+Routing)
 
 ---
 
