@@ -130,3 +130,65 @@ Advertise each LAN with the connection's `output.network` setting. [1]
 | Session | Established | `TODO` |
 | Routes | Remote LAN via BGP | `TODO` |
 | LAN-to-LAN ping | Works | `TODO` |
+
+## Reset Before Method B
+
+```routeros
+/routing/bgp/connection/remove [find]
+/routing/bgp/instance/remove [find]
+```
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Instance and connection
+
+**Routing → BGP → Instances → +**, **Connections → +**: Remote Address, Instance, Local Role `ebgp`.
+
+`TODO` ![Step 1](images/gui/01-bgp.png)
+
+### Step 2 — Sessions
+
+**Routing → BGP → Sessions**.
+
+`TODO` ![Step 2](images/gui/02-session.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| Session not established | TCP 179 blocked, wrong address, or peer not directly connected | Firewall; eBGP needs `multihop` for non-adjacent peers. [2] |
+| Established but no routes | Nothing advertised | `output.network` (Step 3). [1] |
+| Route rejected | Own ASN in the path | Loop prevention. [1] |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| AS / ASN | Administrative domain and its number [1] |
+| eBGP / iBGP | Different / same AS [1] |
+| TCP 179 | BGP transport [1] |
+| `local.role=ebgp` | Mandatory role [2] |
+| `/routing/bgp/session print` | Status [2] |
+
+## Key Takeaways
+
+- BGP connects networks run by different organisations.
+- An established session does not advertise anything until you tell it to.
+
+## References
+
+1. [RouterOS Manual — Understanding BGP](https://manual.mikrotik.com/docs/user-guides/routing-and-networking-protocols/unicast/bgp/understanding-bgp/)
+2. [RouterOS Manual — BGP Peering Sessions](https://manual.mikrotik.com/docs/user-guides/routing-and-networking-protocols/unicast/bgp/peering-sessions/)
+
+---
+
+**Previous:** [O.03 — OSPF Areas and Default Route](../03-ospf-areas-and-default-route/README.md) · **Next:** Chapter P — IPv6 Networking
+
+[Back to the main learning journal](../../README.md)
