@@ -40,3 +40,29 @@ An IPv6 address is written as eight groups of up to four hexadecimal digits, `x:
 ```
 
 [2] Prefixes use the same `/length` notation as CIDR. [2]
+
+### Address types
+
+There are unicast, anycast, and multicast addresses; IPv6 has no broadcast. [2]
+
+| Prefix | Type |
+| --- | --- |
+| `::/128` | Unspecified: never assigned; a source while a host has no address yet [2] |
+| `::1/128` | Loopback [2] |
+| `fe80::/10` | Link-local: never forwarded off the link [2] |
+| `ff00::/8` | Multicast [2] |
+| `fc00::/7` | Unique local addresses (ULA), for use inside a site [3] |
+| `2001:db8::/32` | Documentation [4] |
+| Everything else | Global unicast [2] |
+
+Every interface must have a link-local address. [2] Most unicast addresses end in a 64-bit interface identifier, so subnets are normally `/64`. [2]
+
+### Global unicast structure
+
+A global address is a global routing prefix, then a subnet ID, then the interface ID. [2] An ISP typically delegates a prefix such as a `/56`, from which the router makes `/64` subnets (P.03).
+
+### How it connects
+
+```text
+P.01 addresses ──► P.02 Neighbor Discovery and SLAAC ──► P.03 DHCPv6 prefix delegation ──► P.04 IPv6 firewall
+```
