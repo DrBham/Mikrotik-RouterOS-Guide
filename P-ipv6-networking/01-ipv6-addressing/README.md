@@ -66,3 +66,45 @@ A global address is a global routing prefix, then a subnet ID, then the interfac
 ```text
 P.01 addresses ──► P.02 Neighbor Discovery and SLAAC ──► P.03 DHCPv6 prefix delegation ──► P.04 IPv6 firewall
 ```
+
+## How It Appears in RouterOS
+
+```routeros
+/ipv6/address/print
+```
+
+Flags include `L` for link-local, `G` for global, and `D` for dynamic. [5] Every enabled interface shows an `fe80::` address.
+
+`TODO` ![IPv6 addresses](images/cli/01-ipv6-addresses.png)
+
+> [!CAUTION]
+> **Privacy:** global IPv6 addresses often contain your public prefix and can contain the device MAC (EUI-64). Cover them. See the [privacy checklist](../../TOPIC-TEMPLATE.md#screenshot--privacy-checklist).
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| 128 bits, hex groups, `::` once | Format [1][2] |
+| No broadcast | Multicast instead [2] |
+| `fe80::/10` | Link-local, on every interface [2] |
+| `fc00::/7` / `2001:db8::/32` | ULA / documentation [3][4] |
+| `/64` | Usual subnet size [2] |
+
+## Key Takeaways
+
+- Every IPv6 interface has at least two addresses: link-local and usually global.
+- Use `2001:db8::/32` in examples, never real prefixes.
+
+## References
+
+1. [RFC 8200 — Internet Protocol, Version 6 (IPv6) Specification](https://www.rfc-editor.org/rfc/rfc8200)
+2. [RFC 4291 — IP Version 6 Addressing Architecture](https://www.rfc-editor.org/rfc/rfc4291)
+3. [RFC 4193 — Unique Local IPv6 Unicast Addresses](https://www.rfc-editor.org/rfc/rfc4193)
+4. [RFC 3849 — IPv6 Address Prefix Reserved for Documentation](https://www.rfc-editor.org/rfc/rfc3849)
+5. [RouterOS CLI Reference — ipv6/address](https://manual.mikrotik.com/docs/cli-reference/ipv6/address/)
+
+---
+
+**Previous:** [O.04 — BGP Basics](../../O-dynamic-routing/04-bgp-basics/README.md) · **Next:** P.02 — Neighbor Discovery and SLAAC
+
+[Back to the main learning journal](../../README.md)
