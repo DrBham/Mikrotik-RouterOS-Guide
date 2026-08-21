@@ -57,3 +57,68 @@ Routers advertise prefixes; hosts generate an interface identifier and combine t
 
 > [!NOTE]
 > A ULA prefix gives working IPv6 inside the LAN without internet IPv6. P.03 adds a global prefix from the ISP. `TODO` choose a random ULA Global ID as RFC 4193 recommends; `fd00:88::` is a simple lab example.
+
+## Method A — CLI
+
+### Step 1 — Look at link-local addresses
+
+```routeros
+/ipv6/address/print
+```
+
+[4]
+
+`TODO` ![Step 1](images/cli/01-link-local.png)
+
+### Step 2 — Add a LAN prefix
+
+```routeros
+/ipv6/address/add address=fd00:88::1/64 interface=bridge advertise=yes
+```
+
+[4]
+
+`TODO` ![Step 2](images/cli/02-prefix.png)
+
+### Step 3 — Advertise DNS
+
+```routeros
+/ipv6/nd/print
+/ipv6/nd/set [find interface=all] advertise-dns=yes
+```
+
+[5]
+
+`TODO` ![Step 3](images/cli/03-nd.png)
+
+### Step 4 — Laptop
+
+```powershell
+ipconfig
+ping fd00:88::1
+```
+
+The laptop shows a `fd00:88::` address it built itself, and the router's link-local address as the IPv6 default gateway.
+
+> [!CAUTION]
+> **Privacy:** cover any global IPv6 addresses. See the [privacy checklist](../../TOPIC-TEMPLATE.md#screenshot--privacy-checklist).
+
+`TODO` ![Step 4](images/cli/04-laptop.png)
+
+### Step 5 — The neighbour table
+
+```routeros
+/ipv6/neighbor/print
+```
+
+`TODO` confirm the menu name. The laptop appears with its link-local and ULA addresses.
+
+`TODO` ![Step 5](images/cli/05-neighbors.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| Laptop IPv6 | `fd00:88::…` from SLAAC [3] | `TODO` |
+| Laptop gateway | Router `fe80::` address | `TODO` |
+| Ping `fd00:88::1` | Replies | `TODO` |
