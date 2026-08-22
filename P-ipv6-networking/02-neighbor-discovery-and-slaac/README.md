@@ -122,3 +122,68 @@ The laptop shows a `fd00:88::` address it built itself, and the router's link-lo
 | Laptop IPv6 | `fd00:88::…` from SLAAC [3] | `TODO` |
 | Laptop gateway | Router `fe80::` address | `TODO` |
 | Ping `fd00:88::1` | Replies | `TODO` |
+
+## Reset Before Method B
+
+```routeros
+/ipv6/address/remove [find address="fd00:88::1/64"]
+/ipv6/nd/set [find interface=all] advertise-dns=no
+```
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Address
+
+**IPv6 → Addresses → +**: `fd00:88::1/64`, Interface `bridge`, Advertise ticked.
+
+`TODO` ![Step 1](images/gui/01-address.png)
+
+### Step 2 — ND
+
+**IPv6 → ND → all**: Advertise DNS.
+
+`TODO` ![Step 2](images/gui/02-nd.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| Laptop gets no IPv6 | `advertise=no`, or prefix not `/64` | SLAAC needs an advertised `/64`. [4] |
+| Address but no gateway | `ra-lifetime=0` | Router not advertised as default. [5] |
+| Address shows "duplicate" | DAD found a conflict [3] | Change the address. |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| RS / RA / NS / NA | ND messages [1] |
+| SLAAC | Prefix from RA + own interface ID [3] |
+| DAD | Check uniqueness first [3] |
+| `advertise=yes` | Offer the prefix [4] |
+| `advertise-dns` | DNS via RA [5] |
+
+## Key Takeaways
+
+- IPv6 clients configure themselves from router advertisements.
+- The default gateway in IPv6 is the router's link-local address.
+
+## References
+
+1. [RFC 4861 — Neighbor Discovery for IP version 6](https://www.rfc-editor.org/rfc/rfc4861)
+2. [RFC 8415 — Dynamic Host Configuration Protocol for IPv6, §3](https://www.rfc-editor.org/rfc/rfc8415)
+3. [RFC 4862 — IPv6 Stateless Address Autoconfiguration](https://www.rfc-editor.org/rfc/rfc4862)
+4. [RouterOS CLI Reference — ipv6/address](https://manual.mikrotik.com/docs/cli-reference/ipv6/address/)
+5. [RouterOS CLI Reference — ipv6/nd](https://manual.mikrotik.com/docs/cli-reference/ipv6/nd/)
+
+---
+
+**Previous:** [P.01 — IPv6 Addressing](../01-ipv6-addressing/README.md) · **Next:** P.03 — DHCPv6 Prefix Delegation
+
+[Back to the main learning journal](../../README.md)
