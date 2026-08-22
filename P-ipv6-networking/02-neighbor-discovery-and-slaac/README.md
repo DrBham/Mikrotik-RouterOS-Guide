@@ -111,7 +111,7 @@ The laptop shows a `fd00:88::` address it built itself, and the router's link-lo
 /ipv6/neighbor/print
 ```
 
-`TODO` confirm the menu name. The laptop appears with its link-local and ULA addresses.
+`/ipv6/neighbor` lists the nodes discovered by IPv6 Neighbor Discovery, with their address, MAC address, and interface. [6] The laptop appears with its link-local and ULA addresses.
 
 `TODO` ![Step 5](images/cli/05-neighbors.png)
 
@@ -181,6 +181,7 @@ Same checks as [Verify (CLI)](#verify-cli).
 3. [RFC 4862 — IPv6 Stateless Address Autoconfiguration](https://www.rfc-editor.org/rfc/rfc4862)
 4. [RouterOS CLI Reference — ipv6/address](https://manual.mikrotik.com/docs/cli-reference/ipv6/address/)
 5. [RouterOS CLI Reference — ipv6/nd](https://manual.mikrotik.com/docs/cli-reference/ipv6/nd/)
+6. [RouterOS CLI Reference — ipv6/neighbor](https://manual.mikrotik.com/docs/cli-reference/ipv6/neighbor/)
 
 ---
 
