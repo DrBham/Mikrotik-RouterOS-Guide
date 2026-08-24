@@ -67,3 +67,57 @@ Customer side (CE): [2]
 | Prefix | `2001:db8::/62` (documentation) |
 
 Rename interfaces to match the manual, or adapt the names.
+
+## Method A — CLI
+
+### Step 1 — ISP side
+
+On R1, the two ISP commands. [2]
+
+`TODO` ![Step 1](images/cli/01-isp.png)
+
+### Step 2 — DHCPv6 client
+
+On the customer router:
+
+```routeros
+/ipv6/dhcp-client add interface=to-R1 request=prefix pool-name=my-ipv6
+/ipv6/dhcp-client print
+/ipv6/pool print
+```
+
+[2] Status `bound` and a dynamic pool `my-ipv6`.
+
+`TODO` ![Step 2](images/cli/02-client.png)
+
+### Step 3 — LAN address from the pool
+
+```routeros
+/ipv6/address add address=::1/64 from-pool=my-ipv6 interface=to-clients advertise=yes
+/ipv6/address print
+```
+
+[2][4]
+
+`TODO` ![Step 3](images/cli/03-address.png)
+
+### Step 4 — Check on R1 and the laptop
+
+On R1:
+
+```routeros
+/ipv6/dhcp-server/binding print
+```
+
+[2] On the laptop, `ipconfig` shows a `2001:db8:…` address.
+
+`TODO` ![Step 4](images/cli/04-check.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| DHCPv6 client | `bound` [3] | `TODO` |
+| Pool | Dynamic `my-ipv6` | `TODO` |
+| LAN address | `2001:db8:…::1/64` | `TODO` |
+| Laptop | Global address by SLAAC | `TODO` |
