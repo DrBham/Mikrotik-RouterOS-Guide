@@ -121,3 +121,67 @@ On R1:
 | Pool | Dynamic `my-ipv6` | `TODO` |
 | LAN address | `2001:db8:…::1/64` | `TODO` |
 | Laptop | Global address by SLAAC | `TODO` |
+
+## Reset Before Method B
+
+```routeros
+/ipv6/address/remove [find from-pool=my-ipv6]
+/ipv6/dhcp-client/remove [find]
+```
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — DHCPv6 client
+
+**IPv6 → DHCP Client → +**: Interface `to-R1`, Request `prefix`, Pool Name `my-ipv6`.
+
+`TODO` ![Step 1](images/gui/01-client.png)
+
+### Step 2 — Address from pool
+
+**IPv6 → Addresses → +**: Address `::1/64`, From Pool `my-ipv6`, Interface `to-clients`, Advertise.
+
+`TODO` ![Step 2](images/gui/02-address.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| Client stays `searching...` | No DHCPv6 server, or WAN firewall drops UDP 546 | Allow DHCPv6 from `fe80::/10` (P.04). [5] |
+| Pool empty | `request=address` instead of `prefix` | Use `prefix`. [3] |
+| LAN has addresses, no internet | No IPv6 default route on the router | `add-default-route=yes` or ISP RA. [3] |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| `request=prefix pool-name=` | Receive a delegated prefix [3] |
+| `from-pool=` + `::1/64` | Make a LAN subnet [4] |
+| `advertise=yes` | Clients use SLAAC [4] |
+| `add-default-route` | Off by default [3] |
+
+## Key Takeaways
+
+- The ISP delegates a prefix; the router splits it into `/64` LANs.
+- Global IPv6 addresses reveal your prefix; cover them in screenshots.
+
+## References
+
+1. [RFC 8415 — Dynamic Host Configuration Protocol for IPv6, §1](https://www.rfc-editor.org/rfc/rfc8415)
+2. [RouterOS Manual — DHCPv6 Client](https://manual.mikrotik.com/docs/network-management/dhcp/dhcpv6-client/)
+3. [RouterOS CLI Reference — ipv6/dhcp-client](https://manual.mikrotik.com/docs/cli-reference/ipv6/dhcp-client/)
+4. [RouterOS CLI Reference — ipv6/address](https://manual.mikrotik.com/docs/cli-reference/ipv6/address/)
+5. [RouterOS Manual — Filter](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/firewall/filter/)
+
+---
+
+**Previous:** [P.02 — Neighbor Discovery and SLAAC](../02-neighbor-discovery-and-slaac/README.md) · **Next:** P.04 — IPv6 Firewall
+
+[Back to the main learning journal](../../README.md)
