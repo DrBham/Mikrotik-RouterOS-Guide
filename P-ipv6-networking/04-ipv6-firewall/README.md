@@ -62,3 +62,49 @@ The final drop rule can lock you out; keep your management address in `allowed` 
 | --- | --- |
 | Device | P.03 customer router, `TODO` version |
 | LAN | Global prefix from P.03 |
+
+## Method A — CLI
+
+### Step 1 — Safe mode and address list
+
+Press Ctrl+X, then add the `allowed` list entries for link-local, your delegated prefix, and your ULA. [1]
+
+`TODO` ![Step 1](images/cli/01-list.png)
+
+### Step 2 — Input chain
+
+Enter the manual's IPv6 input rules in order. [1]
+
+`TODO` ![Step 2](images/cli/02-input.png)
+
+### Step 3 — Forward chain
+
+```routeros
+/ipv6/firewall/filter add chain=forward action=accept connection-state=established,related,untracked comment="Accept established, related, untracked"
+/ipv6/firewall/filter add chain=forward action=drop connection-state=invalid comment="Drop invalid"
+/ipv6/firewall/filter add chain=forward action=accept protocol=icmpv6 comment="Accept ICMPv6"
+/ipv6/firewall/filter add chain=forward action=accept connection-state=new in-interface-list=LAN comment="Accept new from LAN"
+/ipv6/firewall/filter add chain=forward action=drop comment="Drop everything else"
+```
+
+These follow the order the manual describes for the forward chain. [1] `TODO` compare each line with the manual's block.
+
+`TODO` ![Step 3](images/cli/03-forward.png)
+
+### Step 4 — Test
+
+From the WAN side (R1 in P.03), ping a LAN host's global address: ICMPv6 passes. Try to connect to a TCP port on it: blocked. From the LAN, browsing over IPv6 works.
+
+```routeros
+/ipv6/firewall/filter/print stats
+```
+
+`TODO` ![Step 4](images/cli/04-test.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| LAN → internet over IPv6 | Works | `TODO` |
+| WAN → LAN host TCP | Dropped | `TODO` |
+| DHCPv6-PD after reboot | Still bound (UDP 546 accepted) | `TODO` |
