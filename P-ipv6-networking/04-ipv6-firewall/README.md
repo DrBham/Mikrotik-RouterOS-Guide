@@ -36,21 +36,11 @@ ICMPv6 carries Neighbor Discovery (P.02), so it cannot be dropped the way some I
 
 ### Protect the router (input)
 
-The manual's IPv6 input chain uses an address list of allowed sources (link-local, your prefix, your ULA), accepts established/related traffic, drops invalid, accepts ICMPv6, traceroute probes (UDP 33434–33534), and DHCPv6 from `fe80::/10`, drops link-local sources arriving from the WAN, accepts the allowed list from the LAN, and drops everything else. [1]
-
-```routeros
-/ipv6/firewall/address-list add list=allowed address=fe80::/10 comment="Link-local"
-/ipv6/firewall/filter add chain=input action=accept protocol=icmpv6 comment="Accept ICMPv6"
-```
-
-[1]
-
-> [!WARNING]
-> **Source needed:** only these two lines of the manual's IPv6 input block were captured verbatim during research. Copy the full block from the "Build an IPv6 firewall" section of the [Filter page](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/firewall/filter/) into Method A before publishing.
+The manual's IPv6 input chain uses an address list of allowed sources (link-local, your prefix, your ULA), accepts established/related traffic, drops invalid, accepts ICMPv6, traceroute probes (UDP 33434–33534), and DHCPv6 from `fe80::/10`, drops link-local sources arriving from the WAN, accepts the allowed list from the LAN, and drops everything else. [1] Method A Steps 1 and 2 give the full block.
 
 ### Protect the LAN (forward)
 
-Accept established, related, and untracked; drop invalid; accept ICMPv6; accept new connections from the LAN; drop everything else. [1] This makes the LAN reachable only by connections it started.
+Accept established, related, and untracked; drop invalid; accept ICMPv6 from the LAN; accept new connections from the LAN, from the addresses of the `allowed` list; drop everything else. [1] This makes the LAN reachable only by connections it started. A LAN device whose address is not in the list can send only ICMPv6 to the internet. [1]
 
 ### Lockout
 
@@ -69,31 +59,70 @@ The final drop rule can lock you out; keep your management address in `allowed` 
 
 Press Ctrl+X, then add the `allowed` list entries for link-local, your delegated prefix, and your ULA. [1]
 
+```routeros
+/ipv6/firewall/address-list
+add list=allowed address=fe80::/10 comment="Link-local"
+add list=allowed address=2001:db8::/62 comment="Public prefix"
+add list=allowed address=fd00:88::/64 comment="ULA prefix"
+```
+
+This is the manual's block. [1] Only the two prefixes are changed: the manual uses `2001:db8:1::/48` and `fd12:672e:6f65:8899::/64` and says to replace them with your prefixes. This lab uses the delegated prefix from P.03 (`2001:db8::/62`) and the ULA from P.02 (`fd00:88::/64`).
+
 `TODO` ![Step 1](images/cli/01-list.png)
 
 ### Step 2 — Input chain
 
 Enter the manual's IPv6 input rules in order. [1]
 
+```routeros
+/ipv6/firewall/filter
+add chain=input action=accept \
+    connection-state=established,related,untracked \
+    comment="Accept established, related, untracked"
+add chain=input action=drop connection-state=invalid \
+    comment="Drop invalid"
+add chain=input action=accept protocol=icmpv6 comment="Accept ICMPv6"
+add chain=input action=accept protocol=udp dst-port=33434-33534 \
+    comment="Accept UDP traceroute"
+add chain=input action=accept protocol=udp dst-port=546 \
+    src-address=fe80::/10 \
+    comment="Accept DHCPv6 client prefix delegation"
+add chain=input action=drop src-address=fe80::/10 \
+    in-interface-list=WAN log=yes log-prefix=dropLL_from_public \
+    comment="Drop link-local from the internet"
+add chain=input action=accept src-address-list=allowed \
+    in-interface-list=LAN \
+    comment="Accept from the allowed addresses"
+add chain=input action=drop comment="Drop everything else"
+```
+
+These lines are copied unchanged from the manual. [1]
+
 `TODO` ![Step 2](images/cli/02-input.png)
 
 ### Step 3 — Forward chain
 
 ```routeros
-/ipv6/firewall/filter add chain=forward action=accept connection-state=established,related,untracked comment="Accept established, related, untracked"
-/ipv6/firewall/filter add chain=forward action=drop connection-state=invalid comment="Drop invalid"
-/ipv6/firewall/filter add chain=forward action=accept protocol=icmpv6 comment="Accept ICMPv6"
-/ipv6/firewall/filter add chain=forward action=accept connection-state=new in-interface-list=LAN comment="Accept new from LAN"
-/ipv6/firewall/filter add chain=forward action=drop comment="Drop everything else"
+/ipv6/firewall/filter
+add chain=forward action=accept \
+    connection-state=established,related,untracked \
+    comment="Accept established, related, untracked"
+add chain=forward action=drop connection-state=invalid \
+    log=yes log-prefix=ipv6,invalid comment="Drop invalid"
+add chain=forward action=accept protocol=icmpv6 \
+    in-interface-list=LAN comment="Accept ICMPv6 from the LAN"
+add chain=forward action=accept src-address-list=allowed \
+    in-interface-list=LAN comment="Accept new connections from the LAN"
+add chain=forward action=drop comment="Drop everything else"
 ```
 
-These follow the order the manual describes for the forward chain. [1] `TODO` compare each line with the manual's block.
+These lines are copied unchanged from the manual's forward block. [1]
 
 `TODO` ![Step 3](images/cli/03-forward.png)
 
 ### Step 4 — Test
 
-From the WAN side (R1 in P.03), ping a LAN host's global address: ICMPv6 passes. Try to connect to a TCP port on it: blocked. From the LAN, browsing over IPv6 works.
+From the WAN side (R1 in P.03), try to connect to a TCP port on a LAN host's global address: blocked. The forward chain accepts ICMPv6 only from the LAN, so a ping started on the WAN side is dropped too. [1] From the LAN, browsing over IPv6 works.
 
 ```routeros
 /ipv6/firewall/filter/print stats
