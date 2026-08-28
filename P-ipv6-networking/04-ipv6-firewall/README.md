@@ -108,3 +108,57 @@ From the WAN side (R1 in P.03), ping a LAN host's global address: ICMPv6 passes.
 | LAN → internet over IPv6 | Works | `TODO` |
 | WAN → LAN host TCP | Dropped | `TODO` |
 | DHCPv6-PD after reboot | Still bound (UDP 546 accepted) | `TODO` |
+
+## Reset Before Method B
+
+```routeros
+/ipv6/firewall/filter/remove [find]
+/ipv6/firewall/address-list/remove [find list=allowed]
+```
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Address list and rules
+
+**IPv6 → Firewall → Address Lists** and **Filter Rules**, same order as Method A, in safe mode.
+
+`TODO` ![Step 1](images/gui/01-rules.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| IPv6 stops working entirely | ICMPv6 dropped, breaking ND | Accept ICMPv6. [1] |
+| Prefix lost after a while | DHCPv6 (UDP 546) dropped on input | Accept it from `fe80::/10`. [1] |
+| Locked out | Management address not in `allowed` | Safe mode. [1] |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| No NAT in IPv6 | Firewall is the only barrier |
+| Accept ICMPv6 | ND depends on it [1] |
+| Accept UDP 546 from `fe80::/10` | Prefix delegation [1] |
+| Forward: new from LAN only | Default deny inbound [1] |
+
+## Key Takeaways
+
+- Every IPv6-enabled router needs an IPv6 firewall, not just an IPv4 one.
+- Never drop all ICMPv6.
+
+## References
+
+1. [RouterOS Manual — Filter](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/firewall/filter/)
+
+---
+
+**Previous:** [P.03 — DHCPv6 Prefix Delegation](../03-dhcpv6-prefix-delegation/README.md) · **Next:** Chapter Q — Network Monitoring & Troubleshooting
+
+[Back to the main learning journal](../../README.md)
