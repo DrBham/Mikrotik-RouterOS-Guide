@@ -61,3 +61,63 @@ Q.01 logs ──► Q.02 resources and graphs ──► Q.03 SNMP ──► Q.05
 | --- | --- |
 | Device | MikroTik hAP lite, `TODO` version, default configuration + A.03 |
 | Syslog server | Laptop `192.168.88.50` running a free syslog receiver (`TODO` name the tool used) |
+
+## Method A — CLI
+
+### Step 1 — Read and filter the log
+
+```routeros
+/log/print where topics~"interface|dhcp"
+/log/print follow-only where topics~"critical"
+```
+
+[1] Unplug and replug a LAN cable while the second command runs (Ctrl+C to stop).
+
+> [!CAUTION]
+> **Privacy:** log lines contain MAC addresses, host names, and login addresses. Cover them. See the [privacy checklist](../../TOPIC-TEMPLATE.md#screenshot--privacy-checklist).
+
+`TODO` ![Step 1](images/cli/01-print.png)
+
+### Step 2 — A separate debug buffer
+
+```routeros
+/system/logging/action/add name=dhcpdebug target=memory memory-lines=2000
+/system/logging/add topics=dhcp,debug action=dhcpdebug
+/log/print where buffer=dhcpdebug
+```
+
+[1] Renew the laptop's address (`ipconfig /renew`) and read the DHCP conversation.
+
+`TODO` ![Step 2](images/cli/02-debug.png)
+
+### Step 3 — Keep logs across reboots
+
+```routeros
+/system/logging/add topics=info action=disk
+/file/print
+```
+
+[1] Reboot, then check that `log.0.txt` still holds entries from before the reboot.
+
+`TODO` ![Step 3](images/cli/03-disk.png)
+
+### Step 4 — Send warnings to a syslog server
+
+```routeros
+/system/logging/action/set remote remote=192.168.88.50 remote-log-format=syslog
+/system/logging/add topics=warning action=remote
+/log/warning "syslog test"
+```
+
+[1] The message appears in the laptop's syslog receiver.
+
+`TODO` ![Step 4](images/cli/04-syslog.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| Filtered print | Only interface/DHCP lines | `TODO` |
+| Debug buffer | DORA messages for the laptop | `TODO` |
+| After reboot | Old entries in `log.0.txt` | `TODO` |
+| Syslog receiver | "syslog test" received | `TODO` |
