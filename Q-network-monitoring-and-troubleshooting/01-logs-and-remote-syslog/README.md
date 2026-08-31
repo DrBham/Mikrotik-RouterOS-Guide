@@ -121,3 +121,74 @@ Q.01 logs ──► Q.02 resources and graphs ──► Q.03 SNMP ──► Q.05
 | Debug buffer | DORA messages for the laptop | `TODO` |
 | After reboot | Old entries in `log.0.txt` | `TODO` |
 | Syslog receiver | "syslog test" received | `TODO` |
+
+## Reset Before Method B
+
+```routeros
+/system/logging/remove [find action=dhcpdebug]
+/system/logging/action/remove dhcpdebug
+/system/logging/remove [find action=disk]
+/system/logging/remove [find action=remote]
+/system/logging/action/set remote remote=0.0.0.0
+```
+
+[1]
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Log window
+
+Open **Log** and type `dhcp` in the filter box.
+
+`TODO` ![Step 1](images/gui/01-log.png)
+
+### Step 2 — Actions and rules
+
+**System → Logging → Actions → +**: `dhcpdebug`, Type `memory`, Lines `2000`. **Rules → +**: Topics `dhcp`, `debug`, Action `dhcpdebug`.
+
+`TODO` ![Step 2](images/gui/02-actions-rules.png)
+
+### Step 3 — Remote
+
+Edit the `remote` action: Remote Address `192.168.88.50`, format `syslog`. Add a rule for `warning` to it.
+
+`TODO` ![Step 3](images/gui/03-remote.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| Log empty after reboot | Only the memory action is used [1] | Add a disk or remote action. |
+| Rule never matches | Entry lacks one of the listed topics [1] | A rule needs all its topics. |
+| Syslog receiver gets nothing | Laptop firewall blocks UDP 514 | Allow it on the laptop. |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| `/log/print where topics~"…"` | Filter the log [1] |
+| `/system/logging` / `/action` | Rules / destinations [1] |
+| `memory`, `disk`, `remote` | RAM, files, syslog [1] |
+| `debug` topics | Off by default; may contain secrets [1] |
+
+## Key Takeaways
+
+- Memory logs vanish on reboot; send important topics to disk or a syslog server.
+- Turn debug on for one topic at a time, and never send it off the router.
+
+## References
+
+1. [RouterOS Manual — Logs](https://manual.mikrotik.com/docs/diagnostics-monitoring-and-troubleshooting/log/)
+
+---
+
+**Previous:** [P.04 — IPv6 Firewall](../../P-ipv6-networking/04-ipv6-firewall/README.md) · **Next:** Q.02 — Resources, Profiler, and Graphing
+
+[Back to the main learning journal](../../README.md)
