@@ -58,3 +58,60 @@ Nothing is graphed by default; rules for interfaces, resources, and queues are a
 | --- | --- |
 | Device | MikroTik hAP lite, `TODO` version, A.03 + A.06 |
 | Laptop | `192.168.88.50` |
+
+## Method A — CLI
+
+### Step 1 — Baseline
+
+```routeros
+/system/resource/print
+/system/resource/cpu/print
+```
+
+[1]
+
+`TODO` ![Step 1](images/cli/01-resource.png)
+
+### Step 2 — Load the CPU and watch
+
+Start a large download on the laptop, then:
+
+```routeros
+/system/resource/monitor duration=10
+```
+
+[1]
+
+`TODO` ![Step 2](images/cli/02-monitor.png)
+
+### Step 3 — Find the cause
+
+```routeros
+/tool/profile cpu=total duration=5
+```
+
+[2] Note which classifiers use the most CPU during the download.
+
+`TODO` ![Step 3](images/cli/03-profile.png)
+
+### Step 4 — Turn on graphs
+
+```routeros
+/ip/service/enable www
+/ip/service/set www available-from=192.168.88.0/24
+/tool/graphing/interface/add interface=ether1 allow-address=192.168.88.50/32
+/tool/graphing/resource/add allow-address=192.168.88.50/32
+```
+
+[3][5] After a few minutes, open `http://192.168.88.1/graphs/` on the laptop.
+
+`TODO` ![Step 4](images/cli/04-graphs.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| CPU during download | `TODO` % | `TODO` |
+| Top profiler entry | `TODO` | `TODO` |
+| `/graphs/` from laptop | Interface and resource graphs | `TODO` |
+| `/graphs/` from another address | Refused (`allow-address`) | `TODO` |
