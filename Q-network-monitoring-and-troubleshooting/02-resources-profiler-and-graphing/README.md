@@ -115,3 +115,74 @@ Start a large download on the laptop, then:
 | Top profiler entry | `TODO` | `TODO` |
 | `/graphs/` from laptop | Interface and resource graphs | `TODO` |
 | `/graphs/` from another address | Refused (`allow-address`) | `TODO` |
+
+## Reset Before Method B
+
+```routeros
+/tool/graphing/interface/remove [find]
+/tool/graphing/resource/remove [find]
+/ip/service/disable www
+```
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Resources
+
+**System → Resources**, and the CPU graph in the WinBox status bar.
+
+`TODO` ![Step 1](images/gui/01-resources.png)
+
+### Step 2 — Profile
+
+**Tools → Profile → Start**.
+
+`TODO` ![Step 2](images/gui/02-profile.png)
+
+### Step 3 — Graphing
+
+**Tools → Graphing → Interface Rules → +** and **Resource Rules → +**, Allow Address `192.168.88.50/32`.
+
+`TODO` ![Step 3](images/gui/03-graphing.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| CPU at 100% during transfers | Firewall, queues, or no FastTrack | Profile; review Chapters H and K. [2] |
+| `/graphs/` does not open | `www` disabled or `available-from` excludes the laptop | Step 4. [5] |
+| Graphs visible to everyone | `allow-address` left at `0.0.0.0/0` | Restrict it. [3] |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| `/system/resource/print`, `monitor`, `cpu/print` | Load and memory [1] |
+| `/tool/profile` | CPU by function [2] |
+| `/tool/graphing/…/add allow-address=` | Graphs over time [3] |
+| `/graphs/` | Where to view them [3] |
+
+## Key Takeaways
+
+- Check the CPU before blaming the network.
+- Restrict graph access; it shows your traffic.
+
+## References
+
+1. [RouterOS Manual — Resource](https://manual.mikrotik.com/docs/diagnostics-monitoring-and-troubleshooting/resource/)
+2. [RouterOS Manual — Profiler](https://manual.mikrotik.com/docs/diagnostics-monitoring-and-troubleshooting/profiler/)
+3. [RouterOS Manual — Graphing](https://manual.mikrotik.com/docs/diagnostics-monitoring-and-troubleshooting/graphing/)
+4. [MikroTik — hAP lite (RB941-2nD)](https://mikrotik.com/product/RB941-2nD)
+5. [RouterOS Manual — Securing your router](https://manual.mikrotik.com/docs/getting-started/securing-your-router/)
+
+---
+
+**Previous:** [Q.01 — Logs and Remote Syslog](../01-logs-and-remote-syslog/README.md) · **Next:** Q.03 — SNMP Monitoring
+
+[Back to the main learning journal](../../README.md)
