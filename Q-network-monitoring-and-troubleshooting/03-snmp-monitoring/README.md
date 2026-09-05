@@ -57,3 +57,52 @@ The default `public` community is readable from any address (`::/0`), so restric
 | --- | --- |
 | Device | MikroTik hAP lite, `TODO` version |
 | Collector | Laptop `192.168.88.50` with an SNMP browser or `snmpwalk` (`TODO` tool) |
+
+## Method A — CLI
+
+### Step 1 — Enable SNMP with a restricted community
+
+```routeros
+/snmp/set enabled=yes contact="Lab" location="Desk"
+/snmp/community/add name=monit addresses=192.168.88.50/32 security=none read-access=yes
+/snmp/community/set [find name=public] addresses=192.168.88.50/32
+```
+
+[1]
+
+`TODO` ![Step 1](images/cli/01-snmp.png)
+
+### Step 2 — Find an OID
+
+```routeros
+/interface print oid where name=ether1
+```
+
+[1]
+
+`TODO` ![Step 2](images/cli/02-oid.png)
+
+### Step 3 — Read from the laptop
+
+Query the router with community `monit` (for example the system name and ether1 counters).
+
+`TODO` ![Step 3](images/cli/03-walk.png)
+
+### Step 4 — Send a test trap
+
+```routeros
+/snmp/set trap-target=192.168.88.50 trap-community=monit trap-version=2
+/snmp/send-trap oid=1.3.6.1.2.1.1.5.0 type=string value="test trap"
+```
+
+[1]
+
+`TODO` ![Step 4](images/cli/04-trap.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| Query from laptop | Values returned | `TODO` |
+| Query from another address | No answer | `TODO` |
+| Test trap | Received on UDP 162 | `TODO` |
