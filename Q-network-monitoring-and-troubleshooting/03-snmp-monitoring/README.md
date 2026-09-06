@@ -106,3 +106,67 @@ Query the router with community `monit` (for example the system name and ether1 
 | Query from laptop | Values returned | `TODO` |
 | Query from another address | No answer | `TODO` |
 | Test trap | Received on UDP 162 | `TODO` |
+
+## Reset Before Method B
+
+```routeros
+/snmp/community/remove [find name=monit]
+/snmp/community/set [find name=public] addresses=::/0
+/snmp/set enabled=no trap-target=""
+```
+
+> [!NOTE]
+> `TODO` confirm how to clear `trap-target` on your version (Tab completion or WinBox).
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — SNMP settings
+
+**IP → SNMP**: Enabled, Contact, Location, Trap settings.
+
+`TODO` ![Step 1](images/gui/01-snmp.png)
+
+### Step 2 — Communities
+
+**IP → SNMP → Communities**: add `monit` with Addresses `192.168.88.50/32`, Read Access.
+
+`TODO` ![Step 2](images/gui/02-community.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| No answer from the router | Community address list excludes the collector, or SNMP disabled | Check `addresses`. [1] |
+| Answers to anyone | `public` left open | Restrict or remove it. [1] |
+| Traps not received | Collector firewall blocks UDP 162 | Allow it. [1] |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| UDP 161 / 162 | Queries / traps [1] |
+| Community `addresses=` | Who may query [1] |
+| `public` | Open by default; restrict it [1] |
+| `write-access` | Dangerous [1] |
+
+## Key Takeaways
+
+- Enable SNMP read-only, for the collector's address only.
+- Never leave the default community open.
+
+## References
+
+1. [RouterOS Manual — SNMP](https://manual.mikrotik.com/docs/diagnostics-monitoring-and-troubleshooting/snmp/)
+
+---
+
+**Previous:** [Q.02 — Resources, Profiler, and Graphing](../02-resources-profiler-and-graphing/README.md) · **Next:** Q.04 — Traffic Flow
+
+[Back to the main learning journal](../../README.md)
