@@ -112,11 +112,13 @@ Query the router with community `monit` (for example the system name and ether1 
 ```routeros
 /snmp/community/remove [find name=monit]
 /snmp/community/set [find name=public] addresses=::/0
-/snmp/set enabled=no trap-target=""
+/snmp/set enabled=no !trap-target
 ```
 
+The manual's sample `/snmp/print` output shows `trap-target:` with no value. [1] A `!` before a parameter name in `set` unsets that parameter. [2]
+
 > [!NOTE]
-> `TODO` confirm how to clear `trap-target` on your version (Tab completion or WinBox).
+> The scripting manual's `!` example is for a menu with item IDs. `/snmp` has no IDs, so confirm in the lab that `trap-target` is empty again after this command.
 
 ## Method B — WinBox (GUI)
 
@@ -164,6 +166,7 @@ Same checks as [Verify (CLI)](#verify-cli).
 ## References
 
 1. [RouterOS Manual — SNMP](https://manual.mikrotik.com/docs/diagnostics-monitoring-and-troubleshooting/snmp/)
+2. [RouterOS Manual — Scripting (Common commands)](https://manual.mikrotik.com/docs/developer-guides/scripting/)
 
 ---
 
