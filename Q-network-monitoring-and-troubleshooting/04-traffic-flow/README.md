@@ -54,3 +54,42 @@ Flow records list every address and port your devices contact. Treat the collect
 | --- | --- |
 | Device | MikroTik hAP lite, `TODO` version, A.03 |
 | Collector | Laptop `192.168.88.50`, UDP 2055, NetFlow v9 collector (`TODO` tool) |
+
+## Method A — CLI
+
+### Step 1 — Enable and add a target
+
+```routeros
+/ip/traffic-flow/set enabled=yes
+/ip/traffic-flow/target/add dst-address=192.168.88.50 port=2055 version=9
+```
+
+[1]
+
+`TODO` ![Step 1](images/cli/01-enable.png)
+
+### Step 2 — Monitor the export
+
+```routeros
+/ip/traffic-flow/monitor duration=3
+```
+
+[1]
+
+`TODO` ![Step 2](images/cli/02-monitor.png)
+
+### Step 3 — Read flows on the collector
+
+Browse a few websites from a phone, then look at the collector's top talkers.
+
+> [!CAUTION]
+> **Privacy:** flows show visited addresses and public IPs. Cover them. See the [privacy checklist](../../TOPIC-TEMPLATE.md#screenshot--privacy-checklist).
+
+`TODO` ![Step 3](images/cli/03-collector.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| Monitor | Flows being exported | `TODO` |
+| Collector | Records from the phone's address | `TODO` |
