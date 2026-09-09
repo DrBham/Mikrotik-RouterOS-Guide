@@ -93,3 +93,56 @@ Browse a few websites from a phone, then look at the collector's top talkers.
 | --- | --- | --- |
 | Monitor | Flows being exported | `TODO` |
 | Collector | Records from the phone's address | `TODO` |
+
+## Reset Before Method B
+
+```routeros
+/ip/traffic-flow/target/remove [find]
+/ip/traffic-flow/set enabled=no
+```
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Traffic Flow
+
+**IP → Traffic Flow**: Enabled. **Targets → +**: Address `192.168.88.50`, Port `2055`, Version `9`.
+
+`TODO` ![Step 1](images/gui/01-traffic-flow.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| No flows at the collector | Laptop firewall blocks UDP 2055, or wrong version | Match version and port. [1] |
+| Bridged LAN traffic missing | Hardware offload bypasses the CPU [1] | Expected. |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| `/ip/traffic-flow/set enabled=yes` | Start exporting [1] |
+| `target/add dst-address= port= version=` | Where to send [1] |
+| NetFlow v1/v5/v9, IPFIX | Formats [1] |
+| CPU traffic only | Offloaded traffic is invisible [1] |
+
+## Key Takeaways
+
+- Flows answer "who talked to whom"; counters only say "how much".
+- Flow data is personal data; protect the collector.
+
+## References
+
+1. [RouterOS Manual — Traffic Flow](https://manual.mikrotik.com/docs/diagnostics-monitoring-and-troubleshooting/traffic-flow/)
+
+---
+
+**Previous:** [Q.03 — SNMP Monitoring](../03-snmp-monitoring/README.md) · **Next:** Q.05 — Packet Sniffer and Wireshark
+
+[Back to the main learning journal](../../README.md)
