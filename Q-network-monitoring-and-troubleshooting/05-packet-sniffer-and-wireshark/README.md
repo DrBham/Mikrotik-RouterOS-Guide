@@ -54,3 +54,49 @@ Captures contain addresses, host names, and sometimes unencrypted content. Do no
 | --- | --- |
 | Device | MikroTik hAP lite, `TODO` version, default configuration |
 | Laptop | `192.168.88.50` with Wireshark |
+
+## Method A — CLI
+
+### Step 1 — Live view of DHCP
+
+```routeros
+/tool/sniffer/quick interface=bridge port=bootps,bootpc duration=10s
+```
+
+[1] While it runs, `ipconfig /renew` on the laptop.
+
+> [!CAUTION]
+> **Privacy:** cover MAC addresses and host names. See the [privacy checklist](../../TOPIC-TEMPLATE.md#screenshot--privacy-checklist).
+
+`TODO` ![Step 1](images/cli/01-quick.png)
+
+### Step 2 — Save to a file
+
+```routeros
+/tool/sniffer/start interface=bridge ip-address=192.168.88.50/32
+/tool/sniffer/stop
+/tool/sniffer/save file-name=capture.pcap
+```
+
+[1] Download `capture.pcap` (A.07) and open it in Wireshark.
+
+`TODO` ![Step 2](images/cli/02-file.png)
+
+### Step 3 — Stream to Wireshark
+
+```routeros
+/tool/sniffer/set streaming-enabled=yes streaming-server=192.168.88.50 filter-stream=yes
+/tool/sniffer/start interface=ether1
+```
+
+[1] In Wireshark, capture on the laptop's Ethernet with filter `udp.port==37008`. Stop with `/tool/sniffer/stop`.
+
+`TODO` ![Step 3](images/cli/03-stream.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| Live view | DISCOVER, OFFER, REQUEST, ACK | `TODO` |
+| Saved file | Opens in Wireshark | `TODO` |
+| Stream | Packets arrive in Wireshark | `TODO` |
