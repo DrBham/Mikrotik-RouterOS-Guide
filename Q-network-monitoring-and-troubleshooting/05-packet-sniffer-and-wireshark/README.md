@@ -100,3 +100,63 @@ Captures contain addresses, host names, and sometimes unencrypted content. Do no
 | Live view | DISCOVER, OFFER, REQUEST, ACK | `TODO` |
 | Saved file | Opens in Wireshark | `TODO` |
 | Stream | Packets arrive in Wireshark | `TODO` |
+
+## Reset Before Method B
+
+```routeros
+/tool/sniffer/stop
+/tool/sniffer/set streaming-enabled=no
+/file/remove capture.pcap
+```
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Sniffer settings
+
+**Tools → Packet Sniffer**: General (file name), Streaming (server), Filter (interface, address, port).
+
+`TODO` ![Step 1](images/gui/01-sniffer.png)
+
+### Step 2 — Start, stop, view
+
+**Start**, renew the laptop, **Stop**, then **Packets** to view or download the file from **Files**.
+
+`TODO` ![Step 2](images/gui/02-packets.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| Router slows during capture | Fast path off while sniffing [1] | Filter tightly; capture briefly. |
+| Wireshark shows nothing | Laptop firewall blocks UDP 37008, or wrong filter | Allow it; `udp.port==37008`. [1] |
+| Old Wireshark cannot open the file | pcapng from 7.20+ [1] | Update Wireshark. |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| `/tool/sniffer/quick` | Live view [1] |
+| `start` / `stop` / `save` | Capture to file [1] |
+| `streaming-server=` | TZSP to Wireshark, UDP 37008 [1] |
+
+## Key Takeaways
+
+- Packets settle arguments that logs cannot.
+- Capture briefly with filters; a small router feels the load.
+
+## References
+
+1. [RouterOS Manual — Packet Sniffer](https://manual.mikrotik.com/docs/diagnostics-monitoring-and-troubleshooting/packet-sniffer/)
+
+---
+
+**Previous:** [Q.04 — Traffic Flow](../04-traffic-flow/README.md) · **Next:** Q.06 — Bandwidth Test
+
+[Back to the main learning journal](../../README.md)
