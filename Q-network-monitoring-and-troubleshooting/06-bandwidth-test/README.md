@@ -58,3 +58,41 @@ Generating traffic is CPU-heavy, so a small device may measure its own CPU limit
 | Server | CHR on the laptop's network, `TODO` version |
 | Client | hAP lite, `TODO` version |
 | Path | hAP lite LAN ↔ CHR (wired), later through the M.02 tunnel |
+
+## Method A — CLI
+
+### Step 1 — Server side (CHR)
+
+```routeros
+/user/group/add name=btest policy=test,winbox
+/user/add name=btest group=btest password="YOUR_TEST_PASSWORD"
+/tool/bandwidth-server/set enabled=yes allowed-addresses4=192.168.88.0/24
+```
+
+[1]
+
+`TODO` ![Step 1](images/cli/01-server.png)
+
+### Step 2 — Run a test (hAP lite)
+
+```routeros
+/tool/bandwidth-test address=<CHR-address> user=btest password="YOUR_TEST_PASSWORD" protocol=tcp direction=both duration=10s
+```
+
+[1]
+
+`TODO` ![Step 2](images/cli/02-test.png)
+
+### Step 3 — Compare UDP and watch CPU
+
+Repeat with `protocol=udp local-tx-speed=50M remote-tx-speed=50M` while `/system/resource/monitor` runs in a second session. [1][2]
+
+`TODO` ![Step 3](images/cli/03-udp-cpu.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| TCP both directions | `TODO` Mbps | `TODO` |
+| UDP 50M | `TODO` Mbps, loss `TODO` | `TODO` |
+| hAP lite CPU | `TODO` % | `TODO` |
