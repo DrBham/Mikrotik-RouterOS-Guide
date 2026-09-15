@@ -96,3 +96,67 @@ Repeat with `protocol=udp local-tx-speed=50M remote-tx-speed=50M` while `/system
 | TCP both directions | `TODO` Mbps | `TODO` |
 | UDP 50M | `TODO` Mbps, loss `TODO` | `TODO` |
 | hAP lite CPU | `TODO` % | `TODO` |
+
+## Reset Before Method B
+
+On the CHR:
+
+```routeros
+/tool/bandwidth-server/set enabled=no
+/user/remove btest
+/user/group/remove btest
+```
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Server
+
+On the CHR: **Tools → BTest Server**: Enabled, Authenticate; create the `btest` group and user in **System → Users**.
+
+`TODO` ![Step 1](images/gui/01-server.png)
+
+### Step 2 — Client
+
+On the hAP lite: **Tools → Bandwidth Test**: Test To, Protocol, Direction, User, Password, **Start**.
+
+`TODO` ![Step 2](images/gui/02-client.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| Connection refused | Server disabled (A.06) or address not allowed | Step 1. [1] |
+| Not available | Device mode `home` or `basic` [1] | Check device mode. |
+| Result far below the link speed | CPU at 100% | Test between faster devices. [2] |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| `/tool/bandwidth-test address= protocol= direction=` | Client [1] |
+| `/tool/bandwidth-server` + `allowed-addresses4` | Server, restricted [1] |
+| TCP 2000 + UDP 2000–65535 | Ports [1] |
+| `btest` user with `test` policy | Least privilege [1] |
+
+## Key Takeaways
+
+- Measure one link at a time with Bandwidth Test.
+- Turn the server off again after testing.
+
+## References
+
+1. [RouterOS Manual — Bandwidth Test](https://manual.mikrotik.com/docs/diagnostics-monitoring-and-troubleshooting/bandwidth-test/)
+2. [RouterOS Manual — Resource](https://manual.mikrotik.com/docs/diagnostics-monitoring-and-troubleshooting/resource/)
+
+---
+
+**Previous:** [Q.05 — Packet Sniffer and Wireshark](../05-packet-sniffer-and-wireshark/README.md) · **Next:** End of the roadmap. Return to the [main learning journal](../../README.md).
+
+[Back to the main learning journal](../../README.md)
