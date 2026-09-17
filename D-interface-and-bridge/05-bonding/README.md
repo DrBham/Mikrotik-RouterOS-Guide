@@ -44,3 +44,21 @@ Bonding joins Ethernet-like interfaces into one virtual interface. [1] The membe
 | `balance-xor` | Needs a static LAG on the switch. |
 | `balance-tlb`, `balance-alb` | Balance outgoing traffic; `alb` also balances incoming IPv4 using ARP. |
 | `broadcast` | Sends everything on all links. |
+
+### Link monitoring
+
+`link-monitoring` decides how a failed member is detected: `mii` (default, every 100 ms) watches the link state; `arp` sends ARP requests to `arp-ip-targets`; `none` turns both off. [1] The manual notes that ARP monitoring does not work correctly in `active-backup` between two directly connected routers, and should not be used with `802.3ad`. [1] With ARP monitoring, give several targets, because one failed target looks like all links failing. [1]
+
+### How it connects
+
+```text
+D.05 bonding ──► N.03 VRRP (redundant router) ──► N.01 redundant uplink
+```
+
+## Lab Environment
+
+| Item | Value |
+| --- | --- |
+| Routers | Two CHRs in GNS3 (or the hAP lite and a CHR), `TODO` versions |
+| Links | ether1↔ether1 and ether2↔ether2, both removed from any bridge |
+| Addresses | `172.16.0.1/24` and `172.16.0.2/24` on the bond (from the manual) |
