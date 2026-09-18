@@ -62,3 +62,56 @@ D.05 bonding ──► N.03 VRRP (redundant router) ──► N.01 redundant upl
 | Routers | Two CHRs in GNS3 (or the hAP lite and a CHR), `TODO` versions |
 | Links | ether1↔ether1 and ether2↔ether2, both removed from any bridge |
 | Addresses | `172.16.0.1/24` and `172.16.0.2/24` on the bond (from the manual) |
+
+## Method A — CLI
+
+### Step 1 — Create the bond on both routers
+
+```routeros
+/interface/bonding/add name=bond1 slaves=ether1,ether2 mode=active-backup primary=ether1
+```
+
+[1] Router 1 address:
+
+```routeros
+/ip/address/add address=172.16.0.1/24 interface=bond1
+```
+
+Router 2: the same bond, address `172.16.0.2/24`. [1]
+
+`TODO` ![Step 1](images/cli/01-bond.png)
+
+### Step 2 — Check the bond
+
+```routeros
+/interface/bonding/monitor bond1
+/ping 172.16.0.2
+```
+
+[1] `active-ports` shows ether1.
+
+`TODO` ![Step 2](images/cli/02-monitor.png)
+
+### Step 3 — Pull a cable
+
+Run a continuous ping, then disconnect the ether1 cable. The monitor shows ether2 active and the ping continues after a short pause.
+
+`TODO` ![Step 3](images/cli/03-failover.png)
+
+### Step 4 — Try balance-rr
+
+```routeros
+/interface/bonding/set bond1 mode=balance-rr
+```
+
+[1] Repeat on both routers and compare with a bandwidth test (Q.06).
+
+`TODO` ![Step 4](images/cli/04-balance-rr.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| Ping over the bond | Works | `TODO` |
+| ether1 unplugged | ether2 active, ping continues | `TODO` |
+| balance-rr throughput | `TODO` | `TODO` |
