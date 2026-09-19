@@ -115,3 +115,33 @@ Run a continuous ping, then disconnect the ether1 cable. The monitor shows ether
 | Ping over the bond | Works | `TODO` |
 | ether1 unplugged | ether2 active, ping continues | `TODO` |
 | balance-rr throughput | `TODO` | `TODO` |
+
+## Reset Before Method B
+
+```routeros
+/ip/address/remove [find interface=bond1]
+/interface/bonding/remove bond1
+```
+
+on both routers.
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Bonding interface
+
+**Interfaces → + → Bonding**: Slaves `ether1`, `ether2`; Mode `active backup`; Primary `ether1`.
+
+`TODO` ![Step 1](images/gui/01-bond.png)
+
+### Step 2 — Address and status
+
+**IP → Addresses** on `bond1`; open the bond's **Status** tab while unplugging a cable.
+
+`TODO` ![Step 2](images/gui/02-status.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
