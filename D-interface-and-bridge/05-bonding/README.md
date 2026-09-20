@@ -145,3 +145,36 @@ on both routers.
 ### Verify (WinBox)
 
 Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| Bond up, no traffic | Address left on a member port | Addresses belong on the bond. [1] |
+| Failover not detected | ARP monitoring with direct links in active-backup | Use MII. [1] |
+| LACP never forms | Switch not configured for LACP | `802.3ad` needs LACP on both ends. [1] |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| `/interface/bonding/add slaves= mode=` | Create a bond [1] |
+| `active-backup` + `primary=` | Redundancy [1] |
+| `802.3ad` | LACP to a switch [1] |
+| `link-monitoring=mii` | Default detection [1] |
+| `/interface/bonding/monitor` | Active and inactive ports [1] |
+
+## Key Takeaways
+
+- Bonding is mainly about redundancy; one connection rarely gets faster.
+- Put the address on the bond, never on its members.
+
+## References
+
+1. [RouterOS Manual — Bonding](https://manual.mikrotik.com/docs/high-availability-solutions/bonding/)
+
+---
+
+**Previous:** [D.04 — Port Mirroring with the Switch Chip](../04-port-mirroring-with-the-switch-chip/README.md) · **Next:** [Chapter E — DHCP & Network Services](../../E-dhcp-and-network-services/01-dhcp-static-leases-and-options/README.md)
+
+[Back to the main learning journal](../../README.md)
