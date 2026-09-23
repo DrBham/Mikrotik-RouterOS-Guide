@@ -37,3 +37,23 @@ For a name on an adlist, A queries are answered with `0.0.0.0` and AAAA queries 
 ### Cache size first
 
 Adlist names are stored in the DNS cache, at roughly 75 bytes per name (about 6 MiB for 75,000 names), so the cache must be raised before adding a list. [1] If the cache is too small, the import stops with "adlist read: max cache size reached"; raising the size afterwards does not finish it, so remove and re-add the list. [1] On the 32 MB hAP lite, choose small lists. [2]
+
+### Sources and limits
+
+A list is an HTTPS URL or a file on the router, with one name per line in hosts format or plain. [1] Certificates are checked by default (`ssl-verify=yes`). [1] Up to 64 adlists are supported; names must be lower case and wildcards are not supported. [1] Devices that use another DNS server bypass the router's adlists. [1]
+
+### Allowing a name
+
+There is no allow list. A static FWD entry for the name makes the router resolve it upstream, because FWD entries do not apply adlists. [1]
+
+### Maintenance
+
+Lists are checked for changes every 4 hours; `reload` checks immediately and `pause` stops all adlists for a set time. [1] Disabling a list does not free its memory; only removing it does. [1]
+
+## Lab Environment
+
+| Item | Value |
+| --- | --- |
+| Device | MikroTik hAP lite, `TODO` version, default configuration + A.03 |
+| Client | Laptop using `192.168.88.1` for DNS |
+| List | A small file-based list first (Step 2), then a URL list if memory allows |
