@@ -57,3 +57,68 @@ Lists are checked for changes every 4 hours; `reload` checks immediately and `pa
 | Device | MikroTik hAP lite, `TODO` version, default configuration + A.03 |
 | Client | Laptop using `192.168.88.1` for DNS |
 | List | A small file-based list first (Step 2), then a URL list if memory allows |
+
+## Method A — CLI
+
+### Step 1 — Raise the cache
+
+```routeros
+/system/resource/print
+/ip/dns/set cache-size=16384
+```
+
+[1] Check free memory first and record it.
+
+`TODO` ![Step 1](images/cli/01-cache.png)
+
+### Step 2 — A small test list from a file
+
+```routeros
+/file/add name=adlist.txt contents="0.0.0.0 ads.example.net\ntracker.example.net\n"
+/ip/dns/adlist/add file=adlist.txt
+/ip/dns/adlist/print
+```
+
+[1]
+
+`TODO` ![Step 2](images/cli/02-file-list.png)
+
+### Step 3 — Test
+
+```powershell
+nslookup ads.example.net 192.168.88.1
+```
+
+The answer is `0.0.0.0`. [1]
+
+`TODO` ![Step 3](images/cli/03-blocked.png)
+
+### Step 4 — Allow one name
+
+```routeros
+/ip/dns/static/add name=ads.example.net type=FWD
+```
+
+[1] The name now resolves normally.
+
+`TODO` ![Step 4](images/cli/04-allow.png)
+
+### Step 5 — A public list (optional)
+
+```routeros
+/ip/dns/adlist/add url=https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
+/ip/dns/adlist/print
+```
+
+[1] Watch memory with `/system/resource/print`. If the import stops, remove the list; it is too large for this device.
+
+`TODO` ![Step 5](images/cli/05-url-list.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| `ads.example.net` | `0.0.0.0` | `TODO` |
+| After FWD entry | Normal answer | `TODO` |
+| `match-count` | Increases with blocked queries [1] | `TODO` |
+| Free memory after URL list | `TODO` | `TODO` |
