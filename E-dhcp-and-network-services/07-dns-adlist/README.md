@@ -122,3 +122,38 @@ The answer is `0.0.0.0`. [1]
 | After FWD entry | Normal answer | `TODO` |
 | `match-count` | Increases with blocked queries [1] | `TODO` |
 | Free memory after URL list | `TODO` | `TODO` |
+
+## Reset Before Method B
+
+```routeros
+/ip/dns/adlist/remove [find]
+/ip/dns/static/remove [find name=ads.example.net]
+/file/remove adlist.txt
+```
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Cache size
+
+**IP → DNS**: Cache Size `16384`.
+
+`TODO` ![Step 1](images/gui/01-cache.png)
+
+### Step 2 — Adlist
+
+**IP → DNS → Adlist → +**: File or URL.
+
+`TODO` ![Step 2](images/gui/02-adlist.png)
+
+### Step 3 — Allow a name
+
+**IP → DNS → Static → +**: Name, Type `FWD`.
+
+`TODO` ![Step 3](images/gui/03-allow.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
