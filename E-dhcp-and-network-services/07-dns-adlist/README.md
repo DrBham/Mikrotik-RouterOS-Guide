@@ -157,3 +157,37 @@ The answer is `0.0.0.0`. [1]
 ### Verify (WinBox)
 
 Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| "max cache size reached" in the log | Cache too small | Raise it, then remove and re-add the list. [1] |
+| Some devices still see ads | They use another DNS server | I.03 redirect; check DHCP DNS. [1] |
+| Subdomains not blocked | Only exact names are blocked [1] | Add those names. |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| `cache-size` first | ~75 bytes per name [1] |
+| `/ip/dns/adlist/add url=` / `file=` | Add a list [1] |
+| Blocked → `0.0.0.0` / `::` | Behaviour [1] |
+| FWD static entry | Allow a name [1] |
+| `pause`, `reload` | Maintenance [1] |
+
+## Key Takeaways
+
+- Size the cache before adding a list, especially on small devices.
+- Router-level blocking only works for devices that use the router's DNS.
+
+## References
+
+1. [RouterOS Manual — DNS](https://manual.mikrotik.com/docs/network-management/dns/)
+2. [MikroTik — hAP lite (RB941-2nD)](https://mikrotik.com/product/RB941-2nD)
+
+---
+
+**Previous:** [E.06 — Scheduler and Scripts](../06-scheduler-and-scripts/README.md) · **Next:** E.08 — Back To Home
+
+[Back to the main learning journal](../../README.md)
