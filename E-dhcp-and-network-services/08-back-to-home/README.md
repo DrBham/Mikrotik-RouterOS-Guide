@@ -40,3 +40,24 @@ The router becomes a WireGuard server. Without a public IP, or behind NAT, a Mik
 ### What it is not
 
 Traffic leaves to the internet from the home router, so websites see the home address. The manual describes it as simple home access, not an anonymity service. [1]
+
+### What enabling it changes
+
+Enabling Back To Home adds a `back-to-home-vpn` WireGuard interface, the addresses `192.168.216.1/24` and `fc00:0:0:216::1/64`, and firewall rules. [1] Revoking removes all of it and deletes all users. [1]
+
+### Users
+
+Users are created under `/ip/cloud/back-to-home-user`. `allow-lan=no` is the default, so a user reaches the internet through home but not the home LAN unless allowed. [1] An `expires` date can be set when the user is created and cannot be changed later. [1] Shares can also be made from the phone app. [1]
+
+### How it connects
+
+```text
+E.08 Back To Home (behind CGN) ──► M.03 manual WireGuard (with a public address)
+```
+
+## Lab Environment
+
+| Item | Value |
+| --- | --- |
+| Router | `TODO` an ARM/ARM64 MikroTik device, RouterOS ≥ 7.12 [1] |
+| Client | Laptop with the WireGuard app, on a different network (phone hotspot) |
