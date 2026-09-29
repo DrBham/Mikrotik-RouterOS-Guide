@@ -61,3 +61,53 @@ E.08 Back To Home (behind CGN) ──► M.03 manual WireGuard (with a public ad
 | --- | --- |
 | Router | `TODO` an ARM/ARM64 MikroTik device, RouterOS ≥ 7.12 [1] |
 | Client | Laptop with the WireGuard app, on a different network (phone hotspot) |
+
+## Method A — CLI
+
+### Step 1 — Check support
+
+```routeros
+/system/resource/print
+```
+
+`architecture-name` must be ARM, ARM64, or TILE. [1]
+
+`TODO` ![Step 1](images/cli/01-architecture.png)
+
+### Step 2 — Enable
+
+```routeros
+/ip/cloud/set back-to-home-vpn=enabled
+/ip/cloud/print
+```
+
+[1] Wait for `vpn-status: running`.
+
+> [!CAUTION]
+> **Privacy:** `/ip/cloud/print` shows the DDNS name (serial number) and public address. Cover them. See the [privacy checklist](../../TOPIC-TEMPLATE.md#screenshot--privacy-checklist).
+
+`TODO` ![Step 2](images/cli/02-enable.png)
+
+### Step 3 — Create a user and export its config
+
+```routeros
+/ip/cloud/back-to-home-user/add name=laptop allow-lan=yes
+/ip/cloud/back-to-home-user/show-client-config [find name=laptop]
+```
+
+[1] Import the configuration into the laptop's WireGuard app.
+
+`TODO` ![Step 3](images/cli/03-user.png)
+
+### Step 4 — Test from outside
+
+Connect the laptop to a phone hotspot, activate the tunnel, and open the router's LAN address.
+
+`TODO` ![Step 4](images/cli/04-test.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| `vpn-status` | `running` [1] | `TODO` |
+| Laptop on hotspot | Reaches the home LAN (`allow-lan=yes`) | `TODO` |
