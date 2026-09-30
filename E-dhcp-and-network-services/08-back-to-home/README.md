@@ -111,3 +111,32 @@ Connect the laptop to a phone hotspot, activate the tunnel, and open the router'
 | --- | --- | --- |
 | `vpn-status` | `running` [1] | `TODO` |
 | Laptop on hotspot | Reaches the home LAN (`allow-lan=yes`) | `TODO` |
+
+## Reset Before Method B
+
+```routeros
+/ip/cloud/set back-to-home-vpn=revoked-and-disabled
+```
+
+[1] This removes the interface, addresses, rules, and all users.
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Enable
+
+**IP → Cloud**: Back To Home VPN `enabled`.
+
+`TODO` ![Step 1](images/gui/01-enable.png)
+
+### Step 2 — Users
+
+**IP → Cloud → Back To Home Users → +**: Name, Allow LAN.
+
+`TODO` ![Step 2](images/gui/02-users.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli). The phone app (Android/iPhone) can also set up and share access; the first setup must be done from the router's LAN. [1]
