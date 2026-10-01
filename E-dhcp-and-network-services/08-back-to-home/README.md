@@ -140,3 +140,35 @@ Connect the laptop to a phone hotspot, activate the tunnel, and open the router'
 ### Verify (WinBox)
 
 Same checks as [Verify (CLI)](#verify-cli). The phone app (Android/iPhone) can also set up and share access; the first setup must be done from the router's LAN. [1]
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| Option missing or rejected | Unsupported CPU or RouterOS < 7.12 [1] | Check Step 1. |
+| Connected but LAN unreachable | `allow-lan=no` (default) [1] | Create the user with `allow-lan=yes`. |
+| Slow connection | Traffic goes through the relay [1] | Expected without a public address. |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| ARM/ARM64/TILE, RouterOS ≥ 7.12 | Requirements [1] |
+| `back-to-home-vpn=enabled` | Turn on [1] |
+| `/ip/cloud/back-to-home-user/add` | Give access [1] |
+| `revoked-and-disabled` | Remove everything [1] |
+
+## Key Takeaways
+
+- Back To Home is the easy VPN for routers without a public address, on supported hardware.
+- Revoking deletes every user; plan before you turn it off.
+
+## References
+
+1. [RouterOS Manual — Back To Home](https://manual.mikrotik.com/docs/network-management/cloud/back-to-home/)
+
+---
+
+**Previous:** [E.07 — DNS Adlist](../07-dns-adlist/README.md) · **Next:** [Chapter F — Wireless Networking](../../F-wireless-networking/01-wireless-ap-basics/README.md)
+
+[Back to the main learning journal](../../README.md)
