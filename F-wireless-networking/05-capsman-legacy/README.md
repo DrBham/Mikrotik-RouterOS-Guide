@@ -37,3 +37,35 @@ There are two CAPsMAN systems. Legacy CAPsMAN (`/caps-man`) manages devices runn
 ### Manager and CAPs
 
 The manager holds the configuration and pushes it to the CAPs, which need only minimal configuration to find the manager. [1][2] The CAP handles the wireless encryption; data is forwarded to the manager, or locally at the CAP when local forwarding is on. [2] Any RouterOS device with at least a level 4 license can be a CAP, and Nv2 and NStreme cannot be used. [2]
+
+### Building blocks
+
+| Menu | Holds [1] |
+| --- | --- |
+| `/caps-man/manager` | Turn CAPsMAN on (`enabled`, default `no`) |
+| `/caps-man/security` | WPA settings |
+| `/caps-man/configuration` | SSID, channel, security for radios |
+| `/caps-man/provisioning` | Which configuration a CAP radio receives; matched by name, then radio MAC |
+| `/caps-man/interface` | Radios currently managed |
+
+If no provisioning rule matches, the implicit action is `create-enabled`. [1]
+
+> [!WARNING]
+> **Source needed:** the manual's full setup example sits in a part of the AP Controller page that was only read as a summary. The commands below follow that summary. Verify each against the [AP Controller (CAPsMAN) page](https://manual.mikrotik.com/docs/wireless/abgn/capsman/ap-controller-capsman/) before publishing.
+
+```routeros
+/caps-man/security add name="wpa2psk" authentication-types=wpa2-psk encryption=aes-ccm
+/caps-man/configuration add name=master-cfg ssid=master security=wpa2psk security.passphrase=12345678 channel.width=20
+/caps-man/provisioning add action=create-dynamic-enabled master-configuration=master-cfg
+```
+
+## Lab Environment
+
+| Item | Value |
+| --- | --- |
+| Manager | CHR or any RouterOS device on the LAN, `TODO` version |
+| CAP | hAP lite, `TODO` version |
+| Network | Both on the same LAN segment |
+
+> [!NOTE]
+> A 2.4 GHz configuration is needed for the hAP lite. `TODO` set `channel.band` and frequency for 2.4 GHz after confirming the option names.
