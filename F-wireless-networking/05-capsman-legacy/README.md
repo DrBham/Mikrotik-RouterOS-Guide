@@ -69,3 +69,52 @@ If no provisioning rule matches, the implicit action is `create-enabled`. [1]
 
 > [!NOTE]
 > A 2.4 GHz configuration is needed for the hAP lite. `TODO` set `channel.band` and frequency for 2.4 GHz after confirming the option names.
+
+## Method A — CLI
+
+### Step 1 — Manager
+
+```routeros
+/caps-man/manager set enabled=yes
+```
+
+[1] `enabled` is the manager property from the manual's table. `TODO` confirm in the lab.
+
+`TODO` ![Step 1](images/cli/01-manager.png)
+
+### Step 2 — Security, configuration, provisioning
+
+Enter the three commands from the theory section with a 2.4 GHz channel and your own passphrase.
+
+> [!CAUTION]
+> **Privacy:** cover the passphrase and SSID if personal. See the [privacy checklist](../../TOPIC-TEMPLATE.md#screenshot--privacy-checklist).
+
+`TODO` ![Step 2](images/cli/02-config.png)
+
+### Step 3 — Make the hAP lite a CAP
+
+```routeros
+/interface/wireless/cap set enabled=yes discovery-interfaces=bridge
+```
+
+> [!NOTE]
+> `TODO` confirm this command; the manual's page shows `enabled` and `discovery-interfaces` as CAP settings in its output.
+
+`TODO` ![Step 3](images/cli/03-cap.png)
+
+### Step 4 — Check on the manager
+
+```routeros
+/caps-man/interface/print
+```
+
+[1] The hAP lite's radio appears and is bound (`B` flag).
+
+`TODO` ![Step 4](images/cli/04-interfaces.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| CAP radio on manager | Listed, bound [1] | `TODO` |
+| Phone connects to the managed SSID | Yes | `TODO` |
