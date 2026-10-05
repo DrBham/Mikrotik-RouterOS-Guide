@@ -118,3 +118,28 @@ Enter the three commands from the theory section with a 2.4 GHz channel and your
 | --- | --- | --- |
 | CAP radio on manager | Listed, bound [1] | `TODO` |
 | Phone connects to the managed SSID | Yes | `TODO` |
+
+## Reset Before Method B
+
+Disable the CAP on the hAP lite and remove the provisioning, configuration, and security entries on the manager; then `/caps-man/manager set enabled=no`. Reset the hAP lite (A.05) to get its local wireless settings back.
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Manager
+
+**CAPsMAN → Manager**: Enabled. Add Security, Configuration, and Provisioning entries.
+
+`TODO` ![Step 1](images/gui/01-manager.png)
+
+### Step 2 — CAP
+
+On the hAP lite: **Wireless → CAP**: Enabled, Discovery Interfaces `bridge`.
+
+`TODO` ![Step 2](images/gui/02-cap.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
