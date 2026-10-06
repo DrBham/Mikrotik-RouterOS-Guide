@@ -143,3 +143,36 @@ On the hAP lite: **Wireless → CAP**: Enabled, Discovery Interfaces `bridge`.
 ### Verify (WinBox)
 
 Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| CAP never appears | Manager disabled, or wrong discovery interface | Check both sides. [1] |
+| CAP joins but no SSID | No provisioning rule match | Add a rule. [1] |
+| A newer AP cannot join | It runs `wifi`, not `wireless` [1] | Use WiFi CAPsMAN for it. |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| Legacy vs WiFi CAPsMAN | Separate; match the package [1] |
+| `/caps-man/manager` | Controller on/off [1] |
+| configuration + provisioning | What each CAP radio gets [1] |
+| CAP | Level 4 license or higher [2] |
+
+## Key Takeaways
+
+- Configure once on the manager, apply to every AP.
+- The hAP lite can only join legacy CAPsMAN.
+
+## References
+
+1. [RouterOS Manual — CAPsMAN](https://manual.mikrotik.com/docs/wireless/abgn/capsman/)
+2. [RouterOS Manual — AP Controller (CAPsMAN)](https://manual.mikrotik.com/docs/wireless/abgn/capsman/ap-controller-capsman/)
+
+---
+
+**Previous:** [F.04 — Virtual AP Guest Network](../04-virtual-ap-guest-network/README.md) · **Next:** [Chapter G — Routing Fundamentals](../../G-routing-fundamentals/01-static-routes/README.md)
+
+[Back to the main learning journal](../../README.md)
