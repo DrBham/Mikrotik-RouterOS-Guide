@@ -50,14 +50,15 @@ The manager holds the configuration and pushes it to the CAPs, which need only m
 
 If no provisioning rule matches, the implicit action is `create-enabled`. [1]
 
-> [!WARNING]
-> **Source needed:** the manual's full setup example sits in a part of the AP Controller page that was only read as a summary. The commands below follow that summary. Verify each against the [AP Controller (CAPsMAN) page](https://manual.mikrotik.com/docs/wireless/abgn/capsman/ap-controller-capsman/) before publishing.
+The AP Controller page's example, without its second (slave) SSID:
 
 ```routeros
 /caps-man/security add name="wpa2psk" authentication-types=wpa2-psk encryption=aes-ccm
-/caps-man/configuration add name=master-cfg ssid=master security=wpa2psk security.passphrase=12345678 channel.width=20
+/caps-man/configuration add name=master-cfg ssid=master security=wpa2psk security.passphrase=12345678 channel.frequency=5180 channel.width=20 channel.band=5ghz-a
 /caps-man/provisioning add action=create-dynamic-enabled master-configuration=master-cfg
 ```
+
+[2] The manual's version also adds `slave-configurations=slave-cfg` to the provisioning rule for a second SSID. [2]
 
 ## Lab Environment
 
@@ -68,7 +69,7 @@ If no provisioning rule matches, the implicit action is `create-enabled`. [1]
 | Network | Both on the same LAN segment |
 
 > [!NOTE]
-> A 2.4 GHz configuration is needed for the hAP lite. `TODO` set `channel.band` and frequency for 2.4 GHz after confirming the option names.
+> A 2.4 GHz configuration is needed for the hAP lite. Valid `channel.band` values include `2ghz-b/g/n`. [2] If `channel.frequency` is left blank, CAPsMAN picks the least occupied frequency itself. [2]
 
 ## Method A — CLI
 
@@ -78,13 +79,19 @@ If no provisioning rule matches, the implicit action is `create-enabled`. [1]
 /caps-man/manager set enabled=yes
 ```
 
-[1] `enabled` is the manager property from the manual's table. `TODO` confirm in the lab.
+[1][2] `enabled` (`yes` or `no`, default `no`) is the manager property that turns CAPsMAN on or off. [1]
 
 `TODO` ![Step 1](images/cli/01-manager.png)
 
 ### Step 2 — Security, configuration, provisioning
 
-Enter the three commands from the theory section with a 2.4 GHz channel and your own passphrase.
+Enter the three commands from the theory section with a 2.4 GHz band and your own passphrase. The configuration line becomes:
+
+```routeros
+/caps-man/configuration add name=master-cfg ssid=master security=wpa2psk security.passphrase=YOUR_STRONG_PASSWORD channel.width=20 channel.band=2ghz-b/g/n
+```
+
+[2] `channel.frequency` is left out so CAPsMAN chooses it. [2]
 
 > [!CAUTION]
 > **Privacy:** cover the passphrase and SSID if personal. See the [privacy checklist](../../TOPIC-TEMPLATE.md#screenshot--privacy-checklist).
@@ -94,11 +101,13 @@ Enter the three commands from the theory section with a 2.4 GHz channel and your
 ### Step 3 — Make the hAP lite a CAP
 
 ```routeros
-/interface/wireless/cap set enabled=yes discovery-interfaces=bridge
+/interface/wireless/cap/set enabled=yes interfaces=wlan1 discovery-interfaces=bridge
 ```
 
+[2][3] CAP settings live in `/interface/wireless/cap`. `enabled` turns the CAP feature on, `interfaces` lists the wireless interfaces the manager controls, and `discovery-interfaces` lists the interfaces used to find the manager. [2][3]
+
 > [!NOTE]
-> `TODO` confirm this command; the manual's page shows `enabled` and `discovery-interfaces` as CAP settings in its output.
+> The manual shows these properties and their print output, but no full `set` line for the manager or the CAP. The Step 1 and Step 3 commands are built from those documented properties and still need a lab check.
 
 `TODO` ![Step 3](images/cli/03-cap.png)
 
@@ -136,7 +145,7 @@ Disable the CAP on the hAP lite and remove the provisioning, configuration, and 
 
 ### Step 2 — CAP
 
-On the hAP lite: **Wireless → CAP**: Enabled, Discovery Interfaces `bridge`.
+On the hAP lite: **Wireless → CAP**: Enabled, Interfaces `wlan1`, Discovery Interfaces `bridge`, as in Method A Step 3.
 
 `TODO` ![Step 2](images/gui/02-cap.png)
 
@@ -170,6 +179,7 @@ Same checks as [Verify (CLI)](#verify-cli).
 
 1. [RouterOS Manual — CAPsMAN](https://manual.mikrotik.com/docs/wireless/abgn/capsman/)
 2. [RouterOS Manual — AP Controller (CAPsMAN)](https://manual.mikrotik.com/docs/wireless/abgn/capsman/ap-controller-capsman/)
+3. [MikroTik Help (archived version) — CAPsMAN, CAP configuration properties](https://help.mikrotik.com/docs/x/JgB-/)
 
 ---
 
