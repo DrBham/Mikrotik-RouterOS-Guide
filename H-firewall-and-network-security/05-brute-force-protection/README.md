@@ -42,3 +42,11 @@ Each new SSH connection from the WAN moves its source one stage further [1]:
 | 4th within 1 hour | `bruteforce_blacklist` (and dropped) | 1 day |
 
 `add-src-to-address-list` does not stop the packet, so the counting rules are written in reverse order, followed by an accept for sources not on the blacklist and a drop. [1] All rules sit before the default "drop all not coming from LAN" rule. [1]
+
+### What it does and does not stop
+
+Each SSH connection allows up to 9 password attempts, so a fast attacker gets about 27 guesses before a one-day block. A source that waits more than 5 minutes between connections never moves past stage 1, which the manual estimates at about 2,600 guesses per day. [1] Key-only login (`/ip/ssh/set password-authentication=no`) closes that gap. [1]
+
+### Exempt yourself
+
+Successful logins also count, so you can block yourself. The manual adds a `secured` address list with an accept rule placed before the counting rules. [1] The rules cover IPv4 only; IPv6 needs the same rules under `/ipv6/firewall/filter`. [1]
