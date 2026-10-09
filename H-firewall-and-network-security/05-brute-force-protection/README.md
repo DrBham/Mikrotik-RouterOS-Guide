@@ -50,3 +50,14 @@ Each SSH connection allows up to 9 password attempts, so a fast attacker gets ab
 ### Exempt yourself
 
 Successful logins also count, so you can block yourself. The manual adds a `secured` address list with an accept rule placed before the counting rules. [1] The rules cover IPv4 only; IPv6 needs the same rules under `/ipv6/firewall/filter`. [1]
+
+## Lab Environment
+
+| Item | Value |
+| --- | --- |
+| Router | hAP lite with default configuration and firewall, `TODO` version |
+| Attacker | A device on the upstream (WAN) side |
+| SSH | Allowed from the WAN for this lab only |
+
+> [!WARNING]
+> Remove the rules and close SSH from the WAN again after the lab.
