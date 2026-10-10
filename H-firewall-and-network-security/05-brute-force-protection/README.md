@@ -61,3 +61,62 @@ Successful logins also count, so you can block yourself. The manual adds a `secu
 
 > [!WARNING]
 > Remove the rules and close SSH from the WAN again after the lab.
+
+## Method A — CLI
+
+### Step 1 — Exempt your management address
+
+```routeros
+/ip/firewall/address-list/add list=secured address=192.168.88.50 comment="Lab laptop"
+```
+
+[1]
+
+`TODO` ![Step 1](images/cli/01-secured.png)
+
+### Step 2 — The staged rules
+
+```routeros
+/ip/firewall/filter
+add chain=input action=add-src-to-address-list protocol=tcp dst-port=22 connection-state=new in-interface-list=WAN src-address-list=connection3 address-list=bruteforce_blacklist address-list-timeout=1d comment="SSH brute force: blacklist" place-before=[find comment="defconf: drop all not coming from LAN"]
+add chain=input action=add-src-to-address-list protocol=tcp dst-port=22 connection-state=new in-interface-list=WAN src-address-list=connection2 address-list=connection3 address-list-timeout=1h comment="SSH brute force: third connection" place-before=[find comment="defconf: drop all not coming from LAN"]
+add chain=input action=add-src-to-address-list protocol=tcp dst-port=22 connection-state=new in-interface-list=WAN src-address-list=connection1 address-list=connection2 address-list-timeout=15m comment="SSH brute force: second connection" place-before=[find comment="defconf: drop all not coming from LAN"]
+add chain=input action=add-src-to-address-list protocol=tcp dst-port=22 connection-state=new in-interface-list=WAN address-list=connection1 address-list-timeout=5m comment="SSH brute force: first connection" place-before=[find comment="defconf: drop all not coming from LAN"]
+add chain=input action=accept protocol=tcp dst-port=22 in-interface-list=WAN src-address-list=!bruteforce_blacklist comment="SSH brute force: accept" place-before=[find comment="defconf: drop all not coming from LAN"]
+add chain=input action=drop protocol=tcp dst-port=22 in-interface-list=WAN comment="SSH brute force: drop blacklisted" place-before=[find comment="defconf: drop all not coming from LAN"]
+```
+
+[1]
+
+`TODO` ![Step 2](images/cli/02-rules.png)
+
+### Step 3 — Exempt rule above the counters
+
+```routeros
+/ip/firewall/filter/add chain=input action=accept protocol=tcp dst-port=22 src-address-list=secured comment="SSH brute force: trusted" place-before=[find comment="SSH brute force: blacklist"]
+```
+
+[1]
+
+### Step 4 — Trigger it from the WAN side
+
+From the attacker device, open four SSH connections in quick succession (cancel each at the password prompt). Then:
+
+```routeros
+/ip/firewall/address-list/print where list~"^connection|^bruteforce"
+```
+
+[1]
+
+> [!CAUTION]
+> **Privacy:** cover public addresses. See the [privacy checklist](../../TOPIC-TEMPLATE.md#screenshot--privacy-checklist).
+
+`TODO` ![Step 4](images/cli/04-lists.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| After 4 quick connections | Source in `bruteforce_blacklist` [1] | `TODO` |
+| 5th attempt | Dropped | `TODO` |
+| Lab laptop | Never listed (`secured`) | `TODO` |
