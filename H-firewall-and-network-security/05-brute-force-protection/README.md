@@ -120,3 +120,31 @@ From the attacker device, open four SSH connections in quick succession (cancel 
 | After 4 quick connections | Source in `bruteforce_blacklist` [1] | `TODO` |
 | 5th attempt | Dropped | `TODO` |
 | Lab laptop | Never listed (`secured`) | `TODO` |
+
+## Reset Before Method B
+
+```routeros
+/ip/firewall/filter/remove [find comment~"SSH brute force"]
+/ip/firewall/address-list/remove [find list~"^connection|^bruteforce|^secured"]
+```
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Rules
+
+**IP → Firewall → Filter Rules → +** for each rule: Chain `input`, Protocol `tcp`, Dst. Port `22`, Connection State `new`, In. Interface List `WAN`, Src. Address List, Action `add src to address list`, Address List and Timeout. Order them as in Method A.
+
+`TODO` ![Step 1](images/gui/01-rules.png)
+
+### Step 2 — Watch the lists
+
+**IP → Firewall → Address Lists** while triggering from the WAN side.
+
+`TODO` ![Step 2](images/gui/02-lists.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
