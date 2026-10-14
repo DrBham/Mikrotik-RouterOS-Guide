@@ -148,3 +148,35 @@ From the attacker device, open four SSH connections in quick succession (cancel 
 ### Verify (WinBox)
 
 Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| You were blacklisted | Successful logins count too [1] | Remove your entry; use `secured`. [1] |
+| Nobody is ever listed | Rules below the default drop rule | `place-before` the drop rule. [1] |
+| IPv6 attacks continue | Rules are IPv4 only [1] | Repeat under `/ipv6/firewall/filter`. |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| connection1 → 2 → 3 → blacklist | 5 m, 15 m, 1 h, 1 d [1] |
+| Reverse rule order | Adding does not stop the packet [1] |
+| `secured` list | Never block yourself [1] |
+| `password-authentication=no` | Keys only [1] |
+
+## Key Takeaways
+
+- Rate-based blocking slows attackers; key-only login stops password guessing.
+- Better still, do not expose SSH to the internet at all.
+
+## References
+
+1. [RouterOS Manual — Bruteforce prevention](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/user-guides/bruteforce-prevention/)
+
+---
+
+**Previous:** [H.04 — Address Lists and RAW Rules](../04-address-lists-and-raw-rules/README.md) · **Next:** [Chapter I — Network Address Translation (NAT)](../../I-network-address-translation/01-port-forwarding-with-dst-nat/README.md)
+
+[Back to the main learning journal](../../README.md)
