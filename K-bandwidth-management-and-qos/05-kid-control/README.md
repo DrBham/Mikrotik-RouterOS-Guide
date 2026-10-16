@@ -40,3 +40,20 @@ A profile (`/ip/kid-control`) sets the allowed hours for each day and a `rate-li
 | Days not set | Defaults: 7h–21h Mon–Thu, 7h–22h Fri, 6h–22h Sat, 6h–21h Sun |
 | `rate-limit` | Per device, each direction, during allowed hours |
 | `tur-mon` … `tur-sun` | Hours when the rate limit does not apply (not extra access) |
+
+### How it is enforced
+
+The router adds dynamic firewall rules (`jump to kid-control rules` in the forward chain) and, for rate limits, dynamic simple queues. Blocked devices get reject rules. [1]
+
+### Limitations
+
+Matching is by MAC address, and many phones use random MACs. Time comes from the router clock. Kid Control is IPv4 only. Removing a profile leaves its devices behind, so remove them too. [1]
+
+### The manual's example
+
+```routeros
+/ip/kid-control add name=Anna mon=16h-20h tue=16h-20h wed=16h-20h thu=16h-20h fri=16h-20h sat=9h-21h sun=9h-21h rate-limit=5M
+/ip/kid-control/device add name=Tablet user=Anna mac-address=00:00:5E:00:53:63
+```
+
+[1]
