@@ -57,3 +57,10 @@ Matching is by MAC address, and many phones use random MACs. Time comes from the
 ```
 
 [1]
+
+## Lab Environment
+
+| Item | Value |
+| --- | --- |
+| Device | MikroTik hAP lite, `TODO` version, A.03, NTP synchronised (E.04) |
+| Client | Phone with MAC randomisation off for this network |
