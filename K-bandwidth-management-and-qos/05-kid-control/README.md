@@ -64,3 +64,62 @@ Matching is by MAC address, and many phones use random MACs. Time comes from the
 | --- | --- |
 | Device | MikroTik hAP lite, `TODO` version, A.03, NTP synchronised (E.04) |
 | Client | Phone with MAC randomisation off for this network |
+
+## Method A — CLI
+
+### Step 1 — Profile
+
+```routeros
+/ip/kid-control add name=Lab mon=16h-20h tue=16h-20h wed=16h-20h thu=16h-20h fri=16h-20h sat=9h-21h sun=9h-21h rate-limit=5M
+```
+
+[1] Adjust today's hours so the phone is currently outside them, for the test.
+
+`TODO` ![Step 1](images/cli/01-profile.png)
+
+### Step 2 — Device
+
+```routeros
+/ip/kid-control/device add name=Phone user=Lab mac-address=00:00:5E:00:53:63
+/ip/kid-control/device/print
+```
+
+[1] Use the phone's real MAC.
+
+> [!CAUTION]
+> **Privacy:** cover real MAC addresses. See the [privacy checklist](../../TOPIC-TEMPLATE.md#screenshot--privacy-checklist).
+
+`TODO` ![Step 2](images/cli/02-device.png)
+
+### Step 3 — Observe blocking and limits
+
+Outside the hours, the phone has no internet. Change today's hours to include now and test the 5 Mbps limit. Then:
+
+```routeros
+/ip/firewall/filter/print where dynamic
+/queue/simple/print
+/ip/kid-control/device/print stats
+```
+
+[1]
+
+`TODO` ![Step 3](images/cli/03-enforced.png)
+
+### Step 4 — Pause and resume
+
+```routeros
+/ip/kid-control/pause Lab
+/ip/kid-control/resume Lab
+```
+
+[1]
+
+`TODO` ![Step 4](images/cli/04-pause.png)
+
+### Verify (CLI)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| Outside hours | No internet | `TODO` |
+| Inside hours | ~5 Mbps | `TODO` |
+| Paused | Blocked until resume [1] | `TODO` |
