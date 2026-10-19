@@ -123,3 +123,33 @@ Outside the hours, the phone has no internet. Change today's hours to include no
 | Outside hours | No internet | `TODO` |
 | Inside hours | ~5 Mbps | `TODO` |
 | Paused | Blocked until resume [1] | `TODO` |
+
+## Reset Before Method B
+
+```routeros
+/ip/kid-control/device/remove [find user=Lab]
+/ip/kid-control/remove Lab
+```
+
+[1]
+
+## Method B — WinBox (GUI)
+
+> [!NOTE]
+> `TODO` confirm each menu name against WinBox v4 while taking the screenshots.
+
+### Step 1 — Profile and device
+
+**IP → Kid Control → Kids → +** (hours, rate limit), **Devices → +** (MAC, user).
+
+`TODO` ![Step 1](images/gui/01-kid-control.png)
+
+### Step 2 — Pause
+
+Select the profile and use **Pause** / **Resume**.
+
+`TODO` ![Step 2](images/gui/02-pause.png)
+
+### Verify (WinBox)
+
+Same checks as [Verify (CLI)](#verify-cli).
