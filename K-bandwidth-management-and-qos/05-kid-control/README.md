@@ -153,3 +153,35 @@ Select the profile and use **Pause** / **Resume**.
 ### Verify (WinBox)
 
 Same checks as [Verify (CLI)](#verify-cli).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check / fix |
+| --- | --- | --- |
+| Device not affected | Random MAC on the phone [1] | Turn off MAC randomisation for this network. |
+| Wrong hours | Router clock or time zone [1] | E.04. |
+| Limit ignored | FastTrack bypassing queues | Chapter K. |
+
+## Quick Recap
+
+| Item | Meaning |
+| --- | --- |
+| `/ip/kid-control add name= mon= … rate-limit=` | Profile [1] |
+| `/ip/kid-control/device add user= mac-address=` | Device [1] |
+| `pause` / `resume` | Block now / restore [1] |
+| IPv4 only, MAC-based | Limits [1] |
+
+## Key Takeaways
+
+- Kid Control is a friendly front end to firewall rules and queues.
+- MAC randomisation and a wrong clock are the usual reasons it seems not to work.
+
+## References
+
+1. [RouterOS Manual — Kid Control](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/kid-control/)
+
+---
+
+**Previous:** [K.04 — Queue Tree with Mangle](../04-queue-tree-with-mangle/README.md) · **Next:** [Chapter L — PPP & Hotspot](../../L-ppp-and-hotspot/01-pppoe-server-profiles-and-secrets/README.md)
+
+[Back to the main learning journal](../../README.md)
