@@ -197,7 +197,7 @@ Each practical tutorial records its actual RouterOS version, device, topology, a
 
 ## Documentation & Safety
 
-Practical guides are based on actual lab evidence and original explanations. Untested configurations are explicitly identified. Review configuration examples before applying them, use isolated labs when possible, and avoid publishing credentials, private keys, or identifying device information. Published examples are not a guarantee of production suitability.
+Practical guides are based on actual lab evidence and original explanations. Untested configurations are explicitly identified. Review configuration examples before applying them, use isolated labs when possible, and avoid publishing credentials, private keys, or identifying device information. Every screenshot is checked against the [screenshot & privacy checklist](TOPIC-TEMPLATE.md#screenshot--privacy-checklist) before it is committed. Published examples are not a guarantee of production suitability.
 
 ## References
 

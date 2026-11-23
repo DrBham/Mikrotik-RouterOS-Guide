@@ -118,6 +118,8 @@ With the default configuration, the LAN bridge has the address `192.168.88.1/24`
 ipconfig
 ```
 
+Use plain `ipconfig`, not `ipconfig /all`, so the laptop's MAC addresses are not shown.
+
 `TODO` ![Step 1](images/cli/01-laptop-ip-address.png)
 
 ### Step 2 — Log in over SSH
@@ -149,6 +151,9 @@ These commands only read information; they do not change the configuration.
 | `/system/resource/print` | RouterOS version, board name, uptime, CPU, and memory. |
 | `/system/identity/print` | The router's name, shown in the prompt. |
 | `/ip/address/print` | IP addresses configured on each interface. |
+
+> [!CAUTION]
+> **Privacy:** cover any MAC address in the output with a solid box before publishing. See the [privacy checklist](../../TOPIC-TEMPLATE.md#screenshot--privacy-checklist).
 
 `TODO` ![Step 3](images/cli/03-read-router-info.png)
 
@@ -197,6 +202,9 @@ Download WinBox from the official link `https://mt.lv/winbox`. On Windows it is 
 
 Keep the laptop connected to ether2. Open WinBox and select the **Neighbors** tab. The router should appear with its MAC address, IP address, identity, and RouterOS version. [2]
 
+> [!CAUTION]
+> **Privacy:** cover the MAC addresses of the router and any other device in the Neighbors list with a solid box before publishing. See the [privacy checklist](../../TOPIC-TEMPLATE.md#screenshot--privacy-checklist).
+
 `TODO` ![Step 2](images/gui/02-neighbors-list.png)
 
 ### Step 3 — Log in by MAC address
@@ -204,6 +212,9 @@ Keep the laptop connected to ether2. Open WinBox and select the **Neighbors** ta
 1. Click the router's **MAC address**. [1]
 2. Login: `admin`. Password: empty, or the password from the device label. [1]
 3. Click **Connect**.
+
+> [!CAUTION]
+> **Privacy:** cover the MAC address in the Connect To field with a solid box before publishing. See the [privacy checklist](../../TOPIC-TEMPLATE.md#screenshot--privacy-checklist).
 
 `TODO` ![Step 3](images/gui/03-login-mac.png)
 

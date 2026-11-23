@@ -27,6 +27,23 @@ NN-topic-name/
 
 Screenshot names start with the step number they belong to, so `cli/03-…` and `gui/03-…` show the same step done two ways.
 
+## Screenshot & privacy checklist
+
+Check every screenshot and `configuration.rsc` before committing. Cover sensitive values with a **solid box**, not a blur: blurred or pixelated text can sometimes be recovered.
+
+| Hide | Where it appears | Why |
+| --- | --- | --- |
+| Passwords, Wi-Fi keys, PPPoE credentials | Security profiles, PPPoE client, `export` output | Direct access to your network or ISP account. |
+| MAC addresses and BSSIDs | WinBox Neighbors and login, `/interface print`, wireless scan, registration table, `ipconfig /all` | Identify your devices; Wi-Fi BSSIDs can be looked up in public Wi-Fi location databases. |
+| SSIDs (yours and your neighbours') | Wireless scan, station settings | Often contain names or locations; neighbours' networks are not yours to publish. |
+| Serial number, software ID, license key | `/system/routerboard/print`, `/system/license/print`, device label | Unique to your device. |
+| Public IP address and DDNS name | `/ip/cloud/print`, upstream DHCP lease, speed tests | Locates and exposes your connection. |
+| Hostnames and personal names | Phone hotspot names, DHCP leases, Windows user or PC name | Personal information. |
+
+Safe to show: the default LAN `192.168.88.0/24`, private upstream addresses, interface names, RouterOS version, and board name.
+
+When text needs an example MAC address, use the documentation range `00:00:5E:00:53:00`–`00:00:5E:00:53:FF` reserved by [RFC 7042](https://www.rfc-editor.org/rfc/rfc7042) instead of a real one. In `configuration.rsc`, replace secrets with placeholders such as `YOUR_WIFI_PASSWORD`.
+
 ## README sections
 
 ````markdown

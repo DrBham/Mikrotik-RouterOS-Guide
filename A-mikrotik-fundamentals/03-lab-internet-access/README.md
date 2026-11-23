@@ -157,6 +157,9 @@ Note which interface list the masquerade rule uses (for example `out-interface-l
 
 Find your home Wi-Fi or hotspot name (SSID) in the list, then press **Ctrl+C** to stop. [10] Running a scan takes wlan1 off the air while it runs. [4]
 
+> [!CAUTION]
+> **Privacy:** cover every BSSID (MAC address) and every SSID except your own with a solid box before publishing. See the [privacy checklist](../../TOPIC-TEMPLATE.md#screenshot--privacy-checklist).
+
 `TODO` ![Step 2](images/cli/02-wireless-scan.png)
 
 #### Step 3 — Create a security profile
@@ -172,7 +175,10 @@ Find your home Wi-Fi or hotspot name (SSID) in the list, then press **Ctrl+C** t
 | `authentication-types=wpa2-psk` | WPA2 with a pre-shared key (password). [4] |
 | `wpa2-pre-shared-key` | The upstream Wi-Fi password. [4] |
 
-`TODO` ![Step 3](images/cli/03-security-profile.png) — blur the password before publishing.
+> [!CAUTION]
+> **Privacy:** cover the Wi-Fi password with a solid box before publishing. See the [privacy checklist](../../TOPIC-TEMPLATE.md#screenshot--privacy-checklist).
+
+`TODO` ![Step 3](images/cli/03-security-profile.png)
 
 #### Step 4 — Remove wlan1 from the LAN bridge
 
@@ -195,6 +201,9 @@ This replaces the MikroTik's own Wi-Fi access point with a client connection. Th
 ```routeros
 /interface/wireless/registration-table/print
 ```
+
+> [!CAUTION]
+> **Privacy:** cover the access point MAC address and your SSID if it contains personal information with a solid box before publishing. See the [privacy checklist](../../TOPIC-TEMPLATE.md#screenshot--privacy-checklist).
 
 `TODO` ![Step 5](images/cli/05-station-connected.png)
 
@@ -277,11 +286,17 @@ Open **Bridge → Ports**, **Interfaces → Interface List**, and **IP → Firew
 
 Open **Wireless**, double-click **wlan1**, and click **Scan**. Start the scan and find your SSID.
 
+> [!CAUTION]
+> **Privacy:** cover every BSSID (MAC address) and every SSID except your own with a solid box before publishing. See the [privacy checklist](../../TOPIC-TEMPLATE.md#screenshot--privacy-checklist).
+
 `TODO` ![Step 2](images/gui/02-wireless-scan.png)
 
 #### Step 3 — Create a security profile
 
 **Wireless → Security Profiles → +**. Name `uplink`, Mode `dynamic keys`, tick `WPA2 PSK`, enter the WPA2 pre-shared key.
+
+> [!CAUTION]
+> **Privacy:** cover the Wi-Fi password with a solid box before publishing. See the [privacy checklist](../../TOPIC-TEMPLATE.md#screenshot--privacy-checklist).
 
 `TODO` ![Step 3](images/gui/03-security-profile.png)
 
@@ -294,6 +309,9 @@ Open **Wireless**, double-click **wlan1**, and click **Scan**. Start the scan an
 #### Step 5 — Switch wlan1 to station mode
 
 **Wireless → wlan1 → Wireless** tab: Mode `station`, SSID your Wi-Fi name, Security Profile `uplink`. Click **OK** and enable the interface. Check **Wireless → Registration** for the upstream access point.
+
+> [!CAUTION]
+> **Privacy:** cover the access point MAC address and your SSID if it contains personal information with a solid box before publishing. See the [privacy checklist](../../TOPIC-TEMPLATE.md#screenshot--privacy-checklist).
 
 `TODO` ![Step 5](images/gui/05-station-connected.png)
 
@@ -351,7 +369,7 @@ Same checks as [Verify (CLI)](#verify-cli), using **Wireless → Registration**,
 
 - The default configuration is already an internet gateway when the internet arrives on ether1.
 - Moving the WAN to wireless means: take wlan1 out of the LAN, make it a station, give it a DHCP client, and cover it with NAT.
-- The configuration file for this topic must never contain a real Wi-Fi password.
+- The configuration file for this topic must never contain a real Wi-Fi password, SSID, or MAC address.
 
 ## References
 
