@@ -112,8 +112,7 @@ ssh admin@192.168.88.1
 
 Username `admin`; the password is empty, or the one printed on the device label. [1]
 
-> [!WARNING]
-> **Source needed:** confirm on the RouterOS [SSH page](https://manual.mikrotik.com/docs/management-tools/ssh/) that the SSH service is enabled by default and listens on port 22.
+The RouterOS SSH server is enabled by default and listens on TCP port 22. [6]
 
 `TODO` ![Step 2](images/cli/02-ssh-login.png)
 
@@ -234,6 +233,7 @@ Click **New Terminal**. This is the same RouterOS console used in Method A, reac
 | Default LAN address | `192.168.88.1/24` [5] |
 | Default user | `admin`, password empty or from the label [1] |
 | WinBox over IP | TCP 8291 [2] |
+| SSH | TCP 22, enabled by default [6] |
 | WinBox over MAC | Layer 2, UDP 20561 in Ethernet frames, for setup and recovery [3] |
 | CLI navigation | `/` top level, `..` up, Tab completes, F1 help [4] |
 | Safe mode | Ctrl+X or F4 [4] |
@@ -251,6 +251,7 @@ Click **New Terminal**. This is the same RouterOS console used in Method A, reac
 3. [RouterOS Manual — MAC server](https://manual.mikrotik.com/docs/management-tools/mac-server/)
 4. [RouterOS Manual — Console](https://manual.mikrotik.com/docs/management-tools/console/)
 5. [RouterOS Manual — Default configurations](https://manual.mikrotik.com/docs/getting-started/configuration-management/default-configurations/)
+6. [RouterOS Manual — SSH](https://manual.mikrotik.com/docs/management-tools/ssh/)
 
 ---
 
