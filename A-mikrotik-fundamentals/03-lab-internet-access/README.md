@@ -146,8 +146,7 @@ Note which interface list the masquerade rule uses (for example `out-interface-l
 
 `TODO` ![Step 1](images/cli/01-default-config-check.png)
 
-> [!WARNING]
-> **Source needed:** the default-configuration manual page describes NAT and the firewall in words but does not show the interface-list commands. [2] The output of this step is our evidence. `/system/default-configuration/print` shows the exact default script. [2]
+The hAP family uses the AP Router default configuration. [2] Its script creates the interface lists `WAN` and `LAN`, adds ether1 to `WAN` and the bridge to `LAN`, and adds a masquerade rule with `out-interface-list=WAN` and the comment `defconf: masquerade`. [12] `/system/default-configuration/print` shows the exact default script of your device. [2]
 
 #### Step 2 — Scan for the upstream Wi-Fi
 
@@ -384,6 +383,7 @@ Same checks as [Verify (CLI)](#verify-cli), using **Wireless → Registration**,
 9. [RouterOS CLI Reference — ip/firewall/nat](https://manual.mikrotik.com/docs/cli-reference/ip/firewall/nat/)
 10. [RouterOS Manual — Console](https://manual.mikrotik.com/docs/management-tools/console/)
 11. [RouterOS Manual — RouterOS configuration reset](https://manual.mikrotik.com/docs/getting-started/configuration-management/routeros-configuration-reset/)
+12. [RouterOS Manual — Default configurations, AP Router configuration preview (RouterMode.txt)](https://manual.mikrotik.com/assets/167706790_RouterMode.txt)
 
 ---
 
