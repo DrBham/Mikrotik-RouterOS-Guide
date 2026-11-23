@@ -28,8 +28,7 @@ This is the first topic in my RouterOS learning journal. I want to build a clear
 
 MikroTik is a company that develops networking hardware and the RouterOS software that runs on it. According to its company page, product development takes place in the EU. [1]
 
-> [!WARNING]
-> **Source needed:** founding year and headquarters city. The company page [1] does not state them; the linked company profile has not been checked yet.
+MikroTik was founded in 1996. [8] The company, SIA Mikrotīkls, is based in Riga, Latvia. [9]
 
 The name MikroTik is often used to refer to a router, but the company also develops switches, wireless devices, and the operating system used to manage network functions.
 
@@ -37,10 +36,7 @@ The name MikroTik is often used to refer to a router, but the company also devel
 
 RouterOS is MikroTik's stand-alone operating system, based on the Linux kernel, and it powers MikroTik hardware devices. Its features include routing, firewall, bandwidth management, wireless access point, hotspot gateway, and VPN server functions. [2]
 
-RouterBOARD is the name of MikroTik's hardware line; it is not another name for the operating system.
-
-> [!WARNING]
-> **Source needed:** an official page that defines RouterBOARD as MikroTik's hardware platform. [2] lists it only as a product category.
+RouterBOARD is the name of MikroTik's hardware line; it is not another name for the operating system. The RouterOS manual describes RouterBOARD devices as hardware with their own firmware, RouterBOOT, read from the `/system/routerboard` menu. [10] MikroTik product codes use RB as the short version of RouterBOARD. [11]
 
 | Component | What it means |
 | --- | --- |
@@ -122,6 +118,10 @@ This topic is a theory introduction. No configuration changes or new lab tests a
 5. [RouterOS Manual — Management Tools](https://manual.mikrotik.com/docs/management-tools/)
 6. [RouterOS Manual — Securing Your Router](https://manual.mikrotik.com/docs/getting-started/securing-your-router/)
 7. [RouterOS Manual — WinBox](https://manual.mikrotik.com/docs/management-tools/winbox/)
+8. [MikroTik — Company profile 2025/2026 (PDF), "History"](https://mt.lv/MT_profile)
+9. [MikroTik — About us, contact addresses](https://mikrotik.com/aboutus)
+10. [RouterOS Manual — RouterBOARD](https://manual.mikrotik.com/docs/hardware/routerboard/)
+11. [RouterOS Manual — Product Naming, "RouterBOARD (short version RB)"](https://manual.mikrotik.com/docs/hardware/product-naming/)
 
 ---
 
