@@ -4,8 +4,10 @@ Copy this structure into a new topic folder's `README.md`. Delete sections marke
 
 The guide is written for two kinds of readers:
 
-- **Beginners** read from top to bottom: why, theory, then practice.
+- **Beginners** read from top to bottom: theory and reasons first, then practice.
 - **Experienced readers** jump to **Quick Recap** for a refresher of the theory and commands.
+
+Practice order is fixed: **Method A — CLI** (every step screenshotted to the end) → **reset the router** → **Method B — WinBox** (every step screenshotted).
 
 ## Folder layout
 
@@ -14,16 +16,16 @@ NN-topic-name/
 ├── README.md
 ├── images/
 │   ├── topology.svg            # lab diagram (if needed)
-│   ├── gui/                    # Method A — WinBox screenshots
-│   │   ├── 01-open-ip-addresses.png
-│   │   └── 02-add-ip-address.png
-│   └── cli/                    # Method B — terminal screenshots
-│       ├── 01-ip-address-add.png
-│       └── 02-ip-address-print.png
+│   ├── cli/                    # Method A — terminal screenshots
+│   │   ├── 01-ip-address-add.png
+│   │   └── 02-ip-address-print.png
+│   └── gui/                    # Method B — WinBox screenshots
+│       ├── 01-open-ip-addresses.png
+│       └── 02-add-ip-address.png
 └── configuration.rsc           # (Practice only) final config, no secrets
 ```
 
-Screenshot names start with the step number they belong to, so `gui/03-…` and `cli/03-…` show the same step done two ways.
+Screenshot names start with the step number they belong to, so `cli/03-…` and `gui/03-…` show the same step done two ways.
 
 ## README sections
 
@@ -66,12 +68,7 @@ How this topic relates to earlier and later topics (one short paragraph or a dia
 | WinBox version | 4.x |
 | Topology | ![Topology](images/topology.svg) |
 
-## Method A — WinBox (GUI)    *(Practice only)*
-### Step 1 — …
-What to click and why.
-![Step 1](images/gui/01-….png)
-
-## Method B — CLI            *(Practice only)*
+## Method A — CLI            *(Practice only)*
 ### Step 1 — …
 ```routeros
 /ip/address/add address=192.168.88.1/24 interface=ether2
@@ -79,8 +76,21 @@ What to click and why.
 What each parameter means.
 ![Step 1](images/cli/01-….png)
 
-## Verification              *(Practice only)*
-Expected result, then the actual result from the lab (screenshot).
+### Verify (CLI)
+Expected result, then the actual output (screenshot).
+
+## Reset Before Method B      *(Practice only)*
+Return the router to the same starting state used at the beginning of Method A,
+so the WinBox walkthrough starts clean. State exactly which reset was used
+(full reset, or removing only this topic's entries) and screenshot it.
+
+## Method B — WinBox (GUI)    *(Practice only)*
+### Step 1 — …
+What to click and why.
+![Step 1](images/gui/01-….png)
+
+### Verify (WinBox)
+Expected result, then the actual result (screenshot).
 
 ## Troubleshooting           *(Practice only)*
 | Symptom | Likely cause | Check / fix |

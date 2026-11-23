@@ -6,7 +6,7 @@
 
 ![Level](https://img.shields.io/badge/Level-Beginner-16A34A) ![Type](https://img.shields.io/badge/Type-Practice-7C3AED) ![Status](https://img.shields.io/badge/Status-Draft-F59E0B)
 
-[Overview](#overview) · [Theory](#theory) · [Method A — WinBox](#method-a--winbox-gui) · [Method B — CLI](#method-b--cli) · [Verification](#verification) · [Quick Recap](#quick-recap) · [References](#references)
+[Overview](#overview) · [Theory](#theory) · [Method A — CLI](#method-a--cli) · [Method B — WinBox](#method-b--winbox-gui) · [Quick Recap](#quick-recap) · [References](#references)
 
 </div>
 
@@ -15,13 +15,13 @@
 
 ## Overview
 
-Before a router can be configured, we need a way to reach it. This topic connects a laptop to a MikroTik hAP lite, logs in with WinBox, and opens the RouterOS command line.
+Before a router can be configured, we need a way to reach it. This topic connects a laptop to a MikroTik hAP lite, logs in to the RouterOS command line over SSH, and then logs in again with WinBox.
 
 After this topic you can:
 
 - Connect a computer to the correct router port.
+- Log in to the RouterOS CLI over SSH and run read-only commands.
 - Find the router in WinBox and log in by MAC address or IP address.
-- Open the RouterOS CLI and run read-only commands.
 
 ## Why This Matters
 
@@ -86,57 +86,31 @@ A.01 What RouterOS is ──► A.02 How to log in ──► A.03 CLI basics ─
 
 ![Lab topology](images/topology.svg)
 
-## Method A — WinBox (GUI)
+## Method A — CLI
 
-### Step 1 — Download WinBox
+In this method we reach the RouterOS command line directly over SSH, without WinBox. The console is available over serial, Telnet, SSH, or the WinBox terminal. [4]
 
-Download WinBox from the official link `https://mt.lv/winbox`. On Windows it is a ZIP file containing `WinBox.exe`; no installation is needed. [1]
-
-`TODO` ![Step 1](images/gui/01-download-winbox.png)
-
-### Step 2 — Connect the cable
+### Step 1 — Connect the cable
 
 Connect the laptop to **ether2** (any port except ether1) and power on the router. Wait about one minute. [1]
 
-`TODO` photo or screenshot of the link status in Windows: ![Step 2](images/gui/02-ethernet-connected.png)
+With the default configuration, the LAN bridge has the address `192.168.88.1/24` and runs a DHCP server, so the laptop should receive an address in `192.168.88.0/24` automatically. [5]
 
-### Step 3 — Find the router in Neighbors
+```powershell
+ipconfig
+```
 
-Open WinBox and select the **Neighbors** tab. The router should appear with its MAC address, IP address, identity, and RouterOS version. [2]
+`TODO` ![Step 1](images/cli/01-laptop-ip-address.png)
 
-`TODO` ![Step 3](images/gui/03-neighbors-list.png)
+### Step 2 — Log in over SSH
 
-### Step 4 — Log in
-
-1. Click the router's **MAC address** (or its IP address if it shows a valid `192.168.88.1`). [1]
-2. Login: `admin`. Password: empty, or the password from the device label. [1]
-3. Click **Connect**.
-
-`TODO` ![Step 4](images/gui/04-login.png)
-
-### Step 5 — Check the connection type and router information
-
-Open **System → Resources** to see the RouterOS version and board name.
-
-`TODO` ![Step 5](images/gui/05-system-resources.png)
-
-## Method B — CLI
-
-The CLI can be reached from WinBox or over SSH. The console is available over serial, Telnet, SSH, or the WinBox terminal. [4]
-
-### Step 1 — Open a terminal from WinBox
-
-Log in with WinBox (Method A, steps 1–4) and click **New Terminal**.
-
-`TODO` ![Step 1](images/cli/01-new-terminal.png)
-
-### Step 2 — Or connect over SSH from Windows
-
-If the router has an IP address you can reach, open PowerShell and run:
+Open PowerShell on the laptop and run:
 
 ```powershell
 ssh admin@192.168.88.1
 ```
+
+Username `admin`; the password is empty, or the one printed on the device label. [1]
 
 > [!WARNING]
 > **Source needed:** confirm on the RouterOS [SSH page](https://manual.mikrotik.com/docs/management-tools/ssh/) that the SSH service is enabled by default and listens on port 22.
@@ -171,18 +145,77 @@ print
 /
 ```
 
-Try pressing **Tab** twice after `/ip/` to list the submenus. [4]
+Press **Tab** twice after `/ip/` to list the submenus, and **F1** for help. [4]
 
 `TODO` ![Step 4](images/cli/04-cli-navigation.png)
 
-## Verification
+### Step 5 — Log out
+
+Type `/quit`, or press Ctrl+D on an empty prompt. [4]
+
+`TODO` ![Step 5](images/cli/05-logout.png)
+
+### Verify (CLI)
 
 | Check | Expected result | Actual result |
 | --- | --- | --- |
-| Router appears in Neighbors | MAC address and identity listed | `TODO` |
-| Login succeeds | WinBox main window opens | `TODO` |
-| `/system/resource/print` | Shows `board-name: RB941-2nD` and the RouterOS version | `TODO` |
-| `/ip/address/print` | `192.168.88.1/24` on the LAN bridge (default configuration) [5] | `TODO` |
+| Laptop IP address | An address in `192.168.88.0/24` [5] | `TODO` |
+| SSH login | Prompt similar to `[admin@MikroTik] >` [4] | `TODO` |
+| `/system/resource/print` | `board-name: RB941-2nD` and the RouterOS version | `TODO` |
+| `/ip/address/print` | `192.168.88.1/24` on the LAN bridge [5] | `TODO` |
+
+## Reset Before Method B
+
+Method A only read information, so the router is still in its starting state. **No reset is needed for this topic.** Later topics that change the configuration will reset here before Method B.
+
+## Method B — WinBox (GUI)
+
+### Step 1 — Download WinBox
+
+Download WinBox from the official link `https://mt.lv/winbox`. On Windows it is a ZIP file containing `WinBox.exe`; no installation is needed. [1]
+
+`TODO` ![Step 1](images/gui/01-download-winbox.png)
+
+### Step 2 — Find the router in Neighbors
+
+Keep the laptop connected to ether2. Open WinBox and select the **Neighbors** tab. The router should appear with its MAC address, IP address, identity, and RouterOS version. [2]
+
+`TODO` ![Step 2](images/gui/02-neighbors-list.png)
+
+### Step 3 — Log in by MAC address
+
+1. Click the router's **MAC address**. [1]
+2. Login: `admin`. Password: empty, or the password from the device label. [1]
+3. Click **Connect**.
+
+`TODO` ![Step 3](images/gui/03-login-mac.png)
+
+### Step 4 — Log out and log in by IP address
+
+Disconnect, then log in again using `192.168.88.1`. This is the connection type the WinBox manual recommends for daily use. [2]
+
+`TODO` ![Step 4](images/gui/04-login-ip.png)
+
+### Step 5 — Check router information
+
+Open **System → Resources** to see the RouterOS version and board name. This shows the same information as `/system/resource/print` in Method A.
+
+`TODO` ![Step 5](images/gui/05-system-resources.png)
+
+### Step 6 — Open the CLI from WinBox
+
+Click **New Terminal**. This is the same RouterOS console used in Method A, reached through WinBox. [4]
+
+`TODO` ![Step 6](images/gui/06-new-terminal.png)
+
+### Verify (WinBox)
+
+| Check | Expected result | Actual result |
+| --- | --- | --- |
+| Router appears in Neighbors | MAC address and identity listed [2] | `TODO` |
+| MAC login | WinBox main window opens | `TODO` |
+| IP login | WinBox main window opens | `TODO` |
+| System → Resources | Same board name and version as Method A | `TODO` |
 
 ## Troubleshooting
 
@@ -209,7 +242,7 @@ Try pressing **Tab** twice after `/ip/` to list the submenus. [4]
 
 - Connect the laptop to a LAN port, not ether1.
 - Prefer IP connections; keep MAC connections for first setup and recovery.
-- WinBox and the CLI manage the same router; they are two views of one configuration.
+- The CLI and WinBox manage the same router; they are two views of one configuration.
 
 ## References
 

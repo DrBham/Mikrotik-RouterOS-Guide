@@ -92,17 +92,17 @@ The roadmap contains 17 chapters, arranged from foundational concepts to more ad
 
 Each topic has its own folder. The guide is written for **beginners** who are new to networking, and for **experienced readers** who want to refresh theory and commands quickly. Every topic therefore explains *why* it matters and *how it connects* to other topics, and ends with a short **Quick Recap**.
 
-Practical tutorials show the same configuration twice. Both walkthroughs reach the same result, and both are documented with screenshots from the lab, so readers can follow whichever tool they prefer.
+Every topic starts with the theory: what the feature is, why we use it, and how it relates to other topics. Practical tutorials then show the same configuration twice, in a fixed order: first the complete CLI walkthrough, then a reset of the router to the starting state, then the complete WinBox walkthrough. Both are documented step by step with screenshots from the lab.
 
 <table>
 <tr>
 <td width="50%" valign="top">
-<h3>🖥️ Method A — WinBox (GUI)</h3>
-Step-by-step graphical configuration with original WinBox screenshots for each step.
+<h3>⌨️ Method A — RouterOS CLI</h3>
+Terminal commands, an explanation of each parameter, and a screenshot of every command and its output.
 </td>
 <td width="50%" valign="top">
-<h3>⌨️ Method B — RouterOS CLI</h3>
-The equivalent terminal commands, an explanation of each parameter, and a screenshot of the command and its output.
+<h3>🖥️ Method B — WinBox (GUI)</h3>
+After resetting the router, the same configuration again with WinBox, with an original screenshot for each step.
 </td>
 </tr>
 <tr>
@@ -117,9 +117,9 @@ A topic-specific <code>configuration.rsc</code> file, reviewed for sensitive inf
 </tr>
 </table>
 
-Apply only one method on your router; applying both creates duplicate entries.
+Readers who only want one method can skip the other. If you follow both, reset the router between them as shown in the tutorial; applying both on top of each other creates duplicate entries.
 
-**Learning workflow:** Understand → Plan → Implement → Verify → Document → Publish
+**Topic flow:** Theory & reasons → CLI configuration → Verify → Reset → WinBox configuration → Verify → Recap
 
 Theory topics contain explanations and illustrations without configuration files. See [TOPIC-TEMPLATE.md](TOPIC-TEMPLATE.md) for the full section layout and [ROADMAP.md](ROADMAP.md) for every planned topic.
 
@@ -143,21 +143,21 @@ Mikrotik-RouterOS-Guide/
 │       ├── README.md
 │       └── images/
 │           ├── topology.svg
-│           ├── gui/
-│           └── cli/
+│           ├── cli/
+│           └── gui/
 └── B-network-fundamentals/
     └── 11-static-ip-configuration/
         ├── README.md
         ├── images/
-        │   ├── gui/01-open-ip-addresses.png
-        │   └── cli/01-ip-address-add.png
+        │   ├── cli/01-ip-address-add.png
+        │   └── gui/01-open-ip-addresses.png
         └── configuration.rsc
 ```
 
 | Component | Purpose |
 | :--- | :--- |
 | `README.md` | Concept, configuration steps, verification, and troubleshooting. |
-| `images/gui/`, `images/cli/` | Original lab screenshots for the WinBox and CLI walkthroughs. |
+| `images/cli/`, `images/gui/` | Original lab screenshots for the CLI and WinBox walkthroughs. |
 | `configuration.rsc` | Relevant RouterOS configuration for the practical topic. |
 
 ## Lab Environment
