@@ -16,7 +16,7 @@ This file maps every planned topic folder, its type, and the sources each topic 
 
 The first three chapters are meant to be followed in order:
 
-1. **Chapter A** teaches what RouterOS is and how to log in to it.
+1. **Chapter A** teaches what RouterOS is, how to log in to it, and how to give the lab router internet access (A.03) so the guide stays reachable while practising.
 2. **Chapter B** teaches the network theory needed to understand what the router is doing.
 3. **Chapter C** uses A and B to connect a MikroTik router to the internet.
 
@@ -41,11 +41,12 @@ Statements that cannot yet be traced to a source are marked `> [!WARNING] Source
 | :-- | :--- | :--- | :---: | :--- |
 | 01 | `01-introduction-to-mikrotik` | Theory | 📝 | mikrotik.com/software, CHR Installation, Management Tools |
 | 02 | `02-connecting-to-routeros-using-winbox` | Practice | 📝 | WinBox, MAC server, First Time Configuration (Accessing the router) |
-| 03 | `03-routeros-cli-basics` | Practice | ⏳ | Console |
-| 04 | `04-default-configuration-and-reset` | Theory + Practice | ⏳ | Default configurations, RouterOS configuration reset |
-| 05 | `05-users-and-basic-router-security` | Practice | ⏳ | Securing your router, User management |
-| 06 | `06-backup-export-and-restore` | Practice | ⏳ | Configuration management (backup/export) |
-| 07 | `07-upgrading-routeros-and-packages` | Practice | ⏳ | Upgrading and installation, Packages |
+| 03 | `03-lab-internet-access` | Theory + Practice | 📝 | Default configurations, Wireless Interface, DHCP Client, First Time Configuration |
+| 04 | `04-routeros-cli-basics` | Practice | ⏳ | Console |
+| 05 | `05-default-configuration-and-reset` | Theory + Practice | ⏳ | Default configurations, RouterOS configuration reset |
+| 06 | `06-users-and-basic-router-security` | Practice | ⏳ | Securing your router, User management |
+| 07 | `07-backup-export-and-restore` | Practice | ⏳ | Configuration management (backup/export) |
+| 08 | `08-upgrading-routeros-and-packages` | Practice | ⏳ | Upgrading and installation, Packages |
 
 ## B — Network Fundamentals & IP Addressing
 

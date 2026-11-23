@@ -69,9 +69,9 @@ The CLI prompt shows the user, router identity, and current menu path, for examp
 ### How it connects
 
 ```text
-A.01 What RouterOS is ──► A.02 How to log in ──► A.03 CLI basics ──► C. Connect the router to the internet
+A.01 What RouterOS is ──► A.02 How to log in ──► A.03 Lab internet access ──► A.04 CLI basics
                                │
-                               └── MAC access is the recovery path when IP settings break (used again in A.04 reset)
+                               └── MAC access is the recovery path when IP settings break (used again in A.05 reset)
 ```
 
 ## Lab Environment
@@ -82,27 +82,14 @@ A.01 What RouterOS is ──► A.02 How to log in ──► A.03 CLI basics ─
 | RouterOS version | `TODO` (from `/system/resource/print`) |
 | WinBox version | `TODO` (WinBox v4) |
 | Computer | Lenovo LOQ 15IAX9, Windows 11 |
-| Connection | Laptop Ethernet ↔ hAP lite **ether2**; home router LAN port ↔ hAP lite **ether1** |
+| Connection | Laptop Ethernet ↔ hAP lite **ether2** |
 | Starting state | Factory default configuration (reset with the reset button) |
 
 ![Lab topology](images/topology.svg)
 
-`TODO` update the topology to show the home router on ether1.
+### Internet access during this topic
 
-### Keeping internet access while following this guide
-
-When a laptop is connected to the MikroTik by cable, it may stop using Wi-Fi for internet access. To keep this guide open while you practise, connect the MikroTik's **ether1** to a LAN port of your home router or ISP modem. The official setup guide uses ether1 for the ISP connection. [1]
-
-No configuration is needed for this. On devices with a default configuration, ether1 is the WAN port with a DHCP client, NAT and the firewall enabled; the LAN bridge has `192.168.88.1/24` with a DHCP server and DNS. [5] The laptop on ether2 therefore receives an address from the MikroTik and reaches the internet through it.
-
-```text
-Internet ── Home router / ISP modem ── ether1 [hAP lite] ether2 ── Laptop
-                (gives the MikroTik an IP          (gives the laptop 192.168.88.x)
-                 address by DHCP)
-```
-
-> [!NOTE]
-> This only works with the **default configuration**. Chapter C explains each part of it (DHCP client, NAT, DNS, DHCP server) and builds it by hand from an empty configuration.
+This topic does not need the router to be online. If your laptop loses internet access when the cable is connected, open this guide on your phone for now. The next topic, [A.03 — Lab Internet Access](../03-lab-internet-access/README.md), gives the lab router an internet connection so that later topics can be followed on the laptop.
 
 ### Starting state: reset to defaults
 
@@ -255,8 +242,6 @@ Click **New Terminal**. This is the same RouterOS console used in Method A, reac
 | IP shows `0.0.0.0` or IP login fails | No usable IP on the router, or laptop in a different subnet | Log in with the MAC address. [1] |
 | MAC login drops or is unstable | MAC sessions use broadcasts and are not fully reliable [2] | Use the MAC session only to set an IP address, then reconnect by IP. |
 | Login rejected with empty password | Device has a password on its label | Use the password printed on the label. [1] |
-| Laptop has no internet through the MikroTik | ether1 not connected to the home router, or ether1 has no address yet | Run `/ip/dhcp-client/print`; the status should be `bound`. [1] |
-| Laptop gets `192.168.88.x` but home network also uses `192.168.88.0/24` | Same subnet on both sides of the router | `TODO` note: covered in Chapter C. |
 
 ## Quick Recap
 
@@ -289,6 +274,6 @@ Click **New Terminal**. This is the same RouterOS console used in Method A, reac
 
 ---
 
-**Previous:** [A.01 — Introduction to MikroTik](../01-introduction-to-mikrotik/README.md) · **Next:** A.03 — RouterOS CLI Basics (planned)
+**Previous:** [A.01 — Introduction to MikroTik](../01-introduction-to-mikrotik/README.md) · **Next:** [A.03 — Lab Internet Access](../03-lab-internet-access/README.md)
 
 [Back to the main learning journal](../../README.md)

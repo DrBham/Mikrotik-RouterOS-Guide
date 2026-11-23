@@ -191,6 +191,7 @@ Each practical tutorial records its actual RouterOS version, device, topology, a
 | Detailed roadmap and topic template | ✅ Completed |
 | A.01 — Introduction to MikroTik | 📝 Draft |
 | A.02 — Connecting to RouterOS Using WinBox | 📝 Draft, waiting for lab screenshots |
+| A.03 — Lab Internet Access (wired / wireless uplink) | 📝 Draft, waiting for lab screenshots |
 | Chapter B — Network Fundamentals | ⏳ Planned |
 | Chapter C — Basic Internet Connectivity | ⏳ Planned |
 
