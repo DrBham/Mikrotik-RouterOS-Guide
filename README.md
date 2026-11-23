@@ -86,21 +86,23 @@ The roadmap contains 17 chapters, arranged from foundational concepts to more ad
 </tr>
 </table>
 
-> **Roadmap note:** Chapters and topics represent planned coverage. Tutorials will be added as the author studies, implements, and reviews them.
+> **Roadmap note:** Chapters and topics represent planned coverage. Tutorials will be added as the author studies, implements, and reviews them. Chapter folders use letters (01 = `A-…`, 02 = `B-…`, and so on). The topic-by-topic plan is in [ROADMAP.md](ROADMAP.md).
 
 ## Tutorial Format
 
-Each topic has its own folder. Practical tutorials provide two alternative configuration methods, followed by verification and troubleshooting.
+Each topic has its own folder. The guide is written for **beginners** who are new to networking, and for **experienced readers** who want to refresh theory and commands quickly. Every topic therefore explains *why* it matters and *how it connects* to other topics, and ends with a short **Quick Recap**.
+
+Practical tutorials show the same configuration twice. Both walkthroughs reach the same result, and both are documented with screenshots from the lab, so readers can follow whichever tool they prefer.
 
 <table>
 <tr>
 <td width="50%" valign="top">
-<h3>🖥️ Method A — WinBox</h3>
-Step-by-step graphical configuration with original screenshots from the lab. Each image illustrates the relevant action or configuration state.
+<h3>🖥️ Method A — WinBox (GUI)</h3>
+Step-by-step graphical configuration with original WinBox screenshots for each step.
 </td>
 <td width="50%" valign="top">
 <h3>⌨️ Method B — RouterOS CLI</h3>
-Equivalent terminal commands with explanations of their purpose and parameters. Choose either method; do not repeat both on the same configuration.
+The equivalent terminal commands, an explanation of each parameter, and a screenshot of the command and its output.
 </td>
 </tr>
 <tr>
@@ -115,9 +117,15 @@ A topic-specific <code>configuration.rsc</code> file, reviewed for sensitive inf
 </tr>
 </table>
 
+Apply only one method on your router; applying both creates duplicate entries.
+
 **Learning workflow:** Understand → Plan → Implement → Verify → Document → Publish
 
-Conceptual topics contain explanations and illustrations where useful, without unnecessary configuration files.
+Theory topics contain explanations and illustrations without configuration files. See [TOPIC-TEMPLATE.md](TOPIC-TEMPLATE.md) for the full section layout and [ROADMAP.md](ROADMAP.md) for every planned topic.
+
+## Sources
+
+Theory is based on the official [RouterOS Manual](https://manual.mikrotik.com/), MikroTik product pages, and IETF RFCs. Each statement in a topic is numbered against that topic's **References** list. My own lab observations are labelled as such and are not presented as general facts.
 
 ## Repository Structure
 
@@ -126,25 +134,30 @@ The following example illustrates the planned organization. Topic folders are cr
 ```text
 Mikrotik-RouterOS-Guide/
 ├── README.md
-├── 01-mikrotik-fundamentals/
+├── ROADMAP.md
+├── TOPIC-TEMPLATE.md
+├── A-mikrotik-fundamentals/
 │   ├── 01-introduction-to-mikrotik/
 │   │   └── README.md
-│   └── 02-routeros-vs-routerboard/
-│       └── README.md
-└── 02-network-fundamentals/
-    └── 08-static-ip-configuration/
+│   └── 02-connecting-to-routeros-using-winbox/
+│       ├── README.md
+│       └── images/
+│           ├── topology.svg
+│           ├── gui/
+│           └── cli/
+└── B-network-fundamentals/
+    └── 11-static-ip-configuration/
         ├── README.md
         ├── images/
-        │   ├── 01-open-ip-addresses.png
-        │   ├── 02-add-ip-address.png
-        │   └── 03-verify-configuration.png
+        │   ├── gui/01-open-ip-addresses.png
+        │   └── cli/01-ip-address-add.png
         └── configuration.rsc
 ```
 
 | Component | Purpose |
 | :--- | :--- |
 | `README.md` | Concept, configuration steps, verification, and troubleshooting. |
-| `images/` | Original lab screenshots embedded in the tutorial. |
+| `images/gui/`, `images/cli/` | Original lab screenshots for the WinBox and CLI walkthroughs. |
 | `configuration.rsc` | Relevant RouterOS configuration for the practical topic. |
 
 ## Lab Environment
@@ -175,9 +188,11 @@ Each practical tutorial records its actual RouterOS version, device, topology, a
 | Milestone | Status |
 | :--- | :--- |
 | Repository initialization | ✅ Completed |
-| Chapter 01 — MikroTik Fundamentals | ⏳ Planned |
-| First topic — Introduction to MikroTik | ⏳ Planned |
-| Practical configuration tutorials | ⏳ Planned |
+| Detailed roadmap and topic template | ✅ Completed |
+| A.01 — Introduction to MikroTik | 📝 Draft |
+| A.02 — Connecting to RouterOS Using WinBox | 📝 Draft, waiting for lab screenshots |
+| Chapter B — Network Fundamentals | ⏳ Planned |
+| Chapter C — Basic Internet Connectivity | ⏳ Planned |
 
 ## Documentation & Safety
 
@@ -187,7 +202,8 @@ Practical guides are based on actual lab evidence and original explanations. Unt
 
 | Resource | Description |
 | :--- | :--- |
-| [MikroTik RouterOS Documentation](https://manual.mikrotik.com/) | Primary technical reference. |
+| [RouterOS Manual](https://manual.mikrotik.com/) | Primary technical reference (current official manual). |
+| [RFC Editor](https://www.rfc-editor.org/) | Protocol standards used for general networking theory. |
 | [MikroTik Official Website](https://mikrotik.com/) | Product information and official resources. |
 
 ---
