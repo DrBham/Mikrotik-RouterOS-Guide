@@ -9,7 +9,7 @@
 ![MikroTik](https://img.shields.io/badge/MikroTik-RouterOS-293239?style=flat-square&logo=mikrotik&logoColor=white)
 ![Learning](https://img.shields.io/badge/Learning-Beginner%20to%20Advanced-2563EB?style=flat-square)
 ![Documentation](https://img.shields.io/badge/Documentation-English-0D9488?style=flat-square)
-![Status](https://img.shields.io/badge/Status-Getting%20Started-F59E0B?style=flat-square)
+![Status](https://img.shields.io/badge/Status-Drafting%20Labs-F59E0B?style=flat-square)
 
 [About](#about-this-project) · [Roadmap](#learning-roadmap) · [Tutorials](#tutorial-format) · [Lab](#lab-environment) · [Progress](#learning-progress)
 
@@ -185,15 +185,27 @@ Each practical tutorial records its actual RouterOS version, device, topology, a
 
 ## Learning Progress
 
-| Milestone | Status |
-| :--- | :--- |
-| Repository initialization | ✅ Completed |
-| Detailed roadmap and topic template | ✅ Completed |
-| A.01 — Introduction to MikroTik | 📝 Draft |
-| A.02 — Connecting to RouterOS Using WinBox | 📝 Draft, waiting for lab screenshots |
-| A.03 — Lab Internet Access (wired / wireless uplink) | 📝 Draft, waiting for lab screenshots |
-| Chapter B — Network Fundamentals | ⏳ Planned |
-| Chapter C — Basic Internet Connectivity | ⏳ Planned |
+| Chapter | Topics | Status |
+| :--- | :---: | :--- |
+| [A — MikroTik Fundamentals](A-mikrotik-fundamentals/) | 8 | 📝 Drafts written; waiting for lab screenshots |
+| [B — Network Fundamentals & IP Addressing](B-network-fundamentals/) | 11 | 📝 Drafts written; waiting for lab screenshots |
+| [C — Basic Internet Connectivity](C-basic-internet-connectivity/) | 7 | 📝 Drafts written; waiting for lab screenshots |
+| [D — Interface & Bridge](D-interface-and-bridge/) | 4 | 📝 Drafts written; waiting for lab screenshots |
+| [E — DHCP & Network Services](E-dhcp-and-network-services/) | 6 | 📝 Drafts written; waiting for lab screenshots |
+| [F — Wireless Networking](F-wireless-networking/) | 4 | 📝 Drafts written; waiting for lab screenshots |
+| [G — Routing Fundamentals](G-routing-fundamentals/) | 2 | 📝 Drafts written; waiting for lab screenshots |
+| [H — Firewall & Network Security](H-firewall-and-network-security/) | 4 | 📝 Drafts written; waiting for lab screenshots |
+| [I — Network Address Translation (NAT)](I-network-address-translation/) | 3 | 📝 Drafts written; waiting for lab screenshots |
+| [J — VLAN & Network Segmentation](J-vlan-and-network-segmentation/) | 4 | 📝 Drafts written; waiting for lab screenshots |
+| [K — Bandwidth Management & QoS](K-bandwidth-management-and-qos/) | 4 | 📝 Drafts written; waiting for lab screenshots |
+| [L — PPP & Hotspot](L-ppp-and-hotspot/) | 3 | 📝 Drafts written; waiting for lab screenshots |
+| [M — VPN & Network Tunneling](M-vpn-and-network-tunneling/) | 6 | 📝 Drafts written; waiting for lab screenshots |
+| [N — Load Balancing & High Availability](N-load-balancing-and-high-availability/) | 4 | 📝 Drafts written; waiting for lab screenshots |
+| [O — Dynamic Routing](O-dynamic-routing/) | 4 | 📝 Drafts written; waiting for lab screenshots |
+| [P — IPv6 Networking](P-ipv6-networking/) | 4 | 📝 Drafts written; waiting for lab screenshots |
+| Q — Network Monitoring & Troubleshooting | 0 | ⏳ Planned |
+
+Every draft contains the theory with references, and the CLI and WinBox walkthroughs with `TODO` placeholders for lab screenshots and results. A topic becomes ✅ when its lab evidence is added.
 
 ## Documentation & Safety
 
