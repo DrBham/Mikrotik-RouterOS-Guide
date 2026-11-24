@@ -46,7 +46,7 @@ As the project grows, I hope these notes and practical guides will also help oth
 
 ## Learning Roadmap
 
-The roadmap contains 17 chapters, arranged from foundational concepts to more advanced networking topics. The categories below are a learning guide, not an official certification syllabus. Some advanced topics appear in earlier chapters and will be approached according to their prerequisites.
+The roadmap contains 17 chapters plus a set of capstone projects, arranged from foundational concepts to more advanced networking topics. The categories below are a learning guide, not an official certification syllabus. Some advanced topics appear in earlier chapters and will be approached according to their prerequisites.
 
 <table>
 <tr>
@@ -76,7 +76,8 @@ The roadmap contains 17 chapters, arranged from foundational concepts to more ad
 <b>14</b> — Load Balancing &amp; High Availability<br>
 <b>15</b> — Dynamic Routing<br>
 <b>16</b> — IPv6 Networking<br>
-<b>17</b> — Network Monitoring &amp; Troubleshooting
+<b>17</b> — Network Monitoring &amp; Troubleshooting<br>
+<b>18</b> — Capstone Projects (planned)
 </td>
 </tr>
 <tr>
@@ -190,20 +191,21 @@ Each practical tutorial records its actual RouterOS version, device, topology, a
 | [A — MikroTik Fundamentals](A-mikrotik-fundamentals/) | 8 | 📝 Drafts written; waiting for lab screenshots |
 | [B — Network Fundamentals & IP Addressing](B-network-fundamentals/) | 11 | 📝 Drafts written; waiting for lab screenshots |
 | [C — Basic Internet Connectivity](C-basic-internet-connectivity/) | 7 | 📝 Drafts written; waiting for lab screenshots |
-| [D — Interface & Bridge](D-interface-and-bridge/) | 4 | 📝 Drafts written; waiting for lab screenshots |
-| [E — DHCP & Network Services](E-dhcp-and-network-services/) | 6 | 📝 Drafts written; waiting for lab screenshots |
-| [F — Wireless Networking](F-wireless-networking/) | 4 | 📝 Drafts written; waiting for lab screenshots |
+| [D — Interface & Bridge](D-interface-and-bridge/) | 5 | 📝 Drafts written; waiting for lab screenshots |
+| [E — DHCP & Network Services](E-dhcp-and-network-services/) | 8 | 📝 Drafts written; waiting for lab screenshots |
+| [F — Wireless Networking](F-wireless-networking/) | 5 | 📝 Drafts written; waiting for lab screenshots |
 | [G — Routing Fundamentals](G-routing-fundamentals/) | 2 | 📝 Drafts written; waiting for lab screenshots |
-| [H — Firewall & Network Security](H-firewall-and-network-security/) | 4 | 📝 Drafts written; waiting for lab screenshots |
+| [H — Firewall & Network Security](H-firewall-and-network-security/) | 5 | 📝 Drafts written; waiting for lab screenshots |
 | [I — Network Address Translation (NAT)](I-network-address-translation/) | 3 | 📝 Drafts written; waiting for lab screenshots |
 | [J — VLAN & Network Segmentation](J-vlan-and-network-segmentation/) | 4 | 📝 Drafts written; waiting for lab screenshots |
-| [K — Bandwidth Management & QoS](K-bandwidth-management-and-qos/) | 4 | 📝 Drafts written; waiting for lab screenshots |
+| [K — Bandwidth Management & QoS](K-bandwidth-management-and-qos/) | 5 | 📝 Drafts written; waiting for lab screenshots |
 | [L — PPP & Hotspot](L-ppp-and-hotspot/) | 3 | 📝 Drafts written; waiting for lab screenshots |
 | [M — VPN & Network Tunneling](M-vpn-and-network-tunneling/) | 6 | 📝 Drafts written; waiting for lab screenshots |
 | [N — Load Balancing & High Availability](N-load-balancing-and-high-availability/) | 4 | 📝 Drafts written; waiting for lab screenshots |
 | [O — Dynamic Routing](O-dynamic-routing/) | 4 | 📝 Drafts written; waiting for lab screenshots |
 | [P — IPv6 Networking](P-ipv6-networking/) | 4 | 📝 Drafts written; waiting for lab screenshots |
 | [Q — Network Monitoring & Troubleshooting](Q-network-monitoring-and-troubleshooting/) | 6 | 📝 Drafts written; waiting for lab screenshots |
+| [R — Capstone Projects](R-capstone-projects/) | 5 | 🗂️ Planned: project briefs only |
 
 Every draft contains the theory with references, and the CLI and WinBox walkthroughs with `TODO` placeholders for lab screenshots and results. A topic becomes ✅ when its lab evidence is added.
 

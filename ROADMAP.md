@@ -92,6 +92,7 @@ All topics below are drafted (📝). Sources are listed in each topic's Referenc
 | 02 | [`02-bridge-ports-and-host-table`](D-interface-and-bridge/02-bridge-ports-and-host-table/README.md) | 📝 |
 | 03 | [`03-spanning-tree-protocol`](D-interface-and-bridge/03-spanning-tree-protocol/README.md) | 📝 |
 | 04 | [`04-port-mirroring-with-the-switch-chip`](D-interface-and-bridge/04-port-mirroring-with-the-switch-chip/README.md) | 📝 |
+| 05 | [`05-bonding`](D-interface-and-bridge/05-bonding/README.md) | 📝 |
 
 ### E — DHCP & Network Services
 
@@ -103,6 +104,8 @@ All topics below are drafted (📝). Sources are listed in each topic's Referenc
 | 04 | [`04-ntp-clock-and-identity`](E-dhcp-and-network-services/04-ntp-clock-and-identity/README.md) | 📝 |
 | 05 | [`05-ip-cloud-and-ddns`](E-dhcp-and-network-services/05-ip-cloud-and-ddns/README.md) | 📝 |
 | 06 | [`06-scheduler-and-scripts`](E-dhcp-and-network-services/06-scheduler-and-scripts/README.md) | 📝 |
+| 07 | [`07-dns-adlist`](E-dhcp-and-network-services/07-dns-adlist/README.md) | 📝 |
+| 08 | [`08-back-to-home`](E-dhcp-and-network-services/08-back-to-home/README.md) | 📝 |
 
 ### F — Wireless Networking
 
@@ -112,6 +115,7 @@ All topics below are drafted (📝). Sources are listed in each topic's Referenc
 | 02 | [`02-wireless-security-profiles`](F-wireless-networking/02-wireless-security-profiles/README.md) | 📝 |
 | 03 | [`03-access-list-and-connect-list`](F-wireless-networking/03-access-list-and-connect-list/README.md) | 📝 |
 | 04 | [`04-virtual-ap-guest-network`](F-wireless-networking/04-virtual-ap-guest-network/README.md) | 📝 |
+| 05 | [`05-capsman-legacy`](F-wireless-networking/05-capsman-legacy/README.md) | 📝 |
 
 ### G — Routing Fundamentals
 
@@ -128,6 +132,7 @@ All topics below are drafted (📝). Sources are listed in each topic's Referenc
 | 02 | [`02-protecting-the-router`](H-firewall-and-network-security/02-protecting-the-router/README.md) | 📝 |
 | 03 | [`03-protecting-the-lan`](H-firewall-and-network-security/03-protecting-the-lan/README.md) | 📝 |
 | 04 | [`04-address-lists-and-raw-rules`](H-firewall-and-network-security/04-address-lists-and-raw-rules/README.md) | 📝 |
+| 05 | [`05-brute-force-protection`](H-firewall-and-network-security/05-brute-force-protection/README.md) | 📝 |
 
 ### I — Network Address Translation (NAT)
 
@@ -154,6 +159,7 @@ All topics below are drafted (📝). Sources are listed in each topic's Referenc
 | 02 | [`02-simple-queues`](K-bandwidth-management-and-qos/02-simple-queues/README.md) | 📝 |
 | 03 | [`03-pcq-fair-sharing`](K-bandwidth-management-and-qos/03-pcq-fair-sharing/README.md) | 📝 |
 | 04 | [`04-queue-tree-with-mangle`](K-bandwidth-management-and-qos/04-queue-tree-with-mangle/README.md) | 📝 |
+| 05 | [`05-kid-control`](K-bandwidth-management-and-qos/05-kid-control/README.md) | 📝 |
 
 ### L — PPP & Hotspot
 
@@ -212,3 +218,14 @@ All topics below are drafted (📝). Sources are listed in each topic's Referenc
 | 05 | [`05-packet-sniffer-and-wireshark`](Q-network-monitoring-and-troubleshooting/05-packet-sniffer-and-wireshark/README.md) | 📝 |
 | 06 | [`06-bandwidth-test`](Q-network-monitoring-and-troubleshooting/06-bandwidth-test/README.md) | 📝 |
 
+## R — Capstone Projects
+
+Projects that combine several chapters into one complete network. For now each folder holds the project brief (🗂️); the full build is added after the topics it uses have their lab evidence.
+
+| # | Folder | Status |
+| :-- | :--- | :---: |
+| 01 | [`01-complete-home-network`](R-capstone-projects/01-complete-home-network/README.md) | 🗂️ |
+| 02 | [`02-small-office-network`](R-capstone-projects/02-small-office-network/README.md) | 🗂️ |
+| 03 | [`03-community-wifi-hotspot`](R-capstone-projects/03-community-wifi-hotspot/README.md) | 🗂️ |
+| 04 | [`04-dual-isp-office`](R-capstone-projects/04-dual-isp-office/README.md) | 🗂️ |
+| 05 | [`05-two-sites-with-dynamic-routing`](R-capstone-projects/05-two-sites-with-dynamic-routing/README.md) | 🗂️ |
