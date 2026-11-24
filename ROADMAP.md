@@ -203,4 +203,12 @@ All topics below are drafted (📝). Sources are listed in each topic's Referenc
 
 ### Q — Network Monitoring & Troubleshooting
 
-⏳ Planned.
+| # | Folder | Status |
+| :-- | :--- | :---: |
+| 01 | [`01-logs-and-remote-syslog`](Q-network-monitoring-and-troubleshooting/01-logs-and-remote-syslog/README.md) | 📝 |
+| 02 | [`02-resources-profiler-and-graphing`](Q-network-monitoring-and-troubleshooting/02-resources-profiler-and-graphing/README.md) | 📝 |
+| 03 | [`03-snmp-monitoring`](Q-network-monitoring-and-troubleshooting/03-snmp-monitoring/README.md) | 📝 |
+| 04 | [`04-traffic-flow`](Q-network-monitoring-and-troubleshooting/04-traffic-flow/README.md) | 📝 |
+| 05 | [`05-packet-sniffer-and-wireshark`](Q-network-monitoring-and-troubleshooting/05-packet-sniffer-and-wireshark/README.md) | 📝 |
+| 06 | [`06-bandwidth-test`](Q-network-monitoring-and-troubleshooting/06-bandwidth-test/README.md) | 📝 |
+

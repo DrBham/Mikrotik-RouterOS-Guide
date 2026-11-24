@@ -203,7 +203,7 @@ Each practical tutorial records its actual RouterOS version, device, topology, a
 | [N — Load Balancing & High Availability](N-load-balancing-and-high-availability/) | 4 | 📝 Drafts written; waiting for lab screenshots |
 | [O — Dynamic Routing](O-dynamic-routing/) | 4 | 📝 Drafts written; waiting for lab screenshots |
 | [P — IPv6 Networking](P-ipv6-networking/) | 4 | 📝 Drafts written; waiting for lab screenshots |
-| Q — Network Monitoring & Troubleshooting | 0 | ⏳ Planned |
+| [Q — Network Monitoring & Troubleshooting](Q-network-monitoring-and-troubleshooting/) | 6 | 📝 Drafts written; waiting for lab screenshots |
 
 Every draft contains the theory with references, and the CLI and WinBox walkthroughs with `TODO` placeholders for lab screenshots and results. A topic becomes ✅ when its lab evidence is added.
 
