@@ -1,7 +1,5 @@
 <div align="center">
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:0F766E,50:2563EB,100:7C3AED&height=210&section=header&text=RouterOS%20Field%20Manual&fontSize=38&fontColor=FFFFFF&fontAlignY=38&desc=A%20Practical%20MikroTik%20Networking%20Guide&descAlignY=60&descSize=17" alt="RouterOS Field Manual banner" width="100%" />
-
 # RouterOS Field Manual
 
 **Step-by-step MikroTik RouterOS lessons, from first login to VPN and dynamic routing, with every lab shown in both the CLI and WinBox.**
