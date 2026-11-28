@@ -62,7 +62,7 @@ flowchart LR
 
 | Physical lab | Virtual lab | Tools |
 | --- | --- | --- |
-| MikroTik hAP lite (RB941-2nD), Lenovo LOQ 15IAX9 laptop, Ethernet | MikroTik Cloud Hosted Router (CHR) in GNS3 or Oracle VirtualBox | WinBox, RouterOS CLI, Wireshark, Visual Studio Code, Git |
+| MikroTik hAP lite (RB941-2nD), Lenovo LOQ 15IAX9 laptop, Ethernet | MikroTik Cloud Hosted Router (CHR) in GNS3 or Oracle VirtualBox | WinBox, RouterOS CLI, Wireshark (D.04, Q.05) |
 
 Each lesson records the RouterOS version, device, and topology used. Features that depend on hardware are marked; for example, the hAP lite uses the legacy `wireless` package and cannot run BGP or Back To Home.
 
