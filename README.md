@@ -1,136 +1,110 @@
 <div align="center">
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:0F766E,50:2563EB,100:7C3AED&height=210&section=header&text=RouterOS%20Field%20Manual&fontSize=38&fontColor=FFFFFF&fontAlignY=38&desc=A%20Practical%20MikroTik%20Networking%20Guide&descAlignY=60&descSize=17" alt="RouterOS Field Manual — A Practical MikroTik Networking Guide" width="100%" />
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:0F766E,50:2563EB,100:7C3AED&height=210&section=header&text=RouterOS%20Field%20Manual&fontSize=38&fontColor=FFFFFF&fontAlignY=38&desc=A%20Practical%20MikroTik%20Networking%20Guide&descAlignY=60&descSize=17" alt="RouterOS Field Manual banner" width="100%" />
 
 # RouterOS Field Manual
 
-**A personal learning journal and practical configuration reference for MikroTik RouterOS.**
+**Step-by-step MikroTik RouterOS lessons, from first login to VPN and dynamic routing, with every lab shown in both the CLI and WinBox.**
 
-![MikroTik](https://img.shields.io/badge/MikroTik-RouterOS-293239?style=flat-square&logo=mikrotik&logoColor=white)
-![Learning](https://img.shields.io/badge/Learning-Beginner%20to%20Advanced-2563EB?style=flat-square)
+![MikroTik](https://img.shields.io/badge/MikroTik-RouterOS%20v7-293239?style=flat-square&logo=mikrotik&logoColor=white)
+![Topics](https://img.shields.io/badge/Lessons-90%20drafted-2563EB?style=flat-square)
 ![Documentation](https://img.shields.io/badge/Documentation-English-0D9488?style=flat-square)
 ![Status](https://img.shields.io/badge/Status-Drafting%20Labs-F59E0B?style=flat-square)
 
-[About](#about-this-project) · [Roadmap](#learning-roadmap) · [Tutorials](#tutorial-format) · [Lab](#lab-environment) · [Progress](#learning-progress)
+[Start here](#start-here) · [Lab](#lab-environment) · [Roadmap](#learning-roadmap) · [Lesson format](#lesson-format) · [Progress](#learning-progress)
 
 </div>
 
-## About This Project
+## Overview
 
-I created this repository as a personal learning journal to deepen my understanding of MikroTik RouterOS and build a reliable reference for revisiting networking concepts, configuration procedures, and troubleshooting techniques. My goal is to document what I learn through hands-on practice so that I can recall not only the commands, but also the reasoning behind them.
+Most MikroTik tutorials show commands without saying why they work, or show WinBox clicks without the CLI behind them. This guide explains each feature from its source (the official RouterOS manual and the IETF RFCs), then configures it twice: once in the CLI and once in WinBox, on a real hAP lite and on virtual routers.
 
-As the project grows, I hope these notes and practical guides will also help other learners explore MikroTik networking, follow reproducible configuration examples, and understand how to verify their own results.
+It is written for networking students, MTCNA candidates, IT support technicians, and junior network engineers. Experienced readers can jump to the **Quick Recap** table at the end of each lesson.
 
-<table>
-<tr>
-<td width="50%" valign="top">
-<h3>📘 Purpose</h3>
-<p>Learn MikroTik from the fundamentals, retain knowledge, and build a personal technical reference.</p>
-</td>
-<td width="50%" valign="top">
-<h3>🧪 Approach</h3>
-<p>Practice in physical and virtual labs, record actual results, and document the lessons learned.</p>
-</td>
-</tr>
-<tr>
-<td valign="top">
-<h3>🎯 Audience</h3>
-<p>Networking students, MikroTik learners, MTCNA candidates, IT support technicians, and junior network engineers.</p>
-</td>
-<td valign="top">
-<h3>🌱 Long-Term Goal</h3>
-<p>Develop practical networking skills and share a growing, accessible knowledge base with the community.</p>
-</td>
-</tr>
-</table>
+The guide started as my own learning journal, so every lesson is checked in my lab before it is marked complete.
+
+## Start here
+
+**What you need**
+
+| Item | Used for |
+| --- | --- |
+| A MikroTik router with RouterOS v7 (this guide uses a hAP lite RB941-2nD) | Single-router labs (most of chapters A–L) |
+| A laptop with an Ethernet port, [WinBox](https://mt.lv/winbox), and PowerShell | Management and testing |
+| [GNS3](https://www.gns3.com/) or VirtualBox with MikroTik [CHR](https://manual.mikrotik.com/docs/getting-started/installation-and-upgrade/install/chr-installation/) | Multi-router labs (routing, VPN, OSPF, BGP) |
+
+**Suggested order**
+
+1. Read [A.01 Introduction to MikroTik](A-mikrotik-fundamentals/01-introduction-to-mikrotik/README.md).
+2. Log in to the router with [A.02 Connecting to RouterOS Using WinBox](A-mikrotik-fundamentals/02-connecting-to-routeros-using-winbox/README.md). Expected result: an SSH prompt such as `[admin@MikroTik] >` and the router listed in WinBox Neighbors.
+3. Give the lab router internet access with [A.03 Lab Internet Access](A-mikrotik-fundamentals/03-lab-internet-access/README.md), so the guide stays open on your laptop while you practise. Expected result: `ping google.com` from the laptop gets replies through the MikroTik.
+4. Continue through chapter A, then the network theory in chapter B.
+5. Build a gateway from an empty router in chapter C. After that, take chapters D–Q in any order; each lesson lists its prerequisites.
+
+**How to follow one lesson**
+
+1. Read **Theory** and **Why This Matters**.
+2. Do **Method A — CLI** and check the **Verify (CLI)** table.
+3. Reset the router as described in **Reset Before Method B**.
+4. Do **Method B — WinBox** and check **Verify (WinBox)**.
+5. Use **Troubleshooting** if a check fails, and **Quick Recap** to revise later.
+
+> [!WARNING]
+> Several lessons reset the router or change firewall rules. Use a lab router, not the one your home or office depends on, and keep a backup ([A.07](A-mikrotik-fundamentals/07-backup-export-and-restore/README.md)).
+
+## Lab Environment
+
+```mermaid
+flowchart LR
+    NET((Internet)) --- UP[Home router or<br/>phone hotspot]
+    UP -- "ether1 cable or<br/>wlan1 Wi-Fi client" --- HAP[MikroTik hAP lite<br/>RB941-2nD]
+    HAP -- "ether2<br/>192.168.88.0/24" --- PC[Laptop<br/>WinBox, SSH, Wireshark]
+    PC -. "GNS3 / VirtualBox" .- CHR[MikroTik CHR<br/>virtual routers]
+```
+
+| Physical lab | Virtual lab | Tools |
+| --- | --- | --- |
+| MikroTik hAP lite (RB941-2nD), Lenovo LOQ 15IAX9 laptop, Ethernet | MikroTik Cloud Hosted Router (CHR) in GNS3 or Oracle VirtualBox | WinBox, RouterOS CLI, Wireshark, Visual Studio Code, Git |
+
+Each lesson records the RouterOS version, device, and topology used. Features that depend on hardware are marked; for example, the hAP lite uses the legacy `wireless` package and cannot run BGP or Back To Home.
 
 ## Learning Roadmap
 
-The roadmap contains 17 chapters plus a set of capstone projects, arranged from foundational concepts to more advanced networking topics. The categories below are a learning guide, not an official certification syllabus. Some advanced topics appear in earlier chapters and will be approached according to their prerequisites.
+Chapter folders are named by letter. The topic-by-topic list is in [ROADMAP.md](ROADMAP.md).
 
-<table>
-<tr>
-<th width="33%">🟢 Beginner</th>
-<th width="34%">🔵 Intermediate</th>
-<th width="33%">🟣 Advanced</th>
-</tr>
-<tr>
-<td valign="top">
-<b>01</b> — MikroTik Fundamentals<br>
-<b>02</b> — Network Fundamentals &amp; IP Addressing<br>
-<b>03</b> — Basic Internet Connectivity<br>
-<b>04</b> — Interface &amp; Bridge<br>
-<b>05</b> — DHCP &amp; Network Services<br>
-<b>06</b> — Wireless Networking<br>
-<b>07</b> — Routing Fundamentals
-</td>
-<td valign="top">
-<b>08</b> — Firewall &amp; Network Security<br>
-<b>09</b> — Network Address Translation (NAT)<br>
-<b>10</b> — VLAN &amp; Network Segmentation<br>
-<b>11</b> — Bandwidth Management &amp; QoS<br>
-<b>12</b> — PPP &amp; Hotspot<br>
-<b>13</b> — VPN &amp; Network Tunneling
-</td>
-<td valign="top">
-<b>14</b> — Load Balancing &amp; High Availability<br>
-<b>15</b> — Dynamic Routing<br>
-<b>16</b> — IPv6 Networking<br>
-<b>17</b> — Network Monitoring &amp; Troubleshooting<br>
-<b>18</b> — Capstone Projects (planned)
-</td>
-</tr>
-<tr>
-<td valign="top"><i>Build and troubleshoot basic networks.</i></td>
-<td valign="top"><i>Implement segmentation, security, and network services.</i></td>
-<td valign="top"><i>Explore redundancy, dynamic routing, and network operations.</i></td>
-</tr>
-</table>
+| Level | Chapters |
+| --- | --- |
+| Beginner | **A** MikroTik Fundamentals · **B** Network Fundamentals & IP Addressing · **C** Basic Internet Connectivity · **D** Interface & Bridge · **E** DHCP & Network Services · **F** Wireless Networking · **G** Routing Fundamentals |
+| Intermediate | **H** Firewall & Network Security · **I** Network Address Translation (NAT) · **J** VLAN & Network Segmentation · **K** Bandwidth Management & QoS · **L** PPP & HotSpot · **M** VPN & Network Tunneling |
+| Advanced | **N** Load Balancing & High Availability · **O** Dynamic Routing · **P** IPv6 Networking · **Q** Network Monitoring & Troubleshooting |
+| Projects | **R** Capstone Projects (planned) |
 
-> **Roadmap note:** Chapters and topics represent planned coverage. Tutorials will be added as the author studies, implements, and reviews them. Chapter folders use letters (01 = `A-…`, 02 = `B-…`, and so on). The topic-by-topic plan is in [ROADMAP.md](ROADMAP.md).
+The levels are a learning guide, not an official certification syllabus.
 
-## Tutorial Format
+## Lesson format
 
-Each topic has its own folder. The guide is written for **beginners** who are new to networking, and for **experienced readers** who want to refresh theory and commands quickly. Every topic therefore explains *why* it matters and *how it connects* to other topics, and ends with a short **Quick Recap**.
+Every lesson folder contains one `README.md` with the same sections, defined in [TOPIC-TEMPLATE.md](TOPIC-TEMPLATE.md):
 
-Every topic starts with the theory: what the feature is, why we use it, and how it relates to other topics. Practical tutorials then show the same configuration twice, in a fixed order: first the complete CLI walkthrough, then a reset of the router to the starting state, then the complete WinBox walkthrough. Both are documented step by step with screenshots from the lab.
+| Section | Content |
+| --- | --- |
+| Overview, Why This Matters, Prerequisites | What you will do and why it is needed |
+| Theory, How It Connects | The concepts, each statement numbered against the References list |
+| Method A — CLI | Commands with an explanation of each parameter, then a verification table |
+| Reset Before Method B | How to return the router to the starting state |
+| Method B — WinBox (GUI) | The same configuration in WinBox, then a verification table |
+| Troubleshooting, Quick Recap, Key Takeaways, References | Fixes, a one-table summary, and sources |
 
-<table>
-<tr>
-<td width="50%" valign="top">
-<h3>⌨️ Method A — RouterOS CLI</h3>
-Terminal commands, an explanation of each parameter, and a screenshot of every command and its output.
-</td>
-<td width="50%" valign="top">
-<h3>🖥️ Method B — WinBox (GUI)</h3>
-After resetting the router, the same configuration again with WinBox, with an original screenshot for each step.
-</td>
-</tr>
-<tr>
-<td valign="top">
-<h3>✅ Verification &amp; Troubleshooting</h3>
-Expected behavior, observed results, common issues, diagnostic steps, and recovery guidance where relevant.
-</td>
-<td valign="top">
-<h3>📄 Configuration File</h3>
-A topic-specific <code>configuration.rsc</code> file, reviewed for sensitive information and accompanied by prerequisites and usage notes.
-</td>
-</tr>
-</table>
+Theory-only lessons replace the two methods with a **How It Appears in RouterOS** section of read-only commands. When the lab is recorded, each step gets a screenshot in `images/cli/` or `images/gui/`, and practical lessons get a `configuration.rsc` export.
 
-Readers who only want one method can skip the other. If you follow both, reset the router between them as shown in the tutorial; applying both on top of each other creates duplicate entries.
-
-**Topic flow:** Theory & reasons → CLI configuration → Verify → Reset → WinBox configuration → Verify → Recap
-
-Theory topics contain explanations and illustrations without configuration files. See [TOPIC-TEMPLATE.md](TOPIC-TEMPLATE.md) for the full section layout and [ROADMAP.md](ROADMAP.md) for every planned topic.
+If you follow both methods, reset between them; applying both on top of each other creates duplicate entries.
 
 ## Sources
 
-Theory is based on the official [RouterOS Manual](https://manual.mikrotik.com/), MikroTik product pages, and IETF RFCs. Each statement in a topic is numbered against that topic's **References** list. My own lab observations are labelled as such and are not presented as general facts.
+Theory comes from the official [RouterOS Manual](https://manual.mikrotik.com/), MikroTik product pages, and IETF RFCs. Each statement is numbered against the lesson's **References** list. My own lab observations are labelled as such. A statement without an official source is marked **Source needed** in the lesson instead of being guessed.
 
 ## Repository Structure
 
-The following example illustrates the planned organization. Topic folders are created incrementally as learning progresses.
+Target layout of a completed lesson (drafts have the `README.md` only):
 
 ```text
 Mikrotik-RouterOS-Guide/
@@ -138,97 +112,61 @@ Mikrotik-RouterOS-Guide/
 ├── ROADMAP.md
 ├── TOPIC-TEMPLATE.md
 ├── A-mikrotik-fundamentals/
-│   ├── 01-introduction-to-mikrotik/
-│   │   └── README.md
 │   └── 02-connecting-to-routeros-using-winbox/
 │       ├── README.md
 │       └── images/
 │           ├── topology.svg
-│           ├── cli/
-│           └── gui/
-└── B-network-fundamentals/
-    └── 11-static-ip-configuration/
-        ├── README.md
-        ├── images/
-        │   ├── cli/01-ip-address-add.png
-        │   └── gui/01-open-ip-addresses.png
-        └── configuration.rsc
+│           ├── cli/          # Method A screenshots
+│           └── gui/          # Method B screenshots
+├── ...
+└── R-capstone-projects/
 ```
-
-| Component | Purpose |
-| :--- | :--- |
-| `README.md` | Concept, configuration steps, verification, and troubleshooting. |
-| `images/cli/`, `images/gui/` | Original lab screenshots for the CLI and WinBox walkthroughs. |
-| `configuration.rsc` | Relevant RouterOS configuration for the practical topic. |
-
-## Lab Environment
-
-<table>
-<tr>
-<th width="50%">🔧 Physical Lab</th>
-<th width="50%">☁️ Virtual Lab</th>
-</tr>
-<tr>
-<td valign="top">MikroTik hAP lite (RB941-2nD)<br>Lenovo LOQ 15IAX9<br>Ethernet connectivity</td>
-<td valign="top">MikroTik Cloud Hosted Router (CHR)<br>GNS3<br>Oracle VirtualBox</td>
-</tr>
-<tr>
-<th>🛠️ Configuration &amp; Analysis</th>
-<th>📝 Documentation &amp; Version Control</th>
-</tr>
-<tr>
-<td valign="top">WinBox<br>RouterOS CLI<br>Wireshark (when needed)</td>
-<td valign="top">Visual Studio Code<br>Markdown<br>Git &amp; GitHub</td>
-</tr>
-</table>
-
-Each practical tutorial records its actual RouterOS version, device, topology, and test environment. Hardware- or version-dependent features are documented accordingly.
 
 ## Learning Progress
 
-| Chapter | Topics | Status |
+| Chapter | Lessons | Status |
 | :--- | :---: | :--- |
-| [A — MikroTik Fundamentals](A-mikrotik-fundamentals/) | 8 | 📝 Drafts written; waiting for lab screenshots |
-| [B — Network Fundamentals & IP Addressing](B-network-fundamentals/) | 11 | 📝 Drafts written; waiting for lab screenshots |
-| [C — Basic Internet Connectivity](C-basic-internet-connectivity/) | 7 | 📝 Drafts written; waiting for lab screenshots |
-| [D — Interface & Bridge](D-interface-and-bridge/) | 5 | 📝 Drafts written; waiting for lab screenshots |
-| [E — DHCP & Network Services](E-dhcp-and-network-services/) | 8 | 📝 Drafts written; waiting for lab screenshots |
-| [F — Wireless Networking](F-wireless-networking/) | 5 | 📝 Drafts written; waiting for lab screenshots |
-| [G — Routing Fundamentals](G-routing-fundamentals/) | 2 | 📝 Drafts written; waiting for lab screenshots |
-| [H — Firewall & Network Security](H-firewall-and-network-security/) | 5 | 📝 Drafts written; waiting for lab screenshots |
-| [I — Network Address Translation (NAT)](I-network-address-translation/) | 3 | 📝 Drafts written; waiting for lab screenshots |
-| [J — VLAN & Network Segmentation](J-vlan-and-network-segmentation/) | 4 | 📝 Drafts written; waiting for lab screenshots |
-| [K — Bandwidth Management & QoS](K-bandwidth-management-and-qos/) | 5 | 📝 Drafts written; waiting for lab screenshots |
-| [L — PPP & Hotspot](L-ppp-and-hotspot/) | 3 | 📝 Drafts written; waiting for lab screenshots |
-| [M — VPN & Network Tunneling](M-vpn-and-network-tunneling/) | 6 | 📝 Drafts written; waiting for lab screenshots |
-| [N — Load Balancing & High Availability](N-load-balancing-and-high-availability/) | 4 | 📝 Drafts written; waiting for lab screenshots |
-| [O — Dynamic Routing](O-dynamic-routing/) | 4 | 📝 Drafts written; waiting for lab screenshots |
-| [P — IPv6 Networking](P-ipv6-networking/) | 4 | 📝 Drafts written; waiting for lab screenshots |
-| [Q — Network Monitoring & Troubleshooting](Q-network-monitoring-and-troubleshooting/) | 6 | 📝 Drafts written; waiting for lab screenshots |
-| [R — Capstone Projects](R-capstone-projects/) | 5 | 🗂️ Planned: project briefs only |
+| [A — MikroTik Fundamentals](A-mikrotik-fundamentals/) | 8 | 📝 Draft, waiting for lab screenshots |
+| [B — Network Fundamentals & IP Addressing](B-network-fundamentals/) | 11 | 📝 Draft, waiting for lab screenshots |
+| [C — Basic Internet Connectivity](C-basic-internet-connectivity/) | 7 | 📝 Draft, waiting for lab screenshots |
+| [D — Interface & Bridge](D-interface-and-bridge/) | 5 | 📝 Draft, waiting for lab screenshots |
+| [E — DHCP & Network Services](E-dhcp-and-network-services/) | 8 | 📝 Draft, waiting for lab screenshots |
+| [F — Wireless Networking](F-wireless-networking/) | 5 | 📝 Draft, waiting for lab screenshots |
+| [G — Routing Fundamentals](G-routing-fundamentals/) | 2 | 📝 Draft, waiting for lab screenshots |
+| [H — Firewall & Network Security](H-firewall-and-network-security/) | 5 | 📝 Draft, waiting for lab screenshots |
+| [I — Network Address Translation (NAT)](I-network-address-translation/) | 3 | 📝 Draft, waiting for lab screenshots |
+| [J — VLAN & Network Segmentation](J-vlan-and-network-segmentation/) | 4 | 📝 Draft, waiting for lab screenshots |
+| [K — Bandwidth Management & QoS](K-bandwidth-management-and-qos/) | 5 | 📝 Draft, waiting for lab screenshots |
+| [L — PPP & HotSpot](L-ppp-and-hotspot/) | 3 | 📝 Draft, waiting for lab screenshots |
+| [M — VPN & Network Tunneling](M-vpn-and-network-tunneling/) | 6 | 📝 Draft, waiting for lab screenshots |
+| [N — Load Balancing & High Availability](N-load-balancing-and-high-availability/) | 4 | 📝 Draft, waiting for lab screenshots |
+| [O — Dynamic Routing](O-dynamic-routing/) | 4 | 📝 Draft, waiting for lab screenshots |
+| [P — IPv6 Networking](P-ipv6-networking/) | 4 | 📝 Draft, waiting for lab screenshots |
+| [Q — Network Monitoring & Troubleshooting](Q-network-monitoring-and-troubleshooting/) | 6 | 📝 Draft, waiting for lab screenshots |
+| [R — Capstone Projects](R-capstone-projects/) | 5 | 🗂️ Planned, project briefs only |
 
-Every draft contains the theory with references, and the CLI and WinBox walkthroughs with `TODO` placeholders for lab screenshots and results. A topic becomes ✅ when its lab evidence is added.
+A draft has the theory with references and both walkthroughs, with `TODO` placeholders where lab screenshots and results go. A lesson becomes ✅ when its lab evidence is added.
 
 ## Documentation & Safety
 
-Practical guides are based on actual lab evidence and original explanations. Untested configurations are explicitly identified. Review configuration examples before applying them, use isolated labs when possible, and avoid publishing credentials, private keys, or identifying device information. Every screenshot is checked against the [screenshot & privacy checklist](TOPIC-TEMPLATE.md#screenshot--privacy-checklist) before it is committed. Published examples are not a guarantee of production suitability.
+- Review every command before applying it, and practise on a lab router.
+- Untested steps are marked `TODO` or **Draft** until the lab confirms them.
+- Screenshots are checked against the [screenshot & privacy checklist](TOPIC-TEMPLATE.md#screenshot--privacy-checklist) before they are committed: MAC addresses, SSIDs, passwords, serial numbers, and public addresses are covered.
+- Examples use documentation addresses (`192.0.2.0/24`, `198.51.100.0/24`, `203.0.113.0/24`, `2001:db8::/32`) and placeholders such as `YOUR_WIFI_PASSWORD`.
+- The lessons are learning material, not a guarantee of production suitability.
 
 ## References
 
 | Resource | Description |
 | :--- | :--- |
-| [RouterOS Manual](https://manual.mikrotik.com/) | Primary technical reference (current official manual). |
-| [RFC Editor](https://www.rfc-editor.org/) | Protocol standards used for general networking theory. |
-| [MikroTik Official Website](https://mikrotik.com/) | Product information and official resources. |
+| [RouterOS Manual](https://manual.mikrotik.com/) | Primary technical reference (current official manual) |
+| [RFC Editor](https://www.rfc-editor.org/) | Protocol standards used for general networking theory |
+| [MikroTik](https://mikrotik.com/) | Product information |
 
 ---
 
 <div align="center">
 
-**Learn it. Configure it. Understand it. Document it.**
-
-<sub>An independent personal learning project. Not affiliated with MikroTik and not official certification training material.</sub>
-
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:0F766E,50:2563EB,100:7C3AED&height=90&section=footer" alt="Decorative footer" width="100%" />
+<sub>An independent learning project by DrBham. Not affiliated with MikroTik and not official certification training material. MikroTik, RouterOS, and WinBox are trademarks of MikroTik.</sub>
 
 </div>
